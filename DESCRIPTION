@@ -1,0 +1,24 @@
+Package: mixgb
+Type: Package
+Title: Multiple imputation through XGBoost
+Version: 0.1.0
+Authors@R: c(
+    person("Yongshi", "Deng", email = "yongshi.deng@auckland.ac.nz", role = "cre"),
+    person("Thomas", "Lumley", email = "t.lumley@auckland.ac.nz", role = "ths"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Generate multiple imputations for large datasets using machine learning techniques.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    dplyr,
+    R6,
+    Matrix,
+    xgboost
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 2.1.0)
+Depends: R (>= 3.4.0)
+VignetteBuilder: knitr
+RoxygenNote: 7.1.0
