@@ -12,6 +12,7 @@ Mixgb is a scalable multiple imputation framework based on XGBoost, bootstrappin
 If users only want to use multiple imputation through XGBoost, please install this simplified R package `mixgb` instead.
 ```r
 devtools::install_github("agnesdeng/mixgb")
+library(mixgb)
 ```
 
 ## Example: multiple imputation through XGBoost
