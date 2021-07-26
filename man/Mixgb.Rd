@@ -6,7 +6,7 @@
 \alias{mixgb-package}
 \title{mixgb: multiple imputation through XGBoost}
 \description{
-Generate multiple imputations for large datasets using machine learning techniques.
+A scalable multiple imputation framework based on XGBoost, bootstrapping and predictive mean matching.
 }
 \author{
 \strong{Maintainer}: Yongshi Deng \email{yongshi.deng@auckland.ac.nz}

@@ -1,11 +1,11 @@
-#' Multiple imputation through xgboost R6 class imputer object
+#' Multiple imputation through xgboost R6 class imputer object for training set
 #' @docType  class
-#' @format  An [R6Class] mixgb imputer object
+#' @format  An [R6Class] mixgb.train imputer object
 #' @import xgboost
-#' @return An [Mixgb] imputer
+#' @return An [Mixgb.train] imputer
 #' @export
 
-Mixgb <- R6Class("Mixgb",
+Mixgb.train <- R6Class("Mixgb.train",
                    cloneable = FALSE,
 
                     public = list(
@@ -147,7 +147,7 @@ Mixgb <- R6Class("Mixgb",
 
                         if(self$initial.imp=="random"){
 
-                            initial.df[na.index,i]<-sample(sorted.df[,i][obs.index],num.na[i],replace=TRUE)
+                          initial.df[na.index,i]<-sample(sorted.df[,i][obs.index],num.na[i],replace=TRUE)
 
 
                         }else if(self$initial.imp=="rnorm"){
@@ -164,7 +164,7 @@ Mixgb <- R6Class("Mixgb",
 
 
 
-                          }else{
+                        }else{
 
 
                           #numeric: initial impute median
@@ -179,7 +179,24 @@ Mixgb <- R6Class("Mixgb",
 
                       }
 
-                      #3) imputation  i=2
+                      #3) imputation
+
+                      params=list()
+                      params$initial.imp=self$initial.imp
+                      params$pmm.k=self$pmm.k
+                      params$pmm.type=self$pmm.type
+                      params$pmm.link=self$pmm.link
+
+
+
+
+                      params$m=m
+                      params$Names=Names
+                      params$type=type
+                      params$sorted.idx=sorted.idx
+                      params$Obs.index=Obs.index
+
+
 
                       if(m==1){
 
@@ -231,6 +248,7 @@ Mixgb <- R6Class("Mixgb",
                                   }else{
                                     #skip xgboost training, just impute majority class
                                     sorted.df[,i][na.index]<-names(t[1])
+
                                   }
 
 
@@ -336,11 +354,13 @@ Mixgb <- R6Class("Mixgb",
 
 
                       }else{
+                        imputed.data<-list()
+                        saved.models<-replicate(m,list())
 
                         #### m multiple imputation
                        if(is.null(self$pmm.type)){
                        ###no pmm
-                         imputed.data<-list()
+
 
 
                          for(k in 1:m){
@@ -386,7 +406,8 @@ Mixgb <- R6Class("Mixgb",
                                  pred.y=predict(xgb.fit,mis.data)
                                  #update dataset
                                  copy[,i][na.index]<-pred.y
-
+                                 #save model for the k'th imputed dataset, the i'th variable
+                                 saved.models[[k]][[i]]<-xgb.fit
 
                                }else if(type[i]=="binary"){
 
@@ -405,10 +426,14 @@ Mixgb <- R6Class("Mixgb",
 
                                    #update dataset
                                    copy[,i][na.index]<-pred.y
-
+                                   #save model for the k'th imputed dataset, the i'th variable
+                                   saved.models[[k]][[i]]<-xgb.fit
                                  }else{
                                    #skip xgboost training, just impute majority class
                                    copy[,i][na.index]<-names(t[1])
+
+                                   saved.models[[k]][[i]]<-names(t[1])
+
                                  }
 
 
@@ -425,6 +450,8 @@ Mixgb <- R6Class("Mixgb",
                                  pred.y=levels(sorted.df[,i])[xgb.pred+1]
                                  #update dataset
                                  copy[,i][na.index]<-pred.y
+                                 #save model for the k'th imputed dataset, the i'th variable
+                                 saved.models[[k]][[i]]<-xgb.fit
                                }
 
                              }
@@ -436,13 +463,13 @@ Mixgb <- R6Class("Mixgb",
 
                          }
 
-                         return(imputed.data)
 
+                         return(list("imputed.data"=imputed.data,"saved.models"=saved.models,"params"=params))
 
                        }else if(self$pmm.type==1){
-                         ####
-                         #multiple imputation m=5
-                         imputed.data<-list()
+
+                         #multiple imputation
+
                          yhatobs.list<-list()
                          yobs.list<-list()
 
@@ -494,9 +521,12 @@ Mixgb <- R6Class("Mixgb",
                                  yhatobs.list[[i]]=xgb.pred
 
 
+
                                }else{
                                  #skip xgboost training, just impute majority class
                                  yhatobs.list[[i]]<-rep(names(t[1]),length(obs.y))
+
+
                                }
 
 
@@ -519,8 +549,8 @@ Mixgb <- R6Class("Mixgb",
                            }
 
                          }
-
-
+                              params$yobs.list=yobs.list
+                              params$yhatobs.list=yhatobs.list
 
 
                          for(k in 1:m){
@@ -566,7 +596,8 @@ Mixgb <- R6Class("Mixgb",
 
                                  #update dataset
                                  copy[,i][na.index]<- pmm(yhatobs = yhatobs.list[[i]],yhatmis = pred.y,yobs=yobs.list[[i]],k=self$pmm.k)
-
+                                 #save model for the k'th imputed dataset, the i'th variable
+                                 saved.models[[k]][[i]]<-xgb.fit
 
                                }else if(type[i]=="binary"){
 
@@ -590,11 +621,13 @@ Mixgb <- R6Class("Mixgb",
                                    num.result=pmm(yhatobs = yhatobs.list[[i]],yhatmis = xgb.pred,yobs=yobs.list[[i]],k=self$pmm.k)
                                    #change to factor
                                    copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-
+                                   #save model for the k'th imputed dataset, the i'th variable
+                                   saved.models[[k]][[i]]<-xgb.fit
 
                                  }else{
                                    #skip xgboost training, just impute majority class
                                    copy[,i][na.index]<-names(t[1])
+                                   saved.models[[k]][[i]]<-names(t[1])
                                  }
 
 
@@ -616,6 +649,8 @@ Mixgb <- R6Class("Mixgb",
                                  num.result=pmm.multiclass(donor.pred = yhatobs.list[[i]],target.pred = xgb.pred,donor.obs = yobs.list[[i]],k=self$pmm.k)
                                  #change to factor
                                  copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
+                                 #save model for the k'th imputed dataset, the i'th variable
+                                 saved.models[[k]][[i]]<-xgb.fit
 
 
                                }
@@ -629,11 +664,11 @@ Mixgb <- R6Class("Mixgb",
 
                          }#end m multiple imputation
 
-                         return(imputed.data)
+                         return(list("imputed.data"=imputed.data,"saved.models"=saved.models,"params"=params))
 
                        }else if(self$pmm.type==2){
                          ###########
-                         imputed.data<-list()
+                          yhatobs.list<-replicate(m,list())
                           yobs.list<-list()
 
                          for(i in 1:p){
@@ -648,6 +683,9 @@ Mixgb <- R6Class("Mixgb",
                              yobs.list[[i]]=obs.y
                            }
                          }
+
+
+                          params$yobs.list=yobs.list
 
 
                          for(k in 1:m){
@@ -691,9 +729,11 @@ Mixgb <- R6Class("Mixgb",
                                  ###use boostrap observed data to fit model
                                  #use this model to predict all missing whole data and match with all observed whole data
                                   yhatobs=predict(xgb.fit,Obs.data)
+                                  yhatobs.list[[k]][[i]]=yhatobs
                                  #update dataset
                                  copy[,i][na.index]<-pmm(yhatobs = yhatobs,yhatmis = pred.y,yobs=yobs.list[[i]],k=self$pmm.k)
-
+                                 #save model for the k'th imputed dataset, the i'th variable
+                                 saved.models[[k]][[i]]<-xgb.fit
 
 
                                }else if(type[i]=="binary"){
@@ -715,15 +755,18 @@ Mixgb <- R6Class("Mixgb",
                                    xgb.pred = predict(xgb.fit,mis.data)
 
 
-                                   yhatObs=predict(xgb.fit,Obs.data)
-
-                                   num.result=pmm(yhatobs = yhatObs,yhatmis = xgb.pred,yobs=yobs.list[[i]],k=self$pmm.k)
+                                   yhatobs=predict(xgb.fit,Obs.data)
+                                   yhatobs.list[[k]][[i]]=yhatobs
+                                   num.result=pmm(yhatobs = yhatobs,yhatmis = xgb.pred,yobs=yobs.list[[i]],k=self$pmm.k)
                                    #change to factor
                                    copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
+                                   #save model for the k'th imputed dataset, the i'th variable
+                                   saved.models[[k]][[i]]<-xgb.fit
 
                                  }else{
                                    #skip xgboost training, just impute majority class
                                    copy[,i][na.index]<-names(t[1])
+                                   saved.models[[k]][[i]]<-names(t[1])
                                  }
 
 
@@ -740,32 +783,38 @@ Mixgb <- R6Class("Mixgb",
                                                  min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method,verbose = self$verbose, print_every_n = self$print_every_n)
                                  xgb.pred = predict(xgb.fit,mis.data,reshape = T)
 
-                                 yhatObs=predict(xgb.fit,Obs.data,reshape = T)
+                                 yhatobs=predict(xgb.fit,Obs.data,reshape = T)
+
 
                                  if(self$pmm.link=="logit"){
                                    xgb.pred=log(xgb.pred/(1-xgb.pred))
-                                   yhatObs=log(yhatObs/(1-yhatObs))
+                                   yhatobs=log(yhatobs/(1-yhatobs))
                                  }
-                                 num.result=pmm.multiclass(donor.pred = yhatObs,target.pred = xgb.pred,donor.obs = yobs.list[[i]],k=self$pmm.k)
+
+                                 yhatobs.list[[k]][[i]]=yhatobs
+
+                                 num.result=pmm.multiclass(donor.pred = yhatobs,target.pred = xgb.pred,donor.obs = yobs.list[[i]],k=self$pmm.k)
                                  #change to factor
                                  copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-
+                                 #save model for the k'th imputed dataset, the i'th variable
+                                 saved.models[[k]][[i]]<-xgb.fit
                                }
 
                              }
 
                            }
                            imputed.data[[k]]<-copy[order(sorted.idx)]
+                           params$yhatobs.list=yhatobs.list
 
 
 
                          }
 
-                         return(imputed.data)
+                          return(list("imputed.data"=imputed.data,"saved.models"=saved.models,"params"=params))
 
 
                        }else if(self$pmm.type=="auto"){
-                         imputed.data<-list()
+                         yhatobs.list<-replicate(m,list())
                          yobs.list<-list()
 
 
@@ -780,6 +829,7 @@ Mixgb <- R6Class("Mixgb",
 
                          }
 
+                         params$yobs.list=yobs.list
 
 
 
@@ -829,9 +879,11 @@ Mixgb <- R6Class("Mixgb",
                                  ###use boostrap observed data to fit model
                                  #use this model to predict all missing whole data and match with all observed whole data
                                  yhatobs=predict(xgb.fit,Obs.data)
+                                 yhatobs.list[[k]][[i]]=yhatobs
                                  #update dataset
                                  copy[,i][na.index]<-pmm(yhatobs = yhatobs,yhatmis = pred.y,yobs=yobs.list[[i]],k=self$pmm.k)
-
+                                 #save model for the k'th imputed dataset, the i'th variable
+                                 saved.models[[k]][[i]]<-xgb.fit
 
 
                                }else if(type[i]=="binary"){
@@ -860,11 +912,13 @@ Mixgb <- R6Class("Mixgb",
 
                                    #update dataset
                                    copy[,i][na.index]<-levels(sorted.df[,i])[pred.y+1]
-
+                                   #save model for the k'th imputed dataset, the i'th variable
+                                   saved.models[[k]][[i]]<-xgb.fit
 
                                  }else{
                                    #skip xgboost training, just impute majority class
                                    copy[,i][na.index]<-names(t[1])
+                                   saved.models[[k]][[i]]<-names(t[1])
                                  }
 
 
@@ -892,7 +946,8 @@ Mixgb <- R6Class("Mixgb",
                                  xgb.pred = predict(xgb.fit,mis.data)
                                  #update dataset
                                  copy[,i][na.index]<-levels(sorted.df[,i])[xgb.pred+1]
-
+                                 #save model for the k'th imputed dataset, the i'th variable
+                                 saved.models[[k]][[i]]<-xgb.fit
 
                                }
 
@@ -901,11 +956,11 @@ Mixgb <- R6Class("Mixgb",
                            }
                            imputed.data[[k]]<-copy[order(sorted.idx)]
 
-
+                           params$yhatobs.list=yhatobs.list
 
                          }
 
-                         return(imputed.data)
+                         return(list("imputed.data"=imputed.data,"saved.models"=saved.models,"params"=params))
 
 
                        }
