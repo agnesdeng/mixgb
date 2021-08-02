@@ -61,11 +61,28 @@ We can use the training data (with missing values) to obtain m imputed datasets.
 MIXGB=Mixgb.train$new(trainNA.df)
 mixgb.obj=MIXGB$impute(m=5)
 ```
-We can now use this object to impute new unseen data by using the function `impute.new( )`.
+We can now use this object to impute new unseen data by using the function `impute.new( )`.  If PMM is applied, predicted values of missing entries in the new dataset are matched with training data by default. Users can choose to match with the new dataset instead by setting `pmm.new = TRUE`.
 
 ``` r
-test.impute=impute.new(object = mixgb.obj,newdata = testNA.df)
+test.impute=impute.new(object = mixgb.obj, newdata = testNA.df)
 test.impute
 ```
 
+``` r
+test.impute=impute.new(object = mixgb.obj, newdata = testNA.df, pmm.new = TRUE)
+test.impute
+```
+Users can also set the number of donors for PMM when impute the new dataset. If  `pmm.k` is not set here, it will use the saved parameter value from the training object  `mixgb.obj`.
+
+``` r
+test.impute=impute.new(object = mixgb.obj, newdata = testNA.df, pmm.new = TRUE, pmm.k=3)
+test.impute
+```
+
+Similarly, users can set the number of imputed datasets `m`.  Note that this value has to be smaller than the one set in the training object. If it is not specified, it will use the same `m` value as the training object.
+
+``` r
+test.impute=impute.new(object = mixgb.obj, newdata = testNA.df, pmm.new = TRUE, m=4)
+test.impute
+```
 

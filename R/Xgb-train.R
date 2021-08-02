@@ -355,12 +355,12 @@ Mixgb.train <- R6Class("Mixgb.train",
 
                       }else{
                         imputed.data<-list()
-                        saved.models<-replicate(m,list())
+
 
                         #### m multiple imputation
                        if(is.null(self$pmm.type)){
                        ###no pmm
-
+                         saved.models<-replicate(m,list())
 
 
                          for(k in 1:m){
@@ -468,6 +468,7 @@ Mixgb.train <- R6Class("Mixgb.train",
 
                        }else if(self$pmm.type==1){
 
+                         saved.models<-replicate(2,replicate(m,list()))
                          #multiple imputation
 
                          yhatobs.list<-list()
@@ -500,6 +501,8 @@ Mixgb.train <- R6Class("Mixgb.train",
                                yhatobs=predict(xgb.fit,obs.data)
                                #update dataset
                                yhatobs.list[[i]]=yhatobs
+                               #save model (using whole training data) for the k'th imputed dataset, the i'th variable
+                               saved.models[,1][[i]]<-xgb.fit
 
                              }else if(type[i]=="binary"){
 
@@ -519,12 +522,16 @@ Mixgb.train <- R6Class("Mixgb.train",
                                                  min_child_weight=self$min_child_weight,subsample=self$subsample,scale_pos_weight=self$scale_pos_weight,tree_method=self$tree_method,verbose = self$verbose, print_every_n = self$print_every_n)
                                  xgb.pred = predict(xgb.fit,obs.data)
                                  yhatobs.list[[i]]=xgb.pred
+                                 #save model (using whole training data) for the k'th imputed dataset, the i'th variable
+                                 saved.models[,1][[i]]<-xgb.fit
 
 
 
                                }else{
                                  #skip xgboost training, just impute majority class
                                  yhatobs.list[[i]]<-rep(names(t[1]),length(obs.y))
+                                 #save model (using whole training data) for the k'th imputed dataset, the i'th variable
+                                 saved.models[,1][[i]]<-rep(names(t[1]),length(obs.y))
 
 
                                }
@@ -538,6 +545,9 @@ Mixgb.train <- R6Class("Mixgb.train",
                                                nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
                                                min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method,verbose = self$verbose, print_every_n = self$print_every_n)
                                xgb.pred = predict(xgb.fit,obs.data,reshape = T)
+
+                               #save model (using whole training data) for the k'th imputed dataset, the i'th variable
+                               saved.models[,1][[i]]<-xgb.fit
 
                                if(self$pmm.link=="logit"){
                                  xgb.pred<-log(xgb.pred/(1-xgb.pred))
@@ -596,8 +606,8 @@ Mixgb.train <- R6Class("Mixgb.train",
 
                                  #update dataset
                                  copy[,i][na.index]<- pmm(yhatobs = yhatobs.list[[i]],yhatmis = pred.y,yobs=yobs.list[[i]],k=self$pmm.k)
-                                 #save model for the k'th imputed dataset, the i'th variable
-                                 saved.models[[k]][[i]]<-xgb.fit
+                                 #save model (using bootstrapped training data) for the k'th imputed dataset, the i'th variable
+                                 saved.models[,2][[k]][[i]]<-xgb.fit
 
                                }else if(type[i]=="binary"){
 
@@ -621,13 +631,13 @@ Mixgb.train <- R6Class("Mixgb.train",
                                    num.result=pmm(yhatobs = yhatobs.list[[i]],yhatmis = xgb.pred,yobs=yobs.list[[i]],k=self$pmm.k)
                                    #change to factor
                                    copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-                                   #save model for the k'th imputed dataset, the i'th variable
-                                   saved.models[[k]][[i]]<-xgb.fit
+                                   #save model (using bootstrapped training data) for the k'th imputed dataset, the i'th variable
+                                   saved.models[,2][[k]][[i]]<-xgb.fit
 
                                  }else{
                                    #skip xgboost training, just impute majority class
                                    copy[,i][na.index]<-names(t[1])
-                                   saved.models[[k]][[i]]<-names(t[1])
+                                   saved.models[,2][[k]][[i]]<-names(t[1])
                                  }
 
 
@@ -649,8 +659,8 @@ Mixgb.train <- R6Class("Mixgb.train",
                                  num.result=pmm.multiclass(donor.pred = yhatobs.list[[i]],target.pred = xgb.pred,donor.obs = yobs.list[[i]],k=self$pmm.k)
                                  #change to factor
                                  copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-                                 #save model for the k'th imputed dataset, the i'th variable
-                                 saved.models[[k]][[i]]<-xgb.fit
+                                 #save model (using bootstrapped training data) for the k'th imputed dataset, the i'th variable
+                                 saved.models[,2][[k]][[i]]<-xgb.fit
 
 
                                }
@@ -668,6 +678,8 @@ Mixgb.train <- R6Class("Mixgb.train",
 
                        }else if(self$pmm.type==2){
                          ###########
+
+                          saved.models<-replicate(m,list())
                           yhatobs.list<-replicate(m,list())
                           yobs.list<-list()
 
@@ -814,6 +826,8 @@ Mixgb.train <- R6Class("Mixgb.train",
 
 
                        }else if(self$pmm.type=="auto"){
+
+                         saved.models<-replicate(m,list())
                          yhatobs.list<-replicate(m,list())
                          yobs.list<-list()
 

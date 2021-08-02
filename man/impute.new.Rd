@@ -4,7 +4,7 @@
 \alias{impute.new}
 \title{This function is used to impute new data using training imputer models}
 \usage{
-impute.new(object, newdata)
+impute.new(object, newdata, pmm.new = FALSE, pmm.k = NULL)
 }
 \arguments{
 \item{object}{training imputer object}
