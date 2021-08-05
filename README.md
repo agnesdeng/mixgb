@@ -9,7 +9,7 @@ Mixgb is a scalable multiple imputation framework based on XGBoost, bootstrappin
 
 
 ## Install `mixgb` 
-If users only want to use multiple imputation through XGBoost, please install this simplified R package `mixgb` instead.
+If users only want to use multiple imputation through XGBoost, please install this simplified R package `mixgb`.
 ```r
 devtools::install_github("agnesdeng/mixgb")
 library(mixgb)
@@ -86,3 +86,29 @@ test.impute=impute.new(object = mixgb.obj, newdata = testNA.df, pmm.new = TRUE, 
 test.impute
 ```
 
+## Install `mixgb` with GPU support
+Multiple imputation can be run with GPU support for machines with NVIDIA GPUs. Note that users have to install the R package `xgboost` with GPU support first. 
+
+The xgboost R package pre-built binary on Linux x86_64 with GPU supportcan be downloaded from the release page https://github.com/dmlc/xgboost/releases/tag/v1.4.0
+
+The package can then be installed by running the following commands:
+``` 
+# Install dependencies
+$ R -q -e "install.packages(c('data.table', 'jsonlite'))"
+
+# Install XGBoost
+$ R CMD INSTALL ./xgboost_r_gpu_linux.tar.gz
+```
+
+Then users can install package `mixgb` in R. 
+```r
+devtools::install_github("agnesdeng/mixgb")
+library(mixgb)
+```
+Users just need to add the argument ` tree_method='gpu_list'` in the Mixgb imputer. 
+
+``` r
+MIXGB<-Mixgb$new(withNA.df,tree_method='gpu_list')
+
+mixgb.data<-MIXGB$impute(m=5)
+```
