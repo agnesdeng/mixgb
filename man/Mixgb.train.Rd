@@ -21,15 +21,15 @@ Multiple imputation through xgboost R6 class imputer object for training set
 ## Method `Mixgb.train$new`
 ## ------------------------------------------------
 
-MIXGB=Mixgb$new(withNA.df)
-MIXGB=Mixgb$new(withNA.df,nrounds=50,max_depth=6)
+MIXGB=Mixgb.train$new(withNA.df)
+MIXGB=Mixgb.train$new(withNA.df,nrounds=50,max_depth=6)
 
 ## ------------------------------------------------
 ## Method `Mixgb.train$impute`
 ## ------------------------------------------------
 
-MIXGB=Mixgb$new(withNA.df)
-imputation.list=MIXGB$impute(m = 5)
+MIXGB=Mixgb.train$new(withNA.df)
+mixgb.obj=MIXGB$impute(m = 5)
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -69,6 +69,10 @@ imputation.list=MIXGB$impute(m = 5)
 \item{\code{verbose}}{Default: 1}
 
 \item{\code{tree_method}}{Default: "auto"}
+
+\item{\code{gpu_id}}{Default: 0}
+
+\item{\code{predictor}}{Default: "auto"}
 }
 \if{html}{\out{</div>}}
 }
@@ -102,6 +106,8 @@ Create a new \code{Mixgb} object. This is used to set up the multiple imputation
   scale_pos_weight = 1,
   initial.imp = "random",
   tree_method = "auto",
+  gpu_id = 0,
+  predictor = "auto",
   print_every_n = 10L,
   verbose = 0
 )}\if{html}{\out{</div>}}
@@ -142,6 +148,10 @@ Create a new \code{Mixgb} object. This is used to set up the multiple imputation
 
 \item{\code{tree_method}}{Default: "auto" (can set "gpu_hist" for linux)}
 
+\item{\code{gpu_id}}{Device ordinal. Default: 0}
+
+\item{\code{predictor}}{The type of predictor algorithm to use. Default: "auto" (other options: "cpu_predictor","gpu_predictor")}
+
 \item{\code{print_every_n}}{Default: 10L}
 
 \item{\code{verbose}}{Default: 1}
@@ -150,8 +160,8 @@ Create a new \code{Mixgb} object. This is used to set up the multiple imputation
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{MIXGB=Mixgb$new(withNA.df)
-MIXGB=Mixgb$new(withNA.df,nrounds=50,max_depth=6)
+\preformatted{MIXGB=Mixgb.train$new(withNA.df)
+MIXGB=Mixgb.train$new(withNA.df,nrounds=50,max_depth=6)
 }
 \if{html}{\out{</div>}}
 
@@ -162,7 +172,7 @@ MIXGB=Mixgb$new(withNA.df,nrounds=50,max_depth=6)
 \if{html}{\out{<a id="method-impute"></a>}}
 \if{latex}{\out{\hypertarget{method-impute}{}}}
 \subsection{Method \code{impute()}}{
-Use the imputer to impute missing values and obtain multiple datasets
+Use the imputer to impute missing values and obtain multiple imputed datasets, saved training models and some parameters needed for future use.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Mixgb.train$impute(m = 5)}\if{html}{\out{</div>}}
 }
@@ -176,8 +186,8 @@ Use the imputer to impute missing values and obtain multiple datasets
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{MIXGB=Mixgb$new(withNA.df)
-imputation.list=MIXGB$impute(m = 5)
+\preformatted{MIXGB=Mixgb.train$new(withNA.df)
+mixgb.obj=MIXGB$impute(m = 5)
 }
 \if{html}{\out{</div>}}
 

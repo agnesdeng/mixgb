@@ -53,8 +53,8 @@ Mixgb.train <- R6Class("Mixgb.train",
 
                     #'@description Create a new \code{Mixgb} object. This is used to set up the multiple imputation imputer using xgboost.
                     #'@examples
-                    #'MIXGB=Mixgb$new(withNA.df)
-                    #'MIXGB=Mixgb$new(withNA.df,nrounds=50,max_depth=6)
+                    #'MIXGB=Mixgb.train$new(withNA.df)
+                    #'MIXGB=Mixgb.train$new(withNA.df,nrounds=50,max_depth=6)
                     #'@param data A data frame with missing values
                     #'@param nrounds max number of boosting iterations. Default: 50
                     #'@param max_depth maximum depth of the tree. Default: 6
@@ -102,10 +102,10 @@ Mixgb.train <- R6Class("Mixgb.train",
 
                     },
 
-                    #'@description Use the imputer to impute missing values and obtain multiple datasets
+                    #'@description Use the imputer to impute missing values and obtain multiple imputed datasets, saved training models and some parameters needed for future use.
                     #'@examples
-                    #'MIXGB=Mixgb$new(withNA.df)
-                    #'imputation.list=MIXGB$impute(m = 5)
+                    #'MIXGB=Mixgb.train$new(withNA.df)
+                    #'mixgb.obj=MIXGB$impute(m = 5)
                     #'@param m the number of imputed datasets. Default: 5
 
                     impute = function(m=5){
