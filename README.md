@@ -105,7 +105,7 @@ Then users can install package `mixgb` in R.
 devtools::install_github("agnesdeng/mixgb")
 library(mixgb)
 ```
-Users just need to add the argument ` tree_method='gpu_list'` in the Mixgb imputer. 
+Users just need to add the argument ` tree_method = "gpu_list"` in the Mixgb imputer. Other GPU-realted arguments include  `gpu_id`  and  `predictor`. By default, `gpu_id = 0` and `predictor = "auto"`.
 
 ``` r
 MIXGB<-Mixgb$new(withNA.df,tree_method='gpu_list')
