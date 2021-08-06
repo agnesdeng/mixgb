@@ -1,34 +1,14 @@
 #' Multiple imputation through xgboost R6 class imputer object
 #' @docType  class
-#' @format  An [R6Class] mixgb imputer object
+#' @description Set up an imputer object with specified hyperparameters and then obtain multiple imputed datasets
+#' @format  NULL
 #' @import xgboost
-#' @return An [Mixgb] imputer
 #' @export
 
 Mixgb <- R6Class("Mixgb",
                    cloneable = FALSE,
 
                     public = list(
-                      #'@field data A data frame with missing values
-                      #'@field nrounds max number of boosting iterations. Default: 50
-                      #'@field max_depth maximum depth of the tree. Default: 6
-                      #'@field gamma Default: 0.1
-                      #'@field eta Default: 0.3
-                      #'@field nthread Default: 4
-                      #'@field early_stopping_rounds Default: 10,
-                      #'@field colsample_bytree Default: 1
-                      #'@field min_child_weight Default: 1
-                      #'@field subsample Default: 1
-                      #'@field pmm.k Default: 5
-                      #'@field pmm.type Default: "auto" (used to be NULL). "auto": pmm.type2 for continuous, no pmm for categorical
-                      #'@field pmm.link match on predictive mean of "logit" or "prob".Default: "logit"
-                      #'@field scale_pos_weight Default: 1
-                      #'@field initial.imp Default: "random"
-                      #'@field print_every_n Default: 10L
-                      #'@field verbose Default: 1
-                      #'@field tree_method Default: "auto"
-                      #'@field gpu_id Default: 0
-                      #'@field predictor Default: "auto"
 
                       data=NULL,
                       nrounds=NULL,

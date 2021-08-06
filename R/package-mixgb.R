@@ -2,7 +2,6 @@
 #'
 #'
 #' @docType package
-#' @name mixgb
 #' @import xgboost
 #' @import Matrix
 #' @import R6

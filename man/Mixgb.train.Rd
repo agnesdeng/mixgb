@@ -4,16 +4,8 @@
 \name{Mixgb.train}
 \alias{Mixgb.train}
 \title{Multiple imputation through xgboost R6 class imputer object for training set}
-\format{
-An [R6Class] mixgb.train imputer object
-}
-\value{
-An [Mixgb.train] imputer
-}
 \description{
-Multiple imputation through xgboost R6 class imputer object for training set
-
-Multiple imputation through xgboost R6 class imputer object for training set
+Set up an imputer object with specified hyperparameters and then obtain an imputed object including multiple imputed datasets, saved models and parameters.
 }
 \examples{
 
@@ -30,51 +22,6 @@ MIXGB=Mixgb.train$new(withNA.df,nrounds=50,max_depth=6)
 
 MIXGB=Mixgb.train$new(withNA.df)
 mixgb.obj=MIXGB$impute(m = 5)
-}
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{data}}{A data frame with missing values}
-
-\item{\code{nrounds}}{max number of boosting iterations. Default: 50}
-
-\item{\code{max_depth}}{maximum depth of the tree. Default: 6}
-
-\item{\code{gamma}}{Default: 0.1}
-
-\item{\code{eta}}{Default: 0.3}
-
-\item{\code{nthread}}{Default: 4}
-
-\item{\code{early_stopping_rounds}}{Default: 10,}
-
-\item{\code{colsample_bytree}}{Default: 1}
-
-\item{\code{min_child_weight}}{Default: 1}
-
-\item{\code{subsample}}{Default: 1}
-
-\item{\code{pmm.k}}{Default: 5}
-
-\item{\code{pmm.type}}{Default: "auto" (used to be NULL). "auto": pmm.type2 for continuous, no pmm for categorical}
-
-\item{\code{pmm.link}}{match on predictive mean of "logit" or "prob".Default: "logit"}
-
-\item{\code{scale_pos_weight}}{Default: 1}
-
-\item{\code{initial.imp}}{Default: "random"}
-
-\item{\code{print_every_n}}{Default: 10L}
-
-\item{\code{verbose}}{Default: 1}
-
-\item{\code{tree_method}}{Default: "auto"}
-
-\item{\code{gpu_id}}{Default: 0}
-
-\item{\code{predictor}}{Default: "auto"}
-}
-\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
