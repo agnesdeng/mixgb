@@ -3,6 +3,18 @@
 #' @param p the proportion of missing values in the dataframe
 #' @param seed random seed, a singlue value
 #' @export
+#' @examples
+#' #create 30% MCAR data across all variables in a dataset
+#' withNA.df<-createNA(iris,p=0.3)
+#'
+#' #create 30% MCAR data in a specified variable in a dataset
+#' withNA.df=createNA(iris,names=c("Sepal.Length"),p=0.3)
+#'
+#' #create MCAR data in several specified variables in a dataset
+#' withNA.df=createNA(iris,names=c("Sepal.Length","Petal.Width","Species"),p=c(0.3,0.2,0.1))
+
+
+
 createNA <- function(data,names=NULL,p=0.3,seed=NULL){
   Nrow=nrow(data)
   Ncol=ncol(data)
