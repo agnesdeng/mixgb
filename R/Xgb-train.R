@@ -80,6 +80,8 @@ Mixgb.train <- R6Class("Mixgb.train",
                       self$initial.imp=initial.imp
                       self$scale_pos_weight=scale_pos_weight
                       self$tree_method=tree_method
+                      self$gpu_id=gpu_id
+                      self$predictor=predictor
 
                     },
 
