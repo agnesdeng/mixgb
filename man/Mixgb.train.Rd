@@ -5,7 +5,7 @@
 \alias{Mixgb.train}
 \title{Multiple imputation through xgboost R6 class imputer object for training set}
 \description{
-Set up an imputer object with specified hyperparameters and then obtain an imputed object including multiple imputed datasets, saved models and parameters.
+Set up an xgboost imputer object with specified hyperparameters and then obtain an imputed object including multiple imputed datasets, saved models and parameters.
 }
 \examples{
 

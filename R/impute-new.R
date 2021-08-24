@@ -266,7 +266,7 @@ impute.new<-function(object,newdata,pmm.new=FALSE,pmm.k=NULL,m=NULL){
 
           if(type[i]=="numeric"){
 
-            yhatobs=predict(xgb.fit[,1][[i]],obs.data)
+            yhatobs=predict(xgb.fit[,1][[1]][[i]],obs.data)
             #update dataset
             yhatobs.list[[i]]=yhatobs
 
@@ -275,10 +275,10 @@ impute.new<-function(object,newdata,pmm.new=FALSE,pmm.k=NULL,m=NULL){
             t=sort(table(obs.y))
             #t[1] minority class t[2]majority class
 
-            if(!is.na(t[2]) & length(xgb.fit[,1][[i]])!=1){
+            if(!is.na(t[2]) & length(xgb.fit[,1][[1]][[i]])!=1){
               #if both the training data and the new data have more than one class
 
-              xgb.pred = predict(xgb.fit[,1][[i]],obs.data)
+              xgb.pred = predict(xgb.fit[,1][[1]][[i]],obs.data)
               yhatobs.list[[i]]=xgb.pred
 
 
@@ -294,7 +294,7 @@ impute.new<-function(object,newdata,pmm.new=FALSE,pmm.k=NULL,m=NULL){
 
           }else{
 
-            xgb.pred = predict(xgb.fit[,1][[i]],obs.data,reshape = T)
+            xgb.pred = predict(xgb.fit[,1][[1]][[i]],obs.data,reshape = T)
 
             if(pmm.link=="logit"){
               xgb.pred<-log(xgb.pred/(1-xgb.pred))

@@ -1,6 +1,6 @@
 #' Multiple imputation through xgboost R6 class imputer object
 #' @docType  class
-#' @description Set up an imputer object with specified hyperparameters and then obtain multiple imputed datasets
+#' @description Set up an xgboost imputer object with specified hyperparameters and then obtain multiple imputed datasets
 #' @format  NULL
 #' @import xgboost
 #' @export
@@ -121,10 +121,33 @@ Mixgb <- R6Class("Mixgb",
                       type<-feature_type(sorted.df)
                       Names<-colnames(sorted.df)
 
+
+
+
                       #2)initial imputation
 
                       initial.df=sorted.df
                       num.na=colSums(is.na(sorted.df))
+
+
+                      if(all(num.na==0)){
+                        stop("No missing values in this data frame.")
+                      }
+
+                      if(any(num.na==Nrow)){
+                        stop("At least one variable in the data frame has 100% missing values.")
+
+                      }
+
+                      if(any(num.na==Nrow-1)){
+                        stop("At least one variable in the data frame only has one observed entry.")
+                      }
+
+                      if(any(num.na>=0.9*Nrow)){
+                        warning("Some variables have more than 90% miss entries.")
+                      }
+
+
                       Obs.index=list()
                       Na.index=list()
 
@@ -173,6 +196,7 @@ Mixgb <- R6Class("Mixgb",
                       if(m==1){
 
                         if(is.null(self$pmm.type)){
+                          message("Single imputation with PMM is not provided yet. This feature will be added in a later version of mixgb.")
                           #no pmm for single imputation
                           for(i in 1:p){
                             na.index=Na.index[[i]]
@@ -188,6 +212,11 @@ Mixgb <- R6Class("Mixgb",
                               }else{
                                 obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
                                 mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])[,-1]
+                              }
+
+
+                              if(length(na.index)==1){
+                                mis.data=t(mis.data)
                               }
 
                               if(type[i]=="numeric"){
@@ -248,6 +277,8 @@ Mixgb <- R6Class("Mixgb",
 
                         }else{
                               #single imputation with pmm (if pmm.type is not null)
+                          warning("Imputed results are shown without using PMM. Single imputation with PMM is not provided yet.This feature will be added in a later version of mixgb.")
+                          self$pmm.type=NULL
                           yhatobs.list<-list()
                           yobs.list<-list()
                           for(i in 1:p){
@@ -264,6 +295,11 @@ Mixgb <- R6Class("Mixgb",
                               }else{
                                 obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
                                 mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])[,-1]
+                              }
+
+
+                              if(length(na.index)==1){
+                                mis.data=t(mis.data)
                               }
 
                               if(type[i]=="numeric"){
@@ -351,21 +387,58 @@ Mixgb <- R6Class("Mixgb",
                              Bna.index=which(is.na(Boot.data[,i]))
                              na.index=Na.index[[i]]
 
-                             if(length(Bna.index)>0){
+                             if(length(na.index)>0){
 
-                               obs.y=Boot.data[,i][-Bna.index]
-
-                               if(type[i]!="numeric"){
-                                 obs.y=as.integer(obs.y)-1
+                               if(length(Bna.index)==Nrow | length(Bna.index)==Nrow-1){
+                                 stop("At least one variable in the boostrapped sample has 100% missing values or only one observed entry.\n This implies that there is at least one variable in the original dataset has too many missing entries.\n Imputation procedure aborts.\n Please consider removing variables with too many missing values before imputation.")
                                }
 
-                               if(p==2){
-                                 obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                 mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                               if(length(Bna.index)==0){
+
+                                 obs.y=Boot.data[,i]
+
+                                 if(type[i]!="numeric"){
+                                   obs.y=as.integer(obs.y)-1
+                                 }
+
+                                 if(p==2){
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                 }else{
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                 }
+
+
+
                                }else{
-                                 obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                 mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+
+                                 obs.y=Boot.data[,i][-Bna.index]
+
+                                 if(type[i]!="numeric"){
+                                   obs.y=as.integer(obs.y)-1
+                                 }
+
+                                 if(p==2){
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                 }else{
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                 }
+
+
                                }
+
+
+
+
+                               if(length(na.index)==1){
+                                 mis.data=t(mis.data)
+                               }
+
+
+
 
                                if(type[i]=="numeric"){
                                  obj.type<-"reg:squarederror"
@@ -453,6 +526,11 @@ Mixgb <- R6Class("Mixgb",
                                mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])[,-1]
                              }
 
+
+                             if(length(na.index)==1){
+                               mis.data=t(mis.data)
+                             }
+
                              if(type[i]=="numeric"){
                                obj.type<-"reg:squarederror"
                                xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
@@ -527,21 +605,59 @@ Mixgb <- R6Class("Mixgb",
                              Bna.index=which(is.na(Boot.data[,i]))
                              na.index=Na.index[[i]]
 
-                             if(length(Bna.index)>0){
+                             if(length(na.index)>0){
 
-                               obs.y=Boot.data[,i][-Bna.index]
-
-                               if(type[i]!="numeric"){
-                                 obs.y=as.integer(obs.y)-1
+                               if(length(Bna.index)==Nrow | length(Bna.index)==Nrow-1){
+                                 stop("At least one variable in the boostrapped sample has 100% missing values or only one observed entry.\n This implies that there is at least one variable in the original dataset has too many missing entries.\n Imputation procedure aborts.\n Please consider removing variables with too many missing values before imputation.")
                                }
 
-                               if(p==2){
-                                 obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                 mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])
+                               if(length(Bna.index)==0){
+
+                                 obs.y=Boot.data[,i]
+
+                                 if(type[i]!="numeric"){
+                                   obs.y=as.integer(obs.y)-1
+                                 }
+
+                                 if(p==2){
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                 }else{
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                 }
+
+
+
                                }else{
-                                 obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                 mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])[,-1]
+
+                                 obs.y=Boot.data[,i][-Bna.index]
+
+                                 if(type[i]!="numeric"){
+                                   obs.y=as.integer(obs.y)-1
+                                 }
+
+                                 if(p==2){
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                 }else{
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                 }
+
+
                                }
+
+
+
+
+
+                               if(length(na.index)==1){
+                                 mis.data=t(mis.data)
+                               }
+
+
+
 
                                if(type[i]=="numeric"){
                                  obj.type<-"reg:squarederror"
@@ -653,7 +769,32 @@ Mixgb <- R6Class("Mixgb",
                              Bna.index=which(is.na(Boot.data[,i]))
                              na.index=Na.index[[i]]
 
-                             if(length(Bna.index)>0){
+                             if(length(na.index)>0){
+
+                               if(length(Bna.index)==Nrow | length(Bna.index)==Nrow-1){
+                                 stop("At least one variable in the boostrapped sample has 100% missing values or only one observed entry.\n This implies that there is at least one variable in the original dataset has too many missing entries.\n Imputation procedure aborts.\n Please consider removing variables with too many missing values before imputation.")
+                               }
+
+                               if(length(Bna.index)==0){
+
+                                 obs.y=Boot.data[,i]
+
+                                 if(type[i]!="numeric"){
+                                   obs.y=as.integer(obs.y)-1
+                                 }
+
+                                 if(p==2){
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
+                                   Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                 }else{
+                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
+                                   Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
+                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                 }
+
+                               }else{
+
 
                                obs.y=Boot.data[,i][-Bna.index]
 
@@ -669,6 +810,12 @@ Mixgb <- R6Class("Mixgb",
                                  obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
                                  Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
                                  mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                               }
+
+                               }
+
+                               if(length(na.index)==1){
+                                 mis.data=t(mis.data)
                                }
 
                                if(type[i]=="numeric"){
@@ -788,9 +935,21 @@ Mixgb <- R6Class("Mixgb",
                              Bna.index=which(is.na(Boot.data[,i]))
                              na.index=Na.index[[i]]
 
-                             if(length(Bna.index)>0){
+                             if(length(na.index)>0){
 
-                               obs.y=Boot.data[,i][-Bna.index]
+                               if(length(Bna.index)==Nrow | length(Bna.index)==Nrow-1){
+                                 stop("At least one variable in the boostrapped sample has 100% missing values or only one observed entry.\n This implies that there is at least one variable in the original dataset has too many missing entries.\n Imputation procedure aborts.\n Please consider removing variables with too many missing values before imputation.")
+                               }
+
+
+
+                               if(length(Bna.index)==0){
+
+                                 obs.y=Boot.data[,i]
+                               }else{
+                                 obs.y=Boot.data[,i][-Bna.index]
+                               }
+
 
                                if(type[i]!="numeric"){
                                  obs.y=as.integer(obs.y)-1
@@ -800,14 +959,33 @@ Mixgb <- R6Class("Mixgb",
 
                                if(type[i]=="numeric"){
                                  #pmm type 2 for continuous variables
-                                 if(p==2){
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                   Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+
+                                 if(length(Bna.index)==0){
+                                   if(p==2){
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
+                                     Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                   }else{
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
+                                     Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   }
                                  }else{
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                   Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   if(p==2){
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
+                                     Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                   }else{
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
+                                     Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   }
+                                 }
+
+
+
+                                 if(length(na.index)==1){
+                                   mis.data=t(mis.data)
                                  }
 
                                  obj.type<-"reg:squarederror"
@@ -825,12 +1003,30 @@ Mixgb <- R6Class("Mixgb",
 
                                }else if(type[i]=="binary"){
 
-                                 if(p==2){
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                 if(length(Bna.index)==0){
+                                   if(p==2){
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                   }else{
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   }
+
+
                                  }else{
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   if(p==2){
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                   }else{
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   }
+
+                                 }
+
+
+                                 if(length(na.index)==1){
+                                   mis.data=t(mis.data)
                                  }
 
                                  t=sort(table(obs.y))
@@ -863,14 +1059,30 @@ Mixgb <- R6Class("Mixgb",
 
 
                                }else{
-                                 if(p==2){
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+
+                                 if(length(Bna.index)==0){
+                                   if(p==2){
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                   }else{
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   }
                                  }else{
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   if(p==2){
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
+                                   }else{
+                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
+                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
+                                   }
+
                                  }
 
+
+                                 if(length(na.index)==1){
+                                   mis.data=t(mis.data)
+                                 }
 
 
                                  obj.type= "multi:softmax"

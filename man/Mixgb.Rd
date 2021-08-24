@@ -5,7 +5,7 @@
 \alias{Mixgb}
 \title{Multiple imputation through xgboost R6 class imputer object}
 \description{
-Set up an imputer object with specified hyperparameters and then obtain multiple imputed datasets
+Set up an xgboost imputer object with specified hyperparameters and then obtain multiple imputed datasets
 }
 \examples{
 
