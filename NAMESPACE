@@ -3,6 +3,7 @@
 export(Mixgb)
 export(Mixgb.train)
 export(createNA)
+export(data_clean)
 export(feature_type)
 export(impute.new)
 export(sortNA)
