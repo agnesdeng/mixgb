@@ -101,7 +101,7 @@ Create a new \code{Mixgb} object. This is used to set up the multiple imputation
 
 \item{\code{print_every_n}}{Default: 10L}
 
-\item{\code{verbose}}{Default: 1}
+\item{\code{verbose}}{Default: 0}
 }
 \if{html}{\out{</div>}}
 }
