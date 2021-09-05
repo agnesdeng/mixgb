@@ -1,9 +1,11 @@
 #'This function is used to check some common errors of a raw dataset and return a suitable dataset for feeding in the imputer later on. Note that this would not guarantee the dataset is fully cleaned.
 #' @param  rawdata A data frame. (a raw dataset)
+#' @param  levels.tol Tolerant proportion of the number of levels to the number of observations in a dataset. Default: 0.2
 #' @export
 
 
-data_clean<-function(rawdata){
+
+data_clean<-function(rawdata,levels.tol=0.2){
 
   names<-colnames(rawdata)
 
@@ -17,7 +19,7 @@ data_clean<-function(rawdata){
   nan.loc<-do.call(cbind,lapply(rawdata,is.nan))
   if(any(nan.loc)){
     col.idx=which(nan.loc,arr.ind = T)[,2]
-    nan.col=names[col.idx]
+    nan.col=names[unique(col.idx)]
     msg1=paste("There exists at least one entry coded as NaN in the following numeric variable(s): ", paste(nan.col,collapse=";"),
                ".",sep="")
     msg2=paste("It is now coverted to NA instead.")
@@ -29,7 +31,7 @@ data_clean<-function(rawdata){
 
   if(any(rawdata=="NaN",na.rm=TRUE)){
     col.idx=which(rawdata=="NaN",arr.ind=T)[,2]
-    nan.col=names[col.idx]
+    nan.col=names[unique(col.idx)]
     msg1=paste("There exists at least one entry coded as NaN in the following factor or character variable(s): ", paste(nan.col,collapse=";"),
                ".",sep="")
     msg2=paste("It is now coverted to NA instead.")
@@ -44,7 +46,7 @@ data_clean<-function(rawdata){
   inf.loc<-do.call(cbind,lapply(rawdata,is.infinite))
   if(any(inf.loc)){
     col.idx=which(inf.loc,arr.ind = T)[,2]
-    inf.col=names[col.idx]
+    inf.col=names[unique(col.idx)]
     msg1=paste("There exists at least one entry coded as Inf or -Inf in the following variable(s): ", paste(inf.col,collapse=";"),
               ".",sep="")
     msg2=paste("It is now coverted to NA instead.")
@@ -56,7 +58,7 @@ data_clean<-function(rawdata){
 
   if(any(rawdata=="Inf",na.rm=TRUE) | any(rawdata=="-Inf",na.rm=TRUE)){
     col.idx=c(which(rawdata=="Inf",arr.ind=T)[,2],which(rawdata=="-Inf",arr.ind=T)[,2])
-    inf.col=names[col.idx]
+    inf.col=names[unique(col.idx)]
     msg1=paste("There exists at least one entry coded as Inf or -Inf in the following factor or character variable(s): ", paste(inf.col,collapse=";"),
                ".",sep="")
     msg2=paste("It is now coverted to NA instead.")
@@ -68,6 +70,19 @@ data_clean<-function(rawdata){
     rawdata=droplevels(rawdata)
   }
 
+  if(any(rawdata=="")){
+    col.idx=which(rawdata=="",arr.ind=T)[,2]
+    empty.col=names[unique(col.idx)]
+    msg1=paste("There exists at least one entry coded as empty cell \"\" in the following variable(s): ", paste(empty.col,collapse=";"),
+               ".",sep="")
+    msg2=paste("Empty cells are now coverted to NA instead.")
+    warning(paste(msg1,msg2,sep="\n"))
+    #replace NaN in charater/factor columns with NA
+    rawdata[rawdata==""]<-NA
+    #drop NaN level from factor variables
+    rawdata=droplevels(rawdata)
+
+  }
 
   var.type<-sapply(rawdata,class)
   if(any(var.type=="character")){
@@ -98,6 +113,22 @@ data_clean<-function(rawdata){
     warning(paste(msg1,msg2,sep="\n"))
     rawdata<-rawdata[, -idx]
   }
+
+  num.levels<-sapply(rawdata, nlevels)
+  num.row=nrow(rawdata)
+  num.tol=round(num.row*levels.tol)
+  idx<- which(num.levels>num.tol)
+  if(length(idx)>0){
+    toomany.col=names[idx]
+    msg1=paste("The number of observations in this dataset is ", paste(num.row,".",sep=""),sep="")
+    msg2=paste("However, some factor variables have more than ",paste(num.tol,"levels."),sep="")
+    msg3=paste("Please check the following variables and consider removing them from the dataset: ", paste(toomany.col,collapse=";"),
+               ".",sep="")
+    warning(paste(msg1,msg2,msg3,sep="\n"))
+  }
+
+
+
 
   rawdata
 

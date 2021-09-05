@@ -4,10 +4,12 @@
 \alias{data_clean}
 \title{This function is used to check some common errors of a raw dataset and return a suitable dataset for feeding in the imputer later on. Note that this would not guarantee the dataset is fully cleaned.}
 \usage{
-data_clean(rawdata)
+data_clean(rawdata, levels.tol = 0.2)
 }
 \arguments{
 \item{rawdata}{A data frame. (a raw dataset)}
+
+\item{levels.tol}{Tolerant proportion of the number of levels to the number of observations in a dataset. Default: 0.2}
 }
 \description{
 This function is used to check some common errors of a raw dataset and return a suitable dataset for feeding in the imputer later on. Note that this would not guarantee the dataset is fully cleaned.
