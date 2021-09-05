@@ -121,13 +121,15 @@ MIXGB=Mixgb.train$new(withNA.df,nrounds=50,max_depth=6)
 \subsection{Method \code{impute()}}{
 Use the imputer to impute missing values and obtain multiple imputed datasets, saved training models and some parameters needed for future use.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Mixgb.train$impute(m = 5)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Mixgb.train$impute(m = 5, save.vars = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{m}}{the number of imputed datasets. Default: 5}
+
+\item{\code{save.vars}}{the names or indices of variables that users want to save models for. Default: NULL. By default, save.vars=NULL, imputation models for all variables will be saved for imputing future data. However, if users know that future data will only have missing values in certain variables, they can choose to save models only for those variables.}
 }
 \if{html}{\out{</div>}}
 }

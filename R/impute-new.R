@@ -11,6 +11,9 @@
 impute.new<-function(object,newdata,pmm.new=FALSE,pmm.k=NULL,m=NULL){
 
 
+  save.vars=object$params$save.vars
+
+
   #extract imputer models from the training object
   xgb.fit=object$saved.models
 
@@ -58,6 +61,18 @@ impute.new<-function(object,newdata,pmm.new=FALSE,pmm.k=NULL,m=NULL){
   #check new data and give some warning messages (unfinished)
   if(all(num.na==0)){
     stop("No missing values in new data.")
+  }
+
+  if(!is.null(save.vars)){
+    nacol.new=Names[which(num.na!=0)]
+    if(!all(nacol.new %in% save.vars)){
+      unsaved=nacol.new[which(!nacol.new %in% save.vars)]
+      msg1=paste("There exists at least one missing value in the following variable(s): ",paste(unsaved,collapse=";"),
+                 ".",sep="")
+      msg2=paste("However, your hadn't specified to save imputation models for these variables.")
+      msg3=paste("Please either add these variables in the argument save.vars or set save.vars=NULL and re-train the imputer.")
+      stop(paste(msg1,msg2,msg3,sep="\n"))
+    }
   }
 
 
@@ -214,7 +229,8 @@ impute.new<-function(object,newdata,pmm.new=FALSE,pmm.k=NULL,m=NULL){
 
   #### m multiple imputation
   if(is.null(pmm.type)){
-    ###no pmm
+
+     ###no pmm
     imputed.data<-list()
 
 
@@ -229,9 +245,6 @@ impute.new<-function(object,newdata,pmm.new=FALSE,pmm.k=NULL,m=NULL){
 
         if(length(na.index)>0){
           #only impute columns with missing values
-
-
-
 
           if(p==2){
 
@@ -261,7 +274,7 @@ impute.new<-function(object,newdata,pmm.new=FALSE,pmm.k=NULL,m=NULL){
 
             if(length(xgb.fit[[k]][[i]])!=1){
 
-              xgb.pred = predict(xgb.fit,mis.data)
+              xgb.pred = predict(xgb.fit[[k]][[i]],mis.data)
               pred.y=ifelse(xgb.pred>=0.5,1,0)
               pred.y=levels(train.df[Names][,i])[pred.y+1]
 

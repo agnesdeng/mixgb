@@ -90,26 +90,10 @@ Mixgb <- R6Class("Mixgb",
 
                     impute = function(m=5){
                       data=self$data
-                      #pmm function match the imputed value wit model observed values, then extra the original value yobs
-                      pmm<- function(yhatobs, yhatmis, yobs,k=self$pmm.k){
-                        #idx=.Call('_mice_matcher', PACKAGE = 'mice', yhatobs, yhatmis, k)
 
-                        idx=mice::matchindex(d=yhatobs,t=yhatmis,k=k)
-                        yobs[idx]
-                      }
-
-                      pmm.multiclass<-function(donor.pred,target.pred,donor.obs,k=self$pmm.k){
-                        #shuffle donors to break ties
-                        donor.size=length(donor.obs)
-                        idx=sample(donor.size,replace=F)
-                        donor.randompred=donor.pred[idx,]
-                        donor.randomobs=donor.obs[idx]
-                        #matching
-                        match.class=Rfast::knn(xnew=target.pred,y=donor.randomobs,x=donor.randompred,k=k)
-                        as.vector(match.class)
-                      }
 
                       #data=withNA.df
+
                       p=ncol(data)
                       Nrow=nrow(data)
 
@@ -139,40 +123,49 @@ Mixgb <- R6Class("Mixgb",
 
                       }
 
-                      #if pmm.type=1  or pmm.type=2
-                      if(any(Nrow-num.na < self$pmm.k) & !is.null(self$pmm.type) & self$pmm.type!="auto"){
-                        maxNA=max(num.na)
-                        minObs=Nrow-maxNA
-                        s1=paste("In this dataset, the minimum number of observed values in a variable is ", minObs, ".",sep="")
-                        s2=paste("However, pmm.k=",self$pmm.k,".",sep="")
-                        if(minObs == 1){
-                          s3=paste("Please set pmm.k = 1 .")
-                        }else{
-                          s3=paste("Please either set pmm.new = FALSE or set the value of pmm.k less than or equal to ",minObs,".",sep="")
+                      if(!is.null(self$pmm.type)){
+                        if(!self$pmm.type %in% c(1,2,"auto")){
+                          stop("The specified pmm.type is incorrect. It must be one of the following types: NULL,1,2,\"auto\".")
                         }
-
-                        stop(paste(s1,s2,s3,sep="\n"))
 
                       }
 
-                      #if pmm.type="auto", only numeric variables need to perform PMM
-                      if(self$pmm.type=="auto"){
-
-                        idx=which(Nrow-num.na < self$pmm.k & type == "numeric")
-                        if(length(idx)>0){
-                          maxNA=max(num.na[idx])
+                      #if pmm.type=1  or pmm.type=2
+                      if(!is.null(self$pmm.type)){
+                        if(any(Nrow-num.na < self$pmm.k) & self$pmm.type!="auto"){
+                          maxNA=max(num.na)
                           minObs=Nrow-maxNA
-                          s1=paste("In this dataset, the minimum number of observed values in a numeric variable is ", minObs, ".",sep="")
-                          s2=paste("When pmm.type = \"auto\", type 2 PMM would apply to numeric variables. However, pmm.k=",self$pmm.k,".",sep="")
+                          s1=paste("In this dataset, the minimum number of observed values in a variable is ", minObs, ".",sep="")
+                          s2=paste("However, pmm.k=",self$pmm.k,".",sep="")
                           if(minObs == 1){
                             s3=paste("Please set pmm.k = 1 .")
                           }else{
-                            s3=paste("Please either set pmm.new = FALSE or set the value of pmm.k less than or equal to ",minObs,".",sep="")
+                            s3=paste("Please set the value of pmm.k less than or equal to ",minObs,".",sep="")
                           }
-
                           stop(paste(s1,s2,s3,sep="\n"))
                         }
 
+
+                      }
+
+
+                      #if pmm.type="auto", only numeric variables need to perform PMM
+                      if(!is.null(self$pmm.type)){
+                        if(self$pmm.type=="auto"){
+                          idx=which(Nrow-num.na < self$pmm.k & type == "numeric")
+                          if(length(idx)>0){
+                            maxNA=max(num.na[idx])
+                            minObs=Nrow-maxNA
+                            s1=paste("In this dataset, the minimum number of observed values in a numeric variable is ", minObs, ".",sep="")
+                            s2=paste("When pmm.type = \"auto\", type 2 PMM would apply to numeric variables. However, pmm.k=",self$pmm.k,".",sep="")
+                            if(minObs == 1){
+                              s3=paste("Please set pmm.k = 1 .")
+                            }else{
+                              s3=paste("Please set the value of pmm.k less than or equal to ",minObs,".",sep="")
+                            }
+                            stop(paste(s1,s2,s3,sep="\n"))
+                          }
+                        }
                       }
 
 
@@ -297,7 +290,7 @@ Mixgb <- R6Class("Mixgb",
                                     sorted.df[,i][na.index]<-pred.y
                                   }else{
                                     #skip xgboost training, just impute majority class
-                                    sorted.df[,i][na.index]<-names(t[1])
+                                    sorted.df[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
                                   }
 
 
@@ -383,7 +376,7 @@ Mixgb <- R6Class("Mixgb",
 
                                 }else{
                                   #skip xgboost training, just impute majority class
-                                  sorted.df[,i][na.index]<-names(t[1])
+                                  sorted.df[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
                                 }
 
 
@@ -519,7 +512,7 @@ Mixgb <- R6Class("Mixgb",
 
                                  }else{
                                    #skip xgboost training, just impute majority class
-                                   copy[,i][na.index]<-names(t[1])
+                                   copy[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
                                  }
 
 
@@ -612,7 +605,7 @@ Mixgb <- R6Class("Mixgb",
 
                                }else{
                                  #skip xgboost training, just impute majority class
-                                 yhatobs.list[[i]]<-rep(names(t[1]),length(obs.y))
+                                 yhatobs.list[[i]]<-rep(levels(sorted.df[,i])[as.integer(names(t[1]))+1],length(obs.y))
                                }
 
 
@@ -748,7 +741,7 @@ Mixgb <- R6Class("Mixgb",
 
                                  }else{
                                    #skip xgboost training, just impute majority class
-                                   copy[,i][na.index]<-names(t[1])
+                                   copy[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
                                  }
 
 
@@ -908,7 +901,7 @@ Mixgb <- R6Class("Mixgb",
 
                                  }else{
                                    #skip xgboost training, just impute majority class
-                                   copy[,i][na.index]<-names(t[1])
+                                   copy[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
                                  }
 
 
@@ -1098,7 +1091,7 @@ Mixgb <- R6Class("Mixgb",
 
                                  }else{
                                    #skip xgboost training, just impute majority class
-                                   copy[,i][na.index]<-names(t[1])
+                                   copy[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
                                  }
 
 
