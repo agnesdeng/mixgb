@@ -14,11 +14,14 @@ Imports:
     dplyr,
     R6,
     Matrix,
-    xgboost
+    xgboost,
+    data.table,
+    Rfast,
+    mice
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 2.1.0)
 Depends: R (>= 3.4.0)
 VignetteBuilder: knitr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2

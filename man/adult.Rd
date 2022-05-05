@@ -25,7 +25,7 @@ A data frame of 48842 rows and 15 columns
 }
 }
 \source{
-... data
+\url{https://archive.ics.uci.edu/ml/datasets/adult}
 }
 \usage{
 adult

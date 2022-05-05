@@ -2,1166 +2,337 @@
 #' @docType  class
 #' @description Set up an xgboost imputer object with specified hyperparameters and then obtain multiple imputed datasets
 #' @format  NULL
-#' @import xgboost
+#' @import xgboost data.table
 #' @export
 
 Mixgb <- R6Class("Mixgb",
-                   cloneable = FALSE,
-
-                    public = list(
-
-                      data=NULL,
-                      nrounds=NULL,
-                      max_depth=NULL,
-                      gamma=NULL,
-                      eta=NULL,
-                      colsample_bytree=NULL,
-                      min_child_weight=NULL,
-                      subsample=NULL,
-                      print_every_n=NULL,
-                      verbose=NULL,
-                      nthread=NULL,
-                      early_stopping_rounds=NULL,
-                      pmm.k=NULL,
-                      pmm.type=NULL,
-                      pmm.link=NULL,
-                      initial.imp=NULL,
-                      scale_pos_weight=NULL,
-                      tree_method=NULL,
-                      gpu_id=NULL,
-                      predictor=NULL,
-
-                    #'@description Create a new \code{Mixgb} object. This is used to set up the multiple imputation imputer using xgboost.
-                    #'@examples
-                    #'MIXGB=Mixgb$new(withNA.df)
-                    #'MIXGB=Mixgb$new(withNA.df,nrounds=50,max_depth=6)
-                    #'@param data A data frame with missing values
-                    #'@param nrounds Max number of boosting iterations. Default: 50
-                    #'@param max_depth Maximum depth of the tree. Default: 6
-                    #'@param gamma Default: 0.1
-                    #'@param eta Default: 0.3
-                    #'@param nthread Default: 4
-                    #'@param early_stopping_rounds Default: 10,
-                    #'@param colsample_bytree Default: 1
-                    #'@param min_child_weight Default: 1
-                    #'@param subsample Default: 1
-                    #'@param pmm.k Default: 5
-                    #'@param pmm.type Default: "auto" (used to be NULL)
-                    #'@param pmm.link Default: "logit"
-                    #'@param initial.imp Default: "random"
-                    #'@param print_every_n Default: 10L
-                    #'@param verbose Default: 0
-                    #'@param scale_pos_weight Default:1
-                    #'@param tree_method Default: "auto" (can set to "gpu_hist" for machine with NVIDIA GPUs)
-                    #'@param gpu_id Device ordinal. Default: 0
-                    #'@param predictor The type of predictor algorithm to use. Default: "auto" (other options: "cpu_predictor","gpu_predictor")
-
-
-
-                    initialize = function(data,nrounds=50,max_depth=6,gamma=0.1,eta=0.3,nthread=4,early_stopping_rounds=10,colsample_bytree=1,min_child_weight=1,subsample=1,pmm.k=5,pmm.type="auto",pmm.link="logit",scale_pos_weight=1,initial.imp="random",tree_method="auto",gpu_id=0,predictor="auto",print_every_n = 10L,verbose=0) {
-                      self$data<-data
-                      self$nrounds=nrounds
-                      self$max_depth=max_depth
-                      self$gamma=gamma
-                      self$eta=eta
-                      self$colsample_bytree=colsample_bytree
-                      self$min_child_weight=min_child_weight
-                      self$subsample=subsample
-                      self$print_every_n=print_every_n
-                      self$verbose=verbose
-                      self$nthread=nthread
-                      self$early_stopping_rounds=early_stopping_rounds
-                      self$pmm.k=pmm.k
-                      self$pmm.type=pmm.type
-                      self$pmm.link=pmm.link
-                      self$initial.imp=initial.imp
-                      self$scale_pos_weight=scale_pos_weight
-                      self$tree_method=tree_method
-                      self$gpu_id=gpu_id
-                      self$predictor=predictor
-
-                    },
-
-                    #'@description Use the imputer to impute missing values and obtain multiple datasets
-                    #'@examples
-                    #'MIXGB=Mixgb$new(withNA.df)
-                    #'imputation.list=MIXGB$impute(m = 5)
-                    #'@param m the number of imputed datasets. Default: 5
-
-                    impute = function(m=5){
-                      data=self$data
-
-
-                      #data=withNA.df
-
-                      p=ncol(data)
-                      Nrow=nrow(data)
-
-
-                      ###data preprocessing
-                      #1) sort the dataset with increasing NAs
-                      sorted.df<-sortNA(data)$sorted.df
-                      sorted.idx<-sortNA(data)$sorted.idx
-                      type<-feature_type(sorted.df)
-                      Names<-colnames(sorted.df)
-
-
-
-
-                      #2)initial imputation
-
-                      initial.df=sorted.df
-                      num.na=colSums(is.na(sorted.df))
-
-
-                      if(all(num.na==0)){
-                        stop("No missing values in this data frame.")
-                      }
-
-                      if(any(num.na==Nrow)){
-                        stop("At least one variable in the data frame has 100% missing values.")
-
-                      }
-
-                      if(!is.null(self$pmm.type)){
-                        if(!self$pmm.type %in% c(1,2,"auto")){
-                          stop("The specified pmm.type is incorrect. It must be one of the following types: NULL,1,2,\"auto\".")
-                        }
-
-                      }
-
-                      #if pmm.type=1  or pmm.type=2
-                      if(!is.null(self$pmm.type)){
-                        if(any(Nrow-num.na < self$pmm.k) & self$pmm.type!="auto"){
-                          maxNA=max(num.na)
-                          minObs=Nrow-maxNA
-                          s1=paste("In this dataset, the minimum number of observed values in a variable is ", minObs, ".",sep="")
-                          s2=paste("However, pmm.k=",self$pmm.k,".",sep="")
-                          if(minObs == 1){
-                            s3=paste("Please set pmm.k = 1 .")
-                          }else{
-                            s3=paste("Please set the value of pmm.k less than or equal to ",minObs,".",sep="")
-                          }
-                          stop(paste(s1,s2,s3,sep="\n"))
-                        }
-
-
-                      }
-
-
-                      #if pmm.type="auto", only numeric variables need to perform PMM
-                      if(!is.null(self$pmm.type)){
-                        if(self$pmm.type=="auto"){
-                          idx=which(Nrow-num.na < self$pmm.k & type == "numeric")
-                          if(length(idx)>0){
-                            maxNA=max(num.na[idx])
-                            minObs=Nrow-maxNA
-                            s1=paste("In this dataset, the minimum number of observed values in a numeric variable is ", minObs, ".",sep="")
-                            s2=paste("When pmm.type = \"auto\", type 2 PMM would apply to numeric variables. However, pmm.k=",self$pmm.k,".",sep="")
-                            if(minObs == 1){
-                              s3=paste("Please set pmm.k = 1 .")
-                            }else{
-                              s3=paste("Please set the value of pmm.k less than or equal to ",minObs,".",sep="")
-                            }
-                            stop(paste(s1,s2,s3,sep="\n"))
-                          }
-                        }
-                      }
-
-
-                      if(any(num.na>=0.9*Nrow)){
-                        warning("Some variables have more than 90% miss entries.")
-                      }
-
-
-                      Obs.index=list()
-                      Na.index=list()
-
-                      for(i in 1:p){
-                        obs.index=which(!is.na(sorted.df[,i]))
-                        na.index=which(is.na(sorted.df[,i]))
-                        Obs.index[[i]]=obs.index
-                        Na.index[[i]]=na.index
-
-                        if(self$initial.imp=="random"){
-
-                          if(length(obs.index)==1){
-                            initial.df[na.index,i]<-rep(sorted.df[,i][obs.index],num.na[i])
-                          }else{
-                            initial.df[na.index,i]<-sample(sorted.df[,i][obs.index],num.na[i],replace=TRUE)
-                          }
-
-
-
-
-                        }else if(self$initial.imp=="rnorm"){
-
-                          if(type[i]=="numeric"){
-
-                            var.mean=mean(sorted.df[,i],na.rm = T)
-                            if(length(obs.index)==1){
-                              var.sd=0
-                            }else{
-                              var.sd=sd(sorted.df[,i],na.rm = T)
-                            }
-                            initial.df[na.index,i]<-rnorm(num.na[i],var.mean,var.sd)
-
-                          }else{
-                            #factor variables
-                            if(length(obs.index)==1){
-                              initial.df[na.index,i]<-rep(sorted.df[,i][obs.index],num.na[i])
-                            }else{
-                              initial.df[na.index,i]<-sample(sorted.df[,i][obs.index],num.na[i],replace=TRUE)
-                            }
-
-                          }
-
-
-
-                          }else{
-
-
-                          #numeric: initial impute median
-                          if(type[i]=="numeric"){
-                            initial.df[na.index,i]<-median(sorted.df[,i],na.rm = T)
-                          }else{
-                            #factor:  initial impute major class
-                            initial.df[na.index,i]<-names(which.max(table(sorted.df[,i])))
-                          }
-                        }
-
-
-                      }
-
-                      #3) imputation  i=2
-
-                      if(m==1){
-
-                        if(is.null(self$pmm.type)){
-                          message("Single imputation with PMM is not provided yet. This feature will be added in a later version of mixgb.")
-                          #no pmm for single imputation
-                          for(i in 1:p){
-                            na.index=Na.index[[i]]
-                            if(length(na.index)>0){
-                              obs.y=sorted.df[,i][-na.index]
-
-                              if(type[i]!="numeric"){
-                                obs.y=as.integer(obs.y)-1
-                              }
-                              if(p==2){
-                                obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
-                                mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])
-                              }else{
-                                obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
-                                mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])[,-1]
-                              }
-
-
-                              if(length(na.index)==1){
-                                mis.data=t(mis.data)
-                              }
-
-                              if(type[i]=="numeric"){
-                                obj.type<-"reg:squarederror"
-                                xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                pred.y=predict(xgb.fit,mis.data)
-                                #update dataset
-                                sorted.df[,i][na.index]<-pred.y
-
-                              }else if(type[i]=="binary"){
-
-                                 t=sort(table(obs.y))
-                                 #t[1] minority class t[2]majority class
-
-
-
-                                  if(!is.na(t[2])){
-                                    obj.type<-"binary:logistic"
-                                    xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                    eval_metric ="logloss",nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                    min_child_weight=self$min_child_weight,subsample=self$subsample,scale_pos_weight=self$scale_pos_weight,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-
-                                    xgb.pred = predict(xgb.fit,mis.data)
-                                    pred.y=ifelse(xgb.pred>=0.5,1,0)
-                                    pred.y=levels(sorted.df[,i])[pred.y+1]
-                                    #update dataset
-                                    sorted.df[,i][na.index]<-pred.y
-                                  }else{
-                                    #skip xgboost training, just impute majority class
-                                    sorted.df[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
-                                  }
-
-
-
-
-
-
-
-                              }else{
-                                obj.type= "multi:softmax"
-                                N.class=length(levels(sorted.df[,i]))
-                                xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, num_class=N.class,missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                xgb.pred = predict(xgb.fit,mis.data)
-                                pred.y=levels(sorted.df[,i])[xgb.pred+1]
-                                #update dataset
-                                sorted.df[,i][na.index]<-pred.y
-                              }
-                            }
-
-                          }
-                          return(sorted.df[order(sorted.idx)])
-
-
-
-                        }else{
-                              #single imputation with pmm (if pmm.type is not null)
-                          warning("Imputed results are shown without using PMM. Single imputation with PMM is not provided yet.This feature will be added in a later version of mixgb.")
-                          self$pmm.type=NULL
-                          yhatobs.list<-list()
-                          yobs.list<-list()
-                          for(i in 1:p){
-                            na.index=Na.index[[i]]
-                            if(length(na.index)>0){
-                              obs.y=sorted.df[,i][-na.index]
-
-                              if(type[i]!="numeric"){
-                                obs.y=as.integer(obs.y)-1
-                              }
-                              if(p==2){
-                                obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
-                                mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])
-                              }else{
-                                obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
-                                mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])[,-1]
-                              }
-
-
-                              if(length(na.index)==1){
-                                mis.data=t(mis.data)
-                              }
-
-                              if(type[i]=="numeric"){
-                                obj.type<-"reg:squarederror"
-                                xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                pred.y=predict(xgb.fit,mis.data)
-                                yhatobs=predict(xgb.fit,obs.data)
-                                #update dataset
-                                sorted.df[,i][na.index]<- pmm(yhatobs = yhatobs,yhatmis = pred.y,yobs=obs.y,k=self$pmm.k)
-
-                              }else if(type[i]=="binary"){
-
-
-
-
-                                t=sort(table(obs.y))
-                                #t[1] minority class t[2]majority class
-
-                                if(!is.na(t[2])){
-                                  obj.type<-"binary:logistic"
-                                  xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                  eval_metric ="logloss",nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                  min_child_weight=self$min_child_weight,subsample=self$subsample,scale_pos_weight=self$scale_pos_weight,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-
-                                  xgb.pred = predict(xgb.fit,mis.data)
-                                  yhatobs=predict(xgb.fit,obs.data)
-                                  #update dataset
-                                  num.result<- pmm(yhatobs = yhatobs,yhatmis = xgb.pred,yobs=obs.y,k=self$pmm.k)
-                                  sorted.df[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-
-                                }else{
-                                  #skip xgboost training, just impute majority class
-                                  sorted.df[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
-                                }
-
-
-
-
-                              }else{
-                                obj.type= "multi:softmax"
-                                N.class=length(levels(sorted.df[,i]))
-                                xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, num_class=N.class,missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                xgb.pred = predict(xgb.fit,mis.data)
-                                pred.y=levels(sorted.df[,i])[xgb.pred+1]
-                                #update dataset
-                                sorted.df[,i][na.index]<-pred.y
-                              }
-                            }
-
-                          }
-                          return(sorted.df[order(sorted.idx)])
-
-
-                        }
-
-
-                      }else{
-
-                        #### m multiple imputation
-                       if(is.null(self$pmm.type)){
-                       ###no pmm
-                         imputed.data<-list()
-
-
-                         for(k in 1:m){
-                          #sorted.df :  sorted dataset with increasing %NA , containing NA
-                          #initial.df:  sorted.df with initial NA imputed
-                          #Boot.data:  bootstrap sample of sorted.df,  containing NAs
-                           #Boot.initial: bootstrap sample of initial.df,  with NA being imputed with Mean/Median etc
-                           index=sample(Nrow,Nrow,replace=TRUE)
-                           Boot.data=sorted.df[index,]
-                           #Boot.initial
-                           copy=initial.df
-
-
-
-
-                           for(i in 1:p){
-                             Boot.initial=copy[index,]
-                             #####
-                             Bna.index=which(is.na(Boot.data[,i]))
-                             na.index=Na.index[[i]]
-
-                             if(length(na.index)>0){
-
-                               if(length(Bna.index)==Nrow | length(Bna.index)==Nrow-1){
-                                 stop("At least one variable in the boostrapped sample has 100% missing values or only one observed entry.\n This implies that there is at least one variable in the original dataset has too many missing entries.\n Imputation procedure aborts.\n Please consider removing variables with too many missing values before imputation.")
-                               }
-
-                               if(length(Bna.index)==0){
-
-                                 obs.y=Boot.data[,i]
-
-                                 if(type[i]!="numeric"){
-                                   obs.y=as.integer(obs.y)-1
-                                 }
-
-                                 if(p==2){
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                 }else{
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                 }
-
-
-
-                               }else{
-
-                                 obs.y=Boot.data[,i][-Bna.index]
-
-                                 if(type[i]!="numeric"){
-                                   obs.y=as.integer(obs.y)-1
-                                 }
-
-                                 if(p==2){
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                 }else{
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                 }
-
-
-                               }
-
-
-
-
-                               if(length(na.index)==1){
-                                 mis.data=t(mis.data)
-                               }
-
-
-
-
-                               if(type[i]=="numeric"){
-                                 obj.type<-"reg:squarederror"
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 pred.y=predict(xgb.fit,mis.data)
-                                 #update dataset
-                                 copy[,i][na.index]<-pred.y
-
-
-                               }else if(type[i]=="binary"){
-
-                                 t=sort(table(obs.y))
-                                 #t[1] minority class t[2]majority class
-
-                                 if(!is.na(t[2])){
-                                   obj.type<-"binary:logistic"
-                                   xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                   eval_metric ="logloss",nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                   min_child_weight=self$min_child_weight,subsample=self$subsample,scale_pos_weight=self$scale_pos_weight,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-
-                                   xgb.pred = predict(xgb.fit,mis.data)
-                                   pred.y=ifelse(xgb.pred>=0.5,1,0)
-                                   pred.y=levels(sorted.df[,i])[pred.y+1]
-
-                                   #update dataset
-                                   copy[,i][na.index]<-pred.y
-
-                                 }else{
-                                   #skip xgboost training, just impute majority class
-                                   copy[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
-                                 }
-
-
-
-
-
-                               }else{
-                                 obj.type= "multi:softmax"
-                                 N.class=length(levels(sorted.df[,i]))
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, num_class=N.class,missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 xgb.pred = predict(xgb.fit,mis.data)
-                                 pred.y=levels(sorted.df[,i])[xgb.pred+1]
-                                 #update dataset
-                                 copy[,i][na.index]<-pred.y
-                               }
-
-                             }
-
-                           }
-                           imputed.data[[k]]<-copy[order(sorted.idx)]
-
-
-
-                         }
-
-                         return(imputed.data)
-
-
-                       }else if(self$pmm.type==1){
-                         ####
-                         #multiple imputation m=5
-                         imputed.data<-list()
-                         yhatobs.list<-list()
-                         yobs.list<-list()
-
-                         for(i in 1:p){
-                           na.index=Na.index[[i]]
-                           if(length(na.index)>0){
-                             obs.y=sorted.df[,i][-na.index]
-
-                             if(type[i]!="numeric"){
-                               obs.y=as.integer(obs.y)-1
-                             }
-                             yobs.list[[i]]=obs.y
-
-                             if(p==2){
-                               obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
-                               mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])
-                             }else{
-                               obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
-                               mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[na.index,])[,-1]
-                             }
-
-
-                             if(length(na.index)==1){
-                               mis.data=t(mis.data)
-                             }
-
-                             if(type[i]=="numeric"){
-                               obj.type<-"reg:squarederror"
-                               xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                               nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                               min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-
-                               yhatobs=predict(xgb.fit,obs.data)
-                               #update dataset
-                               yhatobs.list[[i]]=yhatobs
-
-                             }else if(type[i]=="binary"){
-
-                               t=sort(table(obs.y))
-                               #t[1] minority class t[2]majority class
-
-                               if(!is.na(t[2])){
-                                 if(self$pmm.link=="logit"){
-                                   obj.type<-"binary:logitraw"
-                                 }else{
-                                   #pmm by "prob"
-                                   obj.type<-"binary:logistic"
-                                 }
-
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 eval_metric ="logloss",nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,scale_pos_weight=self$scale_pos_weight,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 xgb.pred = predict(xgb.fit,obs.data)
-                                 yhatobs.list[[i]]=xgb.pred
-
-
-                               }else{
-                                 #skip xgboost training, just impute majority class
-                                 yhatobs.list[[i]]<-rep(levels(sorted.df[,i])[as.integer(names(t[1]))+1],length(obs.y))
-                               }
-
-
-
-                             }else{
-                               obj.type= "multi:softprob"
-                               N.class=length(levels(sorted.df[,i]))
-                               xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, num_class=N.class,missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                               nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                               min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                               xgb.pred = predict(xgb.fit,obs.data,reshape = T)
-
-                               if(self$pmm.link=="logit"){
-                                 xgb.pred<-log(xgb.pred/(1-xgb.pred))
-                               }
-
-                               yhatobs.list[[i]]=xgb.pred
-
-                             }
-                           }
-
-                         }
-
-
-
-
-                         for(k in 1:m){
-
-                           index=sample(Nrow,Nrow,replace=TRUE)
-                           Boot.data=sorted.df[index,]
-                           Boot.initial=initial.df[index,]
-                           copy=initial.df
-
-                           for(i in 1:p){
-                             ########
-
-
-                             ###########
-                             Bna.index=which(is.na(Boot.data[,i]))
-                             na.index=Na.index[[i]]
-
-                             if(length(na.index)>0){
-
-                               if(length(Bna.index)==Nrow | length(Bna.index)==Nrow-1){
-                                 stop("At least one variable in the boostrapped sample has 100% missing values or only one observed entry.\n This implies that there is at least one variable in the original dataset has too many missing entries.\n Imputation procedure aborts.\n Please consider removing variables with too many missing values before imputation.")
-                               }
-
-                               if(length(Bna.index)==0){
-
-                                 obs.y=Boot.data[,i]
-
-                                 if(type[i]!="numeric"){
-                                   obs.y=as.integer(obs.y)-1
-                                 }
-
-                                 if(p==2){
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                 }else{
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                 }
-
-
-
-                               }else{
-
-                                 obs.y=Boot.data[,i][-Bna.index]
-
-                                 if(type[i]!="numeric"){
-                                   obs.y=as.integer(obs.y)-1
-                                 }
-
-                                 if(p==2){
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                 }else{
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                 }
-
-
-                               }
-
-
-
-
-
-                               if(length(na.index)==1){
-                                 mis.data=t(mis.data)
-                               }
-
-
-
-
-                               if(type[i]=="numeric"){
-                                 obj.type<-"reg:squarederror"
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 pred.y=predict(xgb.fit,mis.data)
-                                 #update dataset
-                                 #copy[,i][na.index]<-pred.y
-                                 #pred.y=predict(xgb.fit,mis.data)
-
-                                 #update dataset
-                                 copy[,i][na.index]<- pmm(yhatobs = yhatobs.list[[i]],yhatmis = pred.y,yobs=yobs.list[[i]],k=self$pmm.k)
-
-
-                               }else if(type[i]=="binary"){
-
-                                 t=sort(table(obs.y))
-                                 #t[1] minority class t[2]majority class
-
-                                 if(!is.na(t[2])){
-                                   if(self$pmm.link=="logit"){
-                                     obj.type<-"binary:logitraw"
-                                   }else{
-                                     #pmm by "prob"
-                                     obj.type<-"binary:logistic"
-                                   }
-
-                                   xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                   eval_metric ="logloss",nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                   min_child_weight=self$min_child_weight,subsample=self$subsample,scale_pos_weight=self$scale_pos_weight,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-
-                                   xgb.pred = predict(xgb.fit,mis.data)
-
-                                   num.result=pmm(yhatobs = yhatobs.list[[i]],yhatmis = xgb.pred,yobs=yobs.list[[i]],k=self$pmm.k)
-                                   #change to factor
-                                   copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-
-
-                                 }else{
-                                   #skip xgboost training, just impute majority class
-                                   copy[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
-                                 }
-
-
-
-
-
-                               }else{
-                                 obj.type= "multi:softprob"
-                                 N.class=length(levels(sorted.df[,i]))
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, num_class=N.class,missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 xgb.pred= predict(xgb.fit,mis.data,reshape = T)
-
-                                 if(self$pmm.link=="logit"){
-                                   xgb.pred=log(xgb.pred/(1-xgb.pred))
-                                 }
-
-                                 num.result=pmm.multiclass(donor.pred = yhatobs.list[[i]],target.pred = xgb.pred,donor.obs = yobs.list[[i]],k=self$pmm.k)
-                                 #change to factor
-                                 copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-
-
-                               }
-
-                             }
-
-                           }
-                           imputed.data[[k]]<-copy[order(sorted.idx)]
-
-
-
-                         }#end m multiple imputation
-
-                         return(imputed.data)
-
-                       }else if(self$pmm.type==2){
-                         ###########
-                         imputed.data<-list()
-                          yobs.list<-list()
-
-                         for(i in 1:p){
-                           na.index=Na.index[[i]]
-
-                            if(length(na.index)>0){
-                             obs.y=sorted.df[,i][-na.index]
-
-                             if(type[i]!="numeric"){
-                               obs.y=as.integer(obs.y)-1
-                             }
-                             yobs.list[[i]]=obs.y
-                           }
-                         }
-
-
-                         for(k in 1:m){
-
-
-                           index=sample(Nrow,Nrow,replace=TRUE)
-                           Boot.data=sorted.df[index,]
-
-                           copy=initial.df
-
-                           for(i in 1:p){
-                             Boot.initial=copy[index,]
-
-                             Bna.index=which(is.na(Boot.data[,i]))
-                             na.index=Na.index[[i]]
-
-                             if(length(na.index)>0){
-
-                               if(length(Bna.index)==Nrow | length(Bna.index)==Nrow-1){
-                                 stop("At least one variable in the boostrapped sample has 100% missing values or only one observed entry.\n This implies that there is at least one variable in the original dataset has too many missing entries.\n Imputation procedure aborts.\n Please consider removing variables with too many missing values before imputation.")
-                               }
-
-                               if(length(Bna.index)==0){
-
-                                 obs.y=Boot.data[,i]
-
-                                 if(type[i]!="numeric"){
-                                   obs.y=as.integer(obs.y)-1
-                                 }
-
-                                 if(p==2){
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
-                                   Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                 }else{
-                                   obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
-                                   Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
-                                   mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                 }
-
-                               }else{
-
-
-                               obs.y=Boot.data[,i][-Bna.index]
-
-                               if(type[i]!="numeric"){
-                                 obs.y=as.integer(obs.y)-1
-                               }
-
-                               if(p==2){
-                                 obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                 Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
-                                 mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                               }else{
-                                 obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                 Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
-                                 mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                               }
-
-                               }
-
-                               if(length(na.index)==1){
-                                 mis.data=t(mis.data)
-                               }
-
-                               if(type[i]=="numeric"){
-                                 obj.type<-"reg:squarederror"
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 pred.y=predict(xgb.fit,mis.data)
-                                 ###use boostrap observed data to fit model
-                                 #use this model to predict all missing whole data and match with all observed whole data
-                                  yhatobs=predict(xgb.fit,Obs.data)
-                                 #update dataset
-                                 copy[,i][na.index]<-pmm(yhatobs = yhatobs,yhatmis = pred.y,yobs=yobs.list[[i]],k=self$pmm.k)
-
-
-
-                               }else if(type[i]=="binary"){
-
-                                 t=sort(table(obs.y))
-                                 #t[1] minority class t[2]majority class
-
-                                 if(!is.na(t[2])){
-                                   if(self$pmm.link=="logit"){
-                                     obj.type<-"binary:logitraw"
-                                   }else{
-                                     #pmm by "prob"
-                                     obj.type<-"binary:logistic"
-                                   }
-                                   xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                   eval_metric ="logloss",nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                   min_child_weight=self$min_child_weight,subsample=self$subsample,scale_pos_weight=self$scale_pos_weight,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-
-                                   xgb.pred = predict(xgb.fit,mis.data)
-
-
-                                   yhatObs=predict(xgb.fit,Obs.data)
-
-                                   num.result=pmm(yhatobs = yhatObs,yhatmis = xgb.pred,yobs=yobs.list[[i]],k=self$pmm.k)
-                                   #change to factor
-                                   copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-
-                                 }else{
-                                   #skip xgboost training, just impute majority class
-                                   copy[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
-                                 }
-
-
-
-
-
-                               }else{
-
-
-                                 obj.type= "multi:softprob"
-                                 N.class=length(levels(sorted.df[,i]))
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, num_class=N.class,missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 xgb.pred = predict(xgb.fit,mis.data,reshape = T)
-
-                                 yhatObs=predict(xgb.fit,Obs.data,reshape = T)
-
-                                 if(self$pmm.link=="logit"){
-                                   xgb.pred=log(xgb.pred/(1-xgb.pred))
-                                   yhatObs=log(yhatObs/(1-yhatObs))
-                                 }
-                                 num.result=pmm.multiclass(donor.pred = yhatObs,target.pred = xgb.pred,donor.obs = yobs.list[[i]],k=self$pmm.k)
-                                 #change to factor
-                                 copy[,i][na.index]<- levels(sorted.df[,i])[num.result+1]
-
-                               }
-
-                             }
-
-                           }
-                           imputed.data[[k]]<-copy[order(sorted.idx)]
-
-
-
-                         }
-
-                         return(imputed.data)
-
-
-                       }else if(self$pmm.type=="auto"){
-                         imputed.data<-list()
-                         yobs.list<-list()
-
-
-                         for(i in 1:p){
-                           if(type[i]=="numeric"){
-                             na.index=Na.index[[i]]
-                             if(length(na.index)>0){
-                               obs.y=sorted.df[,i][-na.index]
-                               yobs.list[[i]]=obs.y
-                               }
-                           }
-
-                         }
-
-
-
-
-
-
-                         for(k in 1:m){
-
-
-                           index=sample(Nrow,Nrow,replace=TRUE)
-                           Boot.data=sorted.df[index,]
-
-                           copy=initial.df
-
-                           for(i in 1:p){
-                             Boot.initial=copy[index,]
-
-                             Bna.index=which(is.na(Boot.data[,i]))
-                             na.index=Na.index[[i]]
-
-                             if(length(na.index)>0){
-
-                               if(length(Bna.index)==Nrow | length(Bna.index)==Nrow-1){
-                                 stop("At least one variable in the boostrapped sample has 100% missing values or only one observed entry.\n This implies that there is at least one variable in the original dataset has too many missing entries.\n Imputation procedure aborts.\n Please consider removing variables with too many missing values before imputation.")
-                               }
-
-
-
-                               if(length(Bna.index)==0){
-
-                                 obs.y=Boot.data[,i]
-                               }else{
-                                 obs.y=Boot.data[,i][-Bna.index]
-                               }
-
-
-                               if(type[i]!="numeric"){
-                                 obs.y=as.integer(obs.y)-1
-                               }
-
-
-
-                               if(type[i]=="numeric"){
-                                 #pmm type 2 for continuous variables
-
-                                 if(length(Bna.index)==0){
-                                   if(p==2){
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
-                                     Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                   }else{
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
-                                     Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                   }
-                                 }else{
-                                   if(p==2){
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                     Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                   }else{
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                     Obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=initial.df[-na.index,])[,-1]
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                   }
-                                 }
-
-
-
-                                 if(length(na.index)==1){
-                                   mis.data=t(mis.data)
-                                 }
-
-                                 obj.type<-"reg:squarederror"
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 pred.y=predict(xgb.fit,mis.data)
-                                 ###use boostrap observed data to fit model
-                                 #use this model to predict all missing whole data and match with all observed whole data
-                                 yhatobs=predict(xgb.fit,Obs.data)
-                                 #update dataset
-                                 copy[,i][na.index]<-pmm(yhatobs = yhatobs,yhatmis = pred.y,yobs=yobs.list[[i]],k=self$pmm.k)
-
-
-
-                               }else if(type[i]=="binary"){
-
-                                 if(length(Bna.index)==0){
-                                   if(p==2){
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                   }else{
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                   }
-
-
-                                 }else{
-                                   if(p==2){
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                   }else{
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                   }
-
-                                 }
-
-
-                                 if(length(na.index)==1){
-                                   mis.data=t(mis.data)
-                                 }
-
-                                 t=sort(table(obs.y))
-                                 #t[1] minority class t[2]majority class
-
-                                 if(!is.na(t[2])){
-
-                                   obj.type<-"binary:logistic"
-
-                                   xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                   eval_metric ="logloss",nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                   min_child_weight=self$min_child_weight,subsample=self$subsample,scale_pos_weight=self$scale_pos_weight,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-
-                                   xgb.pred = predict(xgb.fit,mis.data)
-                                   pred.y=ifelse(xgb.pred>=0.5,1,0)
-
-                                   #update dataset
-                                   copy[,i][na.index]<-levels(sorted.df[,i])[pred.y+1]
-
-
-                                 }else{
-                                   #skip xgboost training, just impute majority class
-                                   copy[,i][na.index]<-levels(sorted.df[,i])[as.integer(names(t[1]))+1]
-                                 }
-
-
-
-
-
-
-
-                               }else{
-
-                                 if(length(Bna.index)==0){
-                                   if(p==2){
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                   }else{
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial)[,-1]
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                   }
-                                 }else{
-                                   if(p==2){
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])
-                                   }else{
-                                     obs.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=Boot.initial[-Bna.index,])[,-1]
-                                     mis.data=sparse.model.matrix(as.formula(paste(Names[i],"~.",sep="")),data=copy[na.index,])[,-1]
-                                   }
-
-                                 }
-
-
-                                 if(length(na.index)==1){
-                                   mis.data=t(mis.data)
-                                 }
-
-
-                                 obj.type= "multi:softmax"
-                                 N.class=length(levels(sorted.df[,i]))
-                                 xgb.fit=xgboost(data=obs.data,label = obs.y,objective = obj.type, num_class=N.class,missing = NA, weight = NULL,nthread=self$nthread,early_stopping_rounds=self$early_stopping_rounds,
-                                                 nrounds=self$nrounds, max_depth=self$max_depth,gamma=self$gamma,eta=self$eta,colsample_bytree=self$colsample_bytree,
-                                                 min_child_weight=self$min_child_weight,subsample=self$subsample,tree_method=self$tree_method, gpu_id=self$gpu_id, predictor=self$predictor,verbose = self$verbose, print_every_n = self$print_every_n)
-                                 xgb.pred = predict(xgb.fit,mis.data)
-                                 #update dataset
-                                 copy[,i][na.index]<-levels(sorted.df[,i])[xgb.pred+1]
-
-
-                               }
-
-                             }
-
-                           }
-                           imputed.data[[k]]<-copy[order(sorted.idx)]
-
-
-
-                         }
-
-                         return(imputed.data)
-
-
-                       }
-                        #end of else pmm not null else if pmm.type==1 else pmm.type==2 else "auto"
-
-
-
-                      }#end of if single else multiple
-
-                      }#end of impute function
-
-                  )
+  cloneable = FALSE,
+  public = list(
+    data = NULL,
+    xgb.params = NULL,
+    nrounds = NULL,
+    print_every_n = NULL,
+    verbose = NULL,
+    early_stopping_rounds = NULL,
+    pmm.k = NULL,
+    pmm.type = NULL,
+    pmm.link = NULL,
+    initial.num = NULL,
+    initial.fac = NULL,
+    initial.obj = NULL,
+    bootstrap = NULL,
+
+
+    #' @description Create a new \code{Mixgb} object. This is used to set up the multiple imputation imputer using xgboost.
+    #' @examples
+    #' MIXGB=Mixgb$new(withNA.dt)
+    #' MIXGB=Mixgb$new(withNA.dt,nrounds=50,max_depth=6)
+    #' @param data A data.frame or data.table with missing values
+    #' @param xgb.params A list of Hyperparameters values for xgboost
+    #' @param nrounds Max number of boosting iterations. Default: 50
+    #' @param early_stopping_rounds Default: 10,
+    #' @param print_every_n Default: 10L
+    #' @param verbose Default: 0
+    #' @param pmm.k Default: 5
+    #' @param pmm.type Default: "auto". (can be 0,1,2 or "auto")
+    #' @param pmm.link Default: "prob". (can be "prob" or "logit")
+    #' @param initial.num initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
+    #' @param initial.fac initial imputation method for factor type data ("mode","sample"). Default: "mode"
+    #' @param initial.obj An object including data structure and a pre-fill dataset after initial imputation
+    #' @param bootstrap Whether use bootstrapping to obtain randomness for multiple imputation. Default: TRUE. If FALSE, user need to specify sample related hyperparameters of xgboost to obtain different imputations, otherwise m imputations would be identical.
+
+
+
+    initialize = function(data, xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1, subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+                          nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
+                          pmm.k = 5, pmm.type = "auto", pmm.link = "prob",
+                          initial.num = "normal", initial.fac = "mode", bootstrap = TRUE) {
+      self$bootstrap <- bootstrap
+      self$initial.num <- initial.num
+      self$initial.fac <- initial.fac
+      # initial imputation
+      initial.obj <- initial_imp(data, initial.num = initial.num, initial.fac = initial.fac, bootstrap = bootstrap)
+      self$initial.obj <- initial.obj
+
+      sorted.naSums <- initial.obj$sorted.naSums
+      sorted.types <- initial.obj$sorted.types
+      Nrow <- initial.obj$Nrow
+      # Ncol<-initial.obj$Ncol
+
+      # checking
+      check_pmm(pmm.type = pmm.type, bootstrap = bootstrap, xgb.params = xgb.params, Nrow = Nrow, sorted.naSums = sorted.naSums, sorted.types = sorted.types, pmm.k = pmm.k)
+
+      self$xgb.params <- xgb.params
+      self$nrounds <- nrounds
+      self$early_stopping_rounds <- early_stopping_rounds
+      self$print_every_n <- print_every_n
+      self$verbose <- verbose
+
+      self$pmm.k <- pmm.k
+      self$pmm.type <- pmm.type
+      self$pmm.link <- pmm.link
+    },
+
+    #' @description Use the imputer to impute missing values and obtain multiple datasets
+    #' @examples
+    #' MIXGB=Mixgb$new(withNA.dt)
+    #' imputation.list=MIXGB$impute(m = 5)
+    #' @param m the number of imputed datasets. Default: 5
+    #' @param maxit number of imputation iterations. Default: 1
+    #' @param save.models whether or not to save models to impute new data later on. Default: FALSE.
+    #' @param save.vars the names or indices of variables in the original dataset that users want to save models for later imputation. By default, save.vars=NULL,response models for columns with missing values will be saved. If want to save all models, please specify save.vars=colnames(data). `save.vars` must contains all columns with missing values.
+    #' @param ... extra arguments passed to xgboost
+    #'
+    impute = function(m = 5, maxit = 1, save.models = FALSE, save.vars = NULL, ...) {
+      imputed.data <- vector("list", m)
+      # initial.obj<-MIXGB$initial.obj
+      initial.obj <- self$initial.obj
+
+
+
+      origin.names <- initial.obj$origin.names
+      sorted.types <- initial.obj$sorted.types
+      sorted.names <- initial.obj$sorted.names
+      sorted.naSums <- initial.obj$sorted.naSums
+      ###
+      sorted.idx <- initial.obj$sorted.idx
+
+      missing.idx <- initial.obj$missing.idx
+      missing.vars <- initial.obj$missing.vars
+      missing.types <- initial.obj$missing.types
+      Obs.idx <- initial.obj$Obs.idx
+      Na.idx <- initial.obj$Na.idx
+      Ncol <- initial.obj$Ncol
+      Nrow <- initial.obj$Nrow
+      mp <- initial.obj$mp
+
+      pmm.type <- self$pmm.type
+      pmm.link <- self$pmm.link
+      pmm.k <- self$pmm.k
+      bootstrap <- self$bootstrap
+
+      # validate save.vars :
+      # keep.vars for future development: skip saving some NAs columns if you know that future data don't have NAs in this columns (not recommend to use it though)
+      if (save.models == TRUE) {
+        extra.vars <- save_vars(save.vars = save.vars, origin.names = origin.names, missing.vars = missing.vars)
+        extra.types <- sorted.types[extra.vars]
+        save.vars <- c(missing.vars, extra.vars)
+        save.p <- length(save.vars)
+        # for each variable in save.vars, save its observed values for PMM
+        yobs.list <- vector("list", save.p)
+        names(yobs.list) <- save.vars
+        # variables with NAs
+        for (var in missing.vars) {
+          na.idx <- Na.idx[[var]]
+          # obs.y
+          yobs.list[[var]] <- initial.obj$sorted.dt[[var]][-na.idx]
+        }
+        # variables fully observed
+        for (var in extra.vars) {
+          yobs.list[[var]] <- initial.obj$sorted.dt[[var]]
+        }
+      } else {
+        # save.models=FALSE
+        extra.vars <- NULL
+        extra.types <- NULL
+        yobs.list <- vector("list", mp)
+        names(yobs.list) <- missing.vars
+        for (var in missing.vars) {
+          na.idx <- Na.idx[[var]]
+          # obs.y
+          yobs.list[[var]] <- initial.obj$sorted.dt[[var]][-na.idx]
+        }
+      }
+
+
+      yhatobs.list <- NULL
+      if (isTRUE(pmm.type == 1)) {
+        yhatobs.list <- save_yhatobs(
+          yobs.list = yobs.list, maxit = maxit, pmm.link = pmm.link, sorted.dt = initial.obj$sorted.dt, missing.vars = missing.vars, extra.vars = extra.vars, extra.types = extra.types, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+          xgb.params = self$xgb.params,
+          nrounds = self$nrounds, early_stopping_rounds = self$early_stopping_rounds, print_every_n = self$print_every_n, verbose = self$verbose, ...
+        )
+      }
+
+      # yhatobs.list<-save_yhatobs(yobs.list=yobs.list,maxit=maxit,pmm.link=pmm.link, sorted.dt=initial.obj$sorted.dt, missing.vars=missing.vars, extra.vars=extra.vars,extra.types=extra.types,sorted.names=sorted.names,Na.idx=Na.idx,missing.types=missing.types,Ncol=Ncol,
+      # xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, colsample_bytree = 1, min_child_weight = 1, subsample = 1, tree_method = "auto", gpu_id = 0, predictor = "auto", scale_pos_weight = 1),
+      # nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0)
+
+      # ............................................................................................................
+      if (save.models == FALSE) {
+        # Default: don't save any models
+
+
+        if (bootstrap == FALSE) {
+          # bootstrap=FALSE--------------------------------------------------------------
+          for (i in seq_len(m)) {
+            cat("Imputing dataset", i, "with mixgb without bootstrap\n")
+            # feed in the initial imputed dataset
+            sorted.dt <- initial.obj$sorted.dt
+            for (j in seq_len(maxit)) {
+              sorted.dt <- mixgb(
+                pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list,
+                sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
+                Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+                xgb.params = self$xgb.params,
+                nrounds = self$nrounds, early_stopping_rounds = self$early_stopping_rounds, print_every_n = self$print_every_n, verbose = self$verbose, ...
+              )
+            }
+            imputed.data[[i]] <- sorted.dt[, ..origin.names]
+          }
+        } else {
+          # bootstrap=TRUE--------------------------------------------------------------
+          for (i in seq_len(m)) {
+            cat("Imputing dataset", i, "with mixgb with bootstrap\n")
+            # feed in the initial imputed dataset
+            sorted.dt <- initial.obj$sorted.dt
+            boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
+            for (j in seq_len(maxit)) {
+              sorted.dt <- mixgb_boot(
+                BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+                yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
+                sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+                xgb.params = self$xgb.params,
+                nrounds = self$nrounds, early_stopping_rounds = self$early_stopping_rounds, print_every_n = self$print_every_n, verbose = self$verbose, ...
+              )
+            }
+            imputed.data[[i]] <- sorted.dt[, ..origin.names]
+          }
+        } # end of if(bootstrap)
+
+
+        return(imputed.data)
+      } else {
+        # save.models=TRUE, save models for imputing new data..........................................................................................
+        # For save.models.............................................................................................
+        ## Change indices into "names" and validate the argument save.vars,
+        # save.vars=c(3,4,10,14)
+        # save.vars=c(2,4)
+
+        # var="age"
+        # XGB.modles[[i]][var]    return a list $age   with response model for age
+        # XGB.modles[[i]][[var]]    response model for age
+
+        # ..........................................................................................................
+        # save params of this imputer for impute.new().....................................................
+        params <- list()
+        # initial imputation methods
+        params$initial.num <- self$initial.num
+        params$initial.fac <- self$initial.fac
+        # PMM settings
+        params$pmm.k <- self$pmm.k
+        params$pmm.type <- self$pmm.type
+        params$pmm.link <- self$pmm.link
+        # number of imputations
+        params$m <- m
+        # number of iterations
+        params$maxit <- maxit
+        params$sorted.names <- sorted.names
+        params$sorted.types <- sorted.types
+        params$sorted.naSums <- sorted.naSums
+
+        params$save.vars <- save.vars
+        params$missing.vars <- missing.vars
+        params$extra.vars <- extra.vars
+
+
+        ##
+        params$Na.idx <- Na.idx
+        params$sorted.idx <- sorted.idx
+        params$Obs.idx <- Obs.idx
+        params$bootstrap <- self$bootstrap
+        params$yobs.list <- yobs.list
+
+
+
+        # pre-allocation for saved models: for each of m, save Nmodels
+        XGB.models <- vector("list", m)
+
+        #--------------------------------------------------------
+        if (bootstrap == FALSE) {
+          # bootstrap=FALSE--------------------------------------------------------------
+          for (i in seq_len(m)) {
+            cat("Imputing dataset", i, "with mixgb without bootstrap\n")
+            # feed in the initial imputed dataset
+            sorted.dt <- initial.obj$sorted.dt
+            if (maxit > 1) {
+              for (j in seq_len(maxit - 1)) {
+                # for j=1:(maxit-1)  only update the imputed dataset
+                sorted.dt <- mixgb(
+                  pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
+                  sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+                  xgb.params = self$xgb.params,
+                  nrounds = self$nrounds, early_stopping_rounds = self$early_stopping_rounds, print_every_n = self$print_every_n, verbose = self$verbose, ...
+                )
+              }
+            }
+            # the last iteration, update the imputed dataset, also save models
+            saved.obj <- mixgb_save(
+              save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+              yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
+              Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+              xgb.params = self$xgb.params,
+              nrounds = self$nrounds, early_stopping_rounds = self$early_stopping_rounds, print_every_n = self$print_every_n, verbose = self$verbose, ...
+            )
+            # if pmm.type=NULL
+            imputed.data[[i]] <- saved.obj$sorted.dt[, ..origin.names]
+            XGB.models[[i]] <- saved.obj$xgb.models
+            # if pmm.type=0,2,auto
+            if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
+              yhatobs.list[[i]] <- saved.obj$yhatobs.list
+            }
+            # if pmm.type=1  (only use one set of yhatobs.list across all m, it's saved ahead)
+          }
+        } else {
+          # bootstrap=TRUE--------------------------------------------------------------
+          for (i in seq_len(m)) {
+            cat("Imputing dataset", i, "with mixgb with bootstrap\n")
+            # feed in the initial imputed dataset
+            sorted.dt <- initial.obj$sorted.dt
+            boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
+            if (maxit > 1) {
+              for (j in seq_len(maxit - 1)) {
+                sorted.dt <- mixgb_boot(
+                  BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+                  yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
+                  sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+                  xgb.params = self$xgb.params,
+                  nrounds = self$nrounds, early_stopping_rounds = self$early_stopping_rounds, print_every_n = self$print_every_n, verbose = self$verbose, ...
+                )
+              }
+            }
+            saved.obj <- mixgb_bootsave(
+              BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+              yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
+              Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+              xgb.params = self$xgb.params,
+              nrounds = self$nrounds, early_stopping_rounds = self$early_stopping_rounds, print_every_n = self$print_every_n, verbose = self$verbose, ...
+            )
+
+            # if pmm.type=NULL
+            imputed.data[[i]] <- saved.obj$sorted.dt[, ..origin.names]
+            XGB.models[[i]] <- saved.obj$xgb.models
+            # if pmm.type=0,2,auto
+            if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
+              yhatobs.list[[i]] <- saved.obj$yhatobs.list
+            }
+            # if pmm.type=1  (only use one set of yhatobs.list across all m, it's saved ahead)
+          }
+        } # end of if(bootstrap)
+
+
+
+        #---------------------------------------------------------
+
+        # pmm.type=NULL, yhatobs.list=NULL
+        # pmm.type=1, yhatobs.list only one list with different vars
+        # pmm.type=0,2,"auto" yhatlobs.list has m list with different vars
+
+        params$yhatobs.list <- yhatobs.list
+        params$yobs.list <- yobs.list
+
+        return(list("imputed.data" = imputed.data, "XGB.models" = XGB.models, "params" = params))
+      }
+    } # end of impute function
+  )
 )
-
-
-

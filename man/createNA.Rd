@@ -17,12 +17,12 @@ createNA(data, names = NULL, p = 0.3, seed = NULL)
 Create missing value for a dataset
 }
 \examples{
-#create 30\% MCAR data across all variables in a dataset
-withNA.df<-createNA(iris,p=0.3)
+# create 30\% MCAR data across all variables in a dataset
+withNA.df <- createNA(iris, p = 0.3)
 
-#create 30\% MCAR data in a specified variable in a dataset
-withNA.df=createNA(iris,names=c("Sepal.Length"),p=0.3)
+# create 30\% MCAR data in a specified variable in a dataset
+withNA.df <- createNA(iris, names = c("Sepal.Length"), p = 0.3)
 
-#create MCAR data in several specified variables in a dataset
-withNA.df=createNA(iris,names=c("Sepal.Length","Petal.Width","Species"),p=c(0.3,0.2,0.1))
+# create MCAR data in several specified variables in a dataset
+withNA.df <- createNA(iris, names = c("Sepal.Length", "Petal.Width", "Species"), p = c(0.3, 0.2, 0.1))
 }

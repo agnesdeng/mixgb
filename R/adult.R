@@ -20,5 +20,5 @@
 #'  \item{native_country}{}
 #'  \item{class_labels}{}
 #' }
-#' @source ... data
+#' @source \url{https://archive.ics.uci.edu/ml/datasets/adult}
 "adult"

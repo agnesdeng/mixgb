@@ -15,38 +15,6 @@ devtools::install_github("agnesdeng/mixgb")
 library(mixgb)
 ```
 
-## Example: multiple imputation through XGBoost
-
-We first load the NHANES dataset from the R package "hexbin".
-``` r
-library(hexbin)
-data("NHANES")
-```
-
-Create 30% MCAR missing data.
-``` r
-withNA.df<-createNA(NHANES,p=0.3)
-```
-
-Create an Mixgb imputer with your choice of settings or leave it as default.
-
-Note that users do not need to convert the data frame into dgCMatrix or one-hot coding themselves. Ths imputer will convert it automatically for you. The type of variables should be one of the following: numeric, integer, or factor (binary/multiclass).
-
-``` r
-MIXGB<-Mixgb$new(withNA.df,pmm.type="auto",pmm.k = 5)
-```
-
-Use this imputer to obtain m imputed datasets.
-``` r
-mixgb.data<-MIXGB$impute(m=5)
-``` 
-
-Users can change the values for hyperparameters in an imputer. The default values are as follows.
-
-``` r
-MIXGB<-Mixgb$new(data=.., nrounds=50,max_depth=6,gamma=0.1,eta=0.3,nthread=4,early_stopping_rounds=10,colsample_bytree=1,min_child_weight=1,subsample=1,pmm.k=5,pmm.type="auto",pmm.link="logit",scale_pos_weight=1,initial.imp="random",tree_method="auto",gpu_id=0,predictor="auto",print_every_n = 10L,verbose=0)
-```
-
 ## Data cleaning before feeding in the imputer
 
 It is highly recommended to clean and check your data before feeding in the imputer. Here are some common issues:
@@ -65,68 +33,81 @@ The function `data_clean()` can do a preliminary check and fix some obvious prob
 cleanWithNA.df<-data_clean(rawdata=rawWithNA.df)
 ```
 
+## Example: multiple imputation through XGBoost
+
+We first load the NHANES dataset from the R package "hexbin". We can see that there are seven variables in this dataset has missing values.
+``` r
+library(hexbin)
+data("NHANES")
+colSums(is.na(NHANES))
+```
+
+Create an Mixgb imputer with your choice of settings or leave it as default.
+
+Note that users do not need to convert the data frame into dgCMatrix or one-hot coding themselves. Ths imputer will convert it automatically for you. The type of variables should be one of the following: numeric, integer, or factor (binary/multiclass).
+
+``` r
+MIXGB <- Mixgb$new(data = NHANES, pmm.type = "auto", pmm.k = 5)
+imputed.data <- MIXGB$impute(m = 5, maxit = 1)
+```
+Use this imputer to obtain m imputed datasets. Users can also specify the number of iterations `maxit`.
+
+A list of hyperparameters of xgboost can be passed to xgboost,The default values are as follows.
+
+``` r
+
+params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1, 
+                  subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode, 
+                  tree_method = "auto", gpu_id = 0, predictor = "auto")
+
+
+MIXGB <- Mixgb$new(
+  data = NHANES, xgb.params = params,
+  nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
+  pmm.k = 5, pmm.type = "auto", pmm.link = "prob",
+  initial.num = "normal", initial.fac = "mode", bootstrap = TRUE
+)
+
+imputed.data<-MIXGB$impute(m=5,maxit=5)
+```
+
+
 
 ## Example: impute new unseen data
 First we can split a dataset as training data and test data.
 ``` r
-set.seed(2021)
-n=nrow(iris)
-idx=sample(1:n, size = round(0.7*n), replace=FALSE)
-
-train.df=iris[idx,]
-test.df=iris[-idx,]
+set.seed(2022)
+n <- nrow(NHANES)
+idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
+NHANES.train <- NHANES[idx, ]
+NHANES.test <- NHANES[-idx, ]
 ```
 
-Since the original data doesn't have any missing value, we create some.
-``` r
-trainNA.df=createNA(data=train.df,p=0.3)
-testNA.df=createNA(data=test.df,p=0.3)
-```
-
-We can use the training data (with missing values) to obtain m imputed datasets. Imputed datasets, the models used in training processes and some parameters are saved in the object `mixgb.obj`.
+We can use the training data (with missing values) to obtain m imputed datasets and their imputation models. User need to set `save.models = TRUE`. By default `save.vars = NULL`, imputation models for variables with missing data in the training data will be saved in the object `mixgb.obj`. This save time, however, the unseen data may also have missing values in other variable, it would be comprehensive to save models for all variables. In this case, just set `save.vars = colnames(NHANES.train)`. This would take way longer time and space for large datasets. If users are confident that only certain variables of future data will have missing values, we recommend to specify the names or indices of these variables in `save.vars` instead of saving all variables to speed up the process.
 
 ``` r
-MIXGB=Mixgb.train$new(data=trainNA.df)
-mixgb.obj=MIXGB$impute(m=5)
+MIXGB <- Mixgb$new(data = NHANES.train)
+mixgb.obj <- MIXGB$impute(m = 5, maxit = 1, save.models = TRUE, save.vars = NULL)
 ```
-
-By default, an ensemble of imputation models for all variables in the training dataset will be saved in the object  `mixgb.obj`. This is convenient when we do not know which variables of the future unseen data have missing values. However, this process would take longer time and space.
-
-If users are confident that only certain variables of future data will have missing values, they can choose to specify these variables to speed up the process. Users can either use the indices or the names of the variables in the argument `save.vars`. Models for variables with missing values in the training data and those specified in `save.vars` will be saved.
+To obtain the m imputed datasets, simply use `$imputed.data`. 
+```r
+imputed.traindata <- mixgb.obj$imputed.data
+head(imputed.traindata[[1]])
+```
+To use this saved imputer object to impute new data, we use the `impute_new()` function. User can specify whether to use new data to do initial imputation. By default, this is set to be FALSE, because the size of new data may be too small (e.g, only one observation).
 
 ``` r
-MIXGB=Mixgb.train$new(data=trainNA.df)
-mixgb.obj=MIXGB$impute(m=5,save.vars=c(1,3,5))
-
-#alternatively, specify the names of variables
-mixgb.obj=MIXGB$impute(m=5,save.vars=c("Sepal.Length","Petal.Length","Species"))
+imputed.testdata <- impute_new(object = mixgb.obj, newdata = NHANES.test, initial.newdata = FALSE)
 ```
+If PMM is use in the training models, predicted values of missing entries in the new dataset are matched with training data. Users can also set the number of donors for PMM when impute the new dataset. By default, `pmm.k = NULL `, which means using the same setting as the training object. 
 
-We can now use the saved imputer object to impute new unseen data by using the function `impute.new( )`.  If PMM is applied, predicted values of missing entries in the new dataset are matched with training data by default.
+Similarly, users can set the number of imputed datasets `m`.  Note that this value has to be smaller than or equal to the one set in the training object. If it is not specified, it will use the same `m` value as the training object.
 
 ``` r
-test.impute=impute.new(object = mixgb.obj, newdata = testNA.df)
-test.impute
-```
-Users can choose to match with the new dataset instead by setting `pmm.new = TRUE`.
-
-``` r
-test.impute=impute.new(object = mixgb.obj, newdata = testNA.df, pmm.new = TRUE)
-test.impute
-```
-Users can also set the number of donors for PMM when impute the new dataset. If  `pmm.k` is not set here, it will use the saved parameter value from the training object  `mixgb.obj`.
-
-``` r
-test.impute=impute.new(object = mixgb.obj, newdata = testNA.df, pmm.new = TRUE, pmm.k=3)
-test.impute
+imputed.testdata <- impute_new(object = mixgb.obj, newdata = NHANES.test, initial.newdata = FALSE,pmm.k = NULL, m = NULL)
+imputed.testdata <- impute_new(object = mixgb.obj, newdata = NHANES.test, initial.newdata = FALSE,pmm.k = 3, m = 4)
 ```
 
-Similarly, users can set the number of imputed datasets `m`.  Note that this value has to be smaller than the one set in the training object. If it is not specified, it will use the same `m` value as the training object.
-
-``` r
-test.impute=impute.new(object = mixgb.obj, newdata = testNA.df, pmm.new = TRUE, m=4)
-test.impute
-```
 
 ## Install `mixgb` with GPU support
 Multiple imputation can be run with GPU support for machines with NVIDIA GPUs. Note that users have to install the R package `xgboost` with GPU support first. 
