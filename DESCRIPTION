@@ -1,11 +1,10 @@
 Package: mixgb
 Type: Package
 Title: Multiple imputation through XGBoost
-Version: 0.1.0
+Version: 0.0.0.9000
 Authors@R: c(
-    person("Yongshi", "Deng", email = "yongshi.deng@auckland.ac.nz", role = "cre"),
+    person("Yongshi", "Deng", email = "yongshi.deng@auckland.ac.nz", role = c("aut","cre")),
     person("Thomas", "Lumley", email = "t.lumley@auckland.ac.nz", role = "ths"))
-Maintainer: The package maintainer <yourself@somewhere.net>
 Description: A scalable multiple imputation framework based on XGBoost, bootstrapping and predictive mean matching.
 License: GPL-3
 Encoding: UTF-8
