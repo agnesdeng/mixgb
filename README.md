@@ -7,6 +7,17 @@ mixgb: multiple imputation through XGBoost
 
 Mixgb is a scalable multiple imputation framework based on XGBoost, bootstrapping and predictive mean matching. The proposed framework is implemented in an R package `mixgb`. We have shown that our framework obtains less biased estimates and reflects appropriate imputation variability, while achieving high computational efficiency. For more details, please check our paper https://arxiv.org/abs/2106.01574
 
+## New updates:
+* User can now set different number of iterations `maxit`.
+* Added more validation checks
+* Compatible with data.table to enhance speed
+* Cross-validation to pre-tune `nrounds`
+
+## Under development
+* make m imputation parallel (currently users can set XGBoost parameter `nthread` for multithreading)
+* pre-tune other hyperparameters 
+* Visualisation of imputed data
+
 
 ## Install `mixgb` 
 If users only want to use multiple imputation through XGBoost, please install this simplified R package `mixgb`.
@@ -31,6 +42,12 @@ The function `data_clean()` can do a preliminary check and fix some obvious prob
 
 ```
 cleanWithNA.df<-data_clean(rawdata=rawWithNA.df)
+```
+## Cross-validation to pre-tune nrounds (under development)
+Use the complete cases in the data to find the best `nrounds` by cross-validation. Users can specify the response variable and features. By default, a response variable is randomly selected and use all other features.
+```{r}
+cv.result<-mixgb_cv(data = NHANES, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL, stringsAsFactors = FALSE)
+cv.result$best.nrounds
 ```
 
 ## Example: multiple imputation through XGBoost
@@ -57,8 +74,8 @@ A list of hyperparameters of xgboost can be passed to xgboost,The default values
 ``` r
 
 params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1, 
-                  subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode, 
-                  tree_method = "auto", gpu_id = 0, predictor = "auto")
+                  subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode=1, 
+                  nthread = 4, tree_method = "auto", gpu_id = 0, predictor = "auto")
 
 
 MIXGB <- Mixgb$new(
