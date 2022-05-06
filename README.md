@@ -9,6 +9,9 @@ Mixgb is a scalable multiple imputation framework based on XGBoost, bootstrappin
 
 ## New updates:
 * User can now set different number of iterations `maxit`.
+* Both single and multiple imputation with XGBoost can do predictive mean matching
+* Bootstrap data to make `m` imputations is optional. User can set `bootstrap = FALSE` to disable bootstrap. Users can also set sampling related hyperparameters of XGBoost (subsample, colsample_bytree, colsample_bylevel, colsample_bynode) to be less than 1 to achieve similar effect.
+* Add predicted mean matching type 0. Now the options for `pmm.type` are `NULL`,`0,`1`,`2` or `"auto" `(type 2 for numeric/integer variables, no PMM for categorical variables.
 * Added more validation checks
 * Compatible with data.table to enhance speed
 * Cross-validation to pre-tune `nrounds`
