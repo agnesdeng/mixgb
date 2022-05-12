@@ -2,7 +2,7 @@
 % Please edit documentation in R/mixgb_cv.R
 \name{mixgb_cv}
 \alias{mixgb_cv}
-\title{Use cross-validation to find the optimum nrounds}
+\title{Use cross-validation to find the optimal \code{nrounds}}
 \usage{
 mixgb_cv(
   data,
@@ -10,18 +10,41 @@ mixgb_cv(
   nrounds = 100,
   early_stopping_rounds = 10,
   response = NULL,
-  select_features = NULL,
+  select_covariates = NULL,
   stringsAsFactors = FALSE,
+  verbose = TRUE,
   ...
 )
 }
 \arguments{
-\item{data}{a data.frame or a data.table with missing values}
+\item{data}{A data.frame or a data.table with missing values.}
 
-\item{select_features}{names or indices of the selected features. Default: NULL (select all features)}
+\item{nfold}{The number of subsamples which are randomly partitioned and of equal size. Default: 5}
 
-\item{reponse}{name or column index of the response variable. Default: NULL.}
+\item{nrounds}{The max number of iterations in XGBoost training. Default: 100}
+
+\item{early_stopping_rounds}{An integer value \code{k}. Training will stop if the validation performance hasn't improved for \code{k} rounds.}
+
+\item{response}{The name or column index of a response variable. Default: \code{NULL} (Randomly select an incomplete variable).}
+
+\item{select_covariates}{The names or indices of selected covariates. Default: \code{NULL} (Select all other variables in the dataset).}
+
+\item{stringsAsFactors}{A logical value indicating whether character vectors should be converted to factors.}
+
+\item{verbose}{A logical value. Whether to print out cross-validation results during the process.}
+
+\item{...}{Extra arguments to pass to XGBoost.}
+}
+\value{
+A list of the optimal \code{nrounds} and \code{evaluation.log}
 }
 \description{
-Use cross-validation to find the optimum nrounds
+Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to find the optimal \code{nrounds}. This is a preliminary feature and functions to pre-tune other hyperparameters are under development.
+}
+\examples{
+cv.results <- mixgb_cv(data = nhanes3_newborn)
+cv.results$best.nrounds
+
+MIXGB <- Mixgb$new(data = nhanes3_newborn, nrounds = cv.results$best.nrounds)
+imputed.data <- MIXGB$impute(m = 5)
 }

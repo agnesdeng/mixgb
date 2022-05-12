@@ -1,26 +1,30 @@
 Package: mixgb
 Type: Package
-Title: Multiple imputation through XGBoost
-Version: 0.0.0.9000
+Title: Multiple Imputation Through XGBoost
+Version: 0.1.0
+Date: 2022-05-12
 Authors@R: c(
     person("Yongshi", "Deng", email = "yongshi.deng@auckland.ac.nz", role = c("aut","cre")),
     person("Thomas", "Lumley", email = "t.lumley@auckland.ac.nz", role = "ths"))
 Description: A scalable multiple imputation framework based on XGBoost, bootstrapping and predictive mean matching.
-License: GPL-3
+URL: https://github.com/agnesdeng/mixgb,
+    https://agnesdeng.github.io/mixgb/
+BugReports: https://github.com/agnesdeng/mixgb/issues
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    dplyr,
     R6,
     Matrix,
     xgboost,
     data.table,
     Rfast,
-    mice
+    mice,
+    stats
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 2.1.0)
-Depends: R (>= 3.4.0)
+Depends: R (>= 3.5.0)
 VignetteBuilder: knitr
 RoxygenNote: 7.1.2

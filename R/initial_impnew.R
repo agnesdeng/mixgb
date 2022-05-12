@@ -1,15 +1,15 @@
-#' This function is use to initially impute missing value in the new data using information of training data and validate the feed-in dataset
-#' @param initial.newdata whether or not to use the information of the new data to initially impute new data (mean,median,sd etc). Default: FALSE (use training set information instead)
-#' @param new.sorted A data.table (with missing values NA's). Must be of the same order as sorted training data.
-#' @param traindata A data.table
-#' @param initial.num initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
-#' @param initial.fac initial imputation method for factor type data ("mode","sample"). Default: "mode"
-#' @param bootstrap whether or not use bootstrap for multiple imputation. If TRUE, also return sortedNA.dt
-#' @return A list of items including data table with initial imputation, sorted index, Types, Names etc.
-#' @export
+# Initially impute missing values in the new data using information of a previously trained imputer object.
+initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorted.types, sorted.names, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = TRUE) {
+  #@param initial.newdata Whether or not to use the information of the new data to initially impute new data (mean,median,sd etc). Default: FALSE (use training set information instead)
+  #@param new.sorted A data.table (with missing values NA's). Must be of the same order as sorted training data.
+  #@param traindata A data.table
+  #@param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
+  #@param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode"
+  #@param initial.fac Initial imputation method for factor type data ("mode","sample"). Default: "mode"
+  #@param bootstrap Whether or not use bootstrap for multiple imputation. If TRUE, also return sortedNA.dt
+  #@return A list of objects that will be used for imputation later
 
 
-initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorted.types, sorted.names, initial.num = "normal", initial.fac = "mode", bootstrap = TRUE) {
   # newdata has the same order as new.sorted in traindata
   if (!(is.data.frame(new.sorted) || is.matrix(new.sorted))) {
     stop("Data need to be a data frame, data table or a matrix.")
@@ -26,17 +26,12 @@ initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorte
   Nrow <- nrow(new.sorted)
 
 
-  ## Data preprocessing
-
-
-  # initial imputation & data validation
-
-
   sorted.naSums <- colSums(is.na(new.sorted))
   missing.idx <- which(sorted.naSums != 0)
   missing.vars <- sorted.names[missing.idx]
   missing.types <- sorted.types[missing.idx]
-  missing.method <- ifelse(missing.types == "numeric", initial.num, initial.fac)
+  missing.method <- ifelse(missing.types == "numeric", initial.num,
+                           ifelse(missing.types == "integer", initial.int, initial.fac))
 
 
   if (all(sorted.naSums == 0)) {
@@ -61,9 +56,8 @@ initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorte
 
 
   for (var in missing.vars) {
-    # obs.idx <- which(!is.na(new.sorted[[var]]))
+
     na.idx <- which(is.na(new.sorted[[var]]))
-    # Obs.idx[[var]] <- obs.idx
     Na.idx[[var]] <- na.idx
 
     if (initial.newdata == FALSE) {
@@ -112,10 +106,7 @@ initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorte
     return(list("sorted.dt" = new.sorted, "missing.vars" = missing.vars, "missing.types" = missing.types, "Na.idx" = Na.idx, "sorted.names" = sorted.names))
   } else {
     return(list("sorted.dt" = new.sorted, "missing.vars" = missing.vars, "missing.types" = missing.types, "Na.idx" = Na.idx, "sorted.names" = sorted.names))
-    # "sorted.idx"=sorted.idx,"sorted.types"=sorted.types,"sorted.naSums"=sorted.naSums,
-    # "origin.names"=origin.names,"Nrow"=Nrow,"Ncol"=Ncol,"mp"=mp,
-    # "missing.idx"=missing.idx,"missing.vars"=missing.vars,"missing.types"=missing.types,"missing.method"=missing.method,
-    # "Obs.idx"=Obs.idx
+
   }
 }
 
@@ -123,12 +114,11 @@ initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorte
 
 
 # method ------------------------------------------------------------------
-#' impute the missing values of a vector with sampled observed values
-#' @param vec a vector of numeric or factor values in the newdata set
-#' @param na.idx indices of missing values
-#' @param traindata.vec the corresponding vector in the train set
-#' @export
+# Impute the missing values of a vector with sampled observed values
 imp.sample2 <- function(vec, na.idx = NULL, traindata.vec) {
+  #@param vec A vector of numeric or factor values in the newdata set
+  #@param na.idx Indices of missing values
+  #@param traindata.vec The corresponding vector in the train set
   if (is.null(na.idx)) {
     na.idx <- which(is.na(vec))
   }
@@ -151,11 +141,11 @@ imp.sample2 <- function(vec, na.idx = NULL, traindata.vec) {
   vec
 }
 
-#' impute the missing values of a vector with randomly selected values from a normal distribution with mean and sd extracted from observed values
-#' @param vec a vector of numeric values
-#' @param na.idx indices of missing values
-#' @param traindata.vec the corresponding vector in the train set
-#' @export
+#Impute the missing values of a vector with randomly selected values from a normal distribution with mean and sd extracted from observed values
+#@param vec A vector of numeric values
+#@param na.idx Indices of missing values
+#@param traindata.vec The corresponding vector in the train set
+
 imp.normal2 <- function(vec, na.idx = NULL, traindata.vec) {
   if (!is.numeric(vec)) {
     stop("imp.normal(vec,...) only applies to a numeric vector")
@@ -180,19 +170,18 @@ imp.normal2 <- function(vec, na.idx = NULL, traindata.vec) {
   } else {
     # otherwise, impute NAs with sampled values from a normal distribution
     var.sd <- sd(traindata.vec, na.rm = TRUE)
-    vec[na.idx] <- rnorm(n = n.na, mean = var.mean, sd = var.sd)
+    vec[na.idx] <- stats::rnorm(n = n.na, mean = var.mean, sd = var.sd)
   }
   vec
 }
 
 
-#' impute the missing values of a vector with the mean of observed values
-#' @param vec a vector of numeric values
-#' @param obs.idx indices of observed values
-#' @param na.idx indices of missing values
-#' @param traindata.vec the corresponding vector in the train set
-#' @export
+# Impute the missing values of a vector with the mean of observed values
 imp.mean2 <- function(vec, na.idx = NULL, traindata.vec) {
+  #@param vec A vector of numeric values
+  #@param na.idx Indices of missing values
+  #@param traindata.vec The corresponding vector in the train set
+
   if (!is.numeric(vec)) {
     stop("imp.mean(vec,...) only applies to a numeric vector")
   }
@@ -213,11 +202,10 @@ imp.mean2 <- function(vec, na.idx = NULL, traindata.vec) {
 }
 
 
-#' impute the missing values of a vector with the median of observed values
-#' @param vec a vector of numeric values
-#' @param na.idx indices of missing values
-#' @param traindata.vec the corresponding vector in the train set
-#' @export
+#Impute the missing values of a vector with the median of observed values
+#@param vec A vector of numeric values
+#@param na.idx Indices of missing values
+#@param traindata.vec The corresponding vector in the train set
 imp.median2 <- function(vec, na.idx = NULL, traindata.vec) {
   if (!is.numeric(vec)) {
     stop("imp.median(vec,...) only applies to a numeric vector")
@@ -231,19 +219,19 @@ imp.median2 <- function(vec, na.idx = NULL, traindata.vec) {
     stop("This vector contains no missing value.")
   }
 
-  var.median <- median(traindata.vec, na.rm = TRUE)
+  var.median <- stats::median(traindata.vec, na.rm = TRUE)
 
   n.na <- length(na.idx)
   vec[na.idx] <- rep(var.median, n.na)
   vec
 }
 
-#' impute the missing values of a vector with the mode (majority class) of observed values
-#' @param vec a vector of numeric values (ideally integer type) or factor
-#' @param na.idx indices of missing values
-#' @param traindata.vec the corresponding vector in the train set
-#' @export
+# Impute the missing values of a vector with the mode (majority class) of observed values
 imp.mode2 <- function(vec, na.idx = NULL, traindata.vec) {
+  #@param vec A vector of numeric values (ideally integer type) or factor
+  #@param na.idx Indices of missing values
+  #@param traindata.vec The corresponding vector in the train set
+
   if (is.null(na.idx)) {
     na.idx <- which(is.na(vec))
   }

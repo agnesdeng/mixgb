@@ -1,20 +1,13 @@
-#' This function is use to initially impute missing value and validate the feed-in dataset
-#' @param data A data table (with missing values NA's)
-#' @param initial.num initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
-#' @param initial.fac initial imputation method for factor type data ("mode","sample"). Default: "mode"
-#' @param bootstrap whether or not use bootstrap for multiple imputation. If TRUE, also return sortedNA.dt
-#' @return A list of items including data table with initial imputation, sorted index, Types, Names etc.
-#' @export
+# Initially impute a dataset with missing values
 
+initial_imp <- function(data, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = TRUE) {
+  #@param data A data table (with missing values NA's)
+  #@param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
+  #@param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode"
+  #@param initial.fac Initial imputation method for factor type data ("mode","sample"). Default: "mode"
+  #@param bootstrap Whether or not use bootstrap for multiple imputation. If TRUE, also return sortedNA.dt
+  #@return A list of objects that will be used for imputation later
 
-initial_imp <- function(data, initial.num = "normal", initial.fac = "mode", bootstrap = TRUE) {
-  if (!(is.data.frame(data) || is.matrix(data))) {
-    stop("Data need to be a data frame or a matrix.")
-  }
-
-  if (!is.data.table(data)) {
-    data <- as.data.table(data)
-  }
 
   Ncol <- ncol(data)
   if (Ncol < 2) {
@@ -40,7 +33,8 @@ initial_imp <- function(data, initial.num = "normal", initial.fac = "mode", boot
   missing.idx <- which(sorted.naSums != 0)
   missing.vars <- sorted.names[missing.idx]
   missing.types <- sorted.types[missing.idx]
-  missing.method <- ifelse(missing.types == "numeric", initial.num, initial.fac)
+  missing.method <- ifelse(missing.types == "numeric", initial.num,
+                           ifelse(missing.types == "integer", initial.int, initial.fac))
 
 
   if (all(sorted.naSums == 0)) {
@@ -113,11 +107,11 @@ initial_imp <- function(data, initial.num = "normal", initial.fac = "mode", boot
 
 
 # method ------------------------------------------------------------------
-#' impute the missing values of a vector with sampled observed values
-#' @param vec a vector of numeric or factor values
-#' @param na.idx indices of missing values
-#' @export
+# Impute the missing values of a vector with sampled observed values
 imp.sample <- function(vec, na.idx = NULL) {
+  #@param vec A vector of numeric or factor values
+  #@param na.idx Indices of missing values
+
   if (is.null(na.idx)) {
     na.idx <- which(is.na(vec))
   }
@@ -140,11 +134,11 @@ imp.sample <- function(vec, na.idx = NULL) {
   vec
 }
 
-#' impute the missing values of a vector with randomly selected values from a normal distribution with mean and sd extracted from observed values
-#' @param vec a vector of numeric values
-#' @param na.idx indices of missing values
-#' @export
+
+# Impute the missing values of a vector with randomly selected values from a normal distribution with mean and sd extracted from observed values
 imp.normal <- function(vec, na.idx = NULL) {
+  #@param vec A vector of numeric values
+  #@param na.idx Indices of missing values
   if (!is.numeric(vec)) {
     stop("imp.normal(vec,...) only applies to a numeric vector")
   }
@@ -166,17 +160,17 @@ imp.normal <- function(vec, na.idx = NULL) {
   } else {
     # otherwise, impute NAs with sampled values from a normal distribution
     var.sd <- sd(vec, na.rm = TRUE)
-    vec[na.idx] <- rnorm(n = n.na, mean = var.mean, sd = var.sd)
+    vec[na.idx] <- stats::rnorm(n = n.na, mean = var.mean, sd = var.sd)
   }
   vec
 }
 
 
-#' impute the missing values of a vector with the mean of observed values
-#' @param vec a vector of numeric values
-#' @param na.idx indices of missing values
-#' @export
-imp.mean <- function(vec, obs.idx = NULL, na.idx = NULL) {
+# Impute the missing values of a vector with the mean of observed values
+imp.mean <- function(vec, na.idx = NULL) {
+  #@param vec A vector of numeric values
+  #@param na.idx Indices of missing values
+
   if (!is.numeric(vec)) {
     stop("imp.mean(vec,...) only applies to a numeric vector")
   }
@@ -197,11 +191,11 @@ imp.mean <- function(vec, obs.idx = NULL, na.idx = NULL) {
 }
 
 
-#' impute the missing values of a vector with the median of observed values
-#' @param vec a vector of numeric values
-#' @param na.idx indices of missing values
-#' @export
-imp.median <- function(vec, obs.idx = NULL, na.idx = NULL) {
+#Impute the missing values of a vector with the median of observed values
+imp.median <- function(vec, na.idx = NULL) {
+  #@param vec A vector of numeric values
+  #@param na.idx Indices of missing values
+
   if (!is.numeric(vec)) {
     stop("imp.median(vec,...) only applies to a numeric vector")
   }
@@ -214,18 +208,17 @@ imp.median <- function(vec, obs.idx = NULL, na.idx = NULL) {
     stop("This vector contains no missing value.")
   }
 
-  var.median <- median(vec, na.rm = TRUE)
+  var.median <- stats::median(vec, na.rm = TRUE)
 
   n.na <- length(na.idx)
   vec[na.idx] <- rep(var.median, n.na)
   vec
 }
 
-#' impute the missing values of a vector with the mode (majority class) of observed values
-#' @param vec a vector of numeric values (ideally integer type) or factor
-#' @param na.idx indices of missing values
-#' @export
-imp.mode <- function(vec, obs.idx = NULL, na.idx = NULL) {
+# Impute the missing values of a vector with the mode (majority class) of observed values
+imp.mode <- function(vec, na.idx = NULL) {
+  #@param vec A vector of numeric values (ideally integer type) or factor
+  #@param na.idx Indices of missing values
   if (is.null(na.idx)) {
     na.idx <- which(is.na(vec))
   }

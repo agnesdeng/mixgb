@@ -2,15 +2,18 @@
 % Please edit documentation in R/data_clean.R
 \name{data_clean}
 \alias{data_clean}
-\title{This function is used to check some common errors of a raw dataset and return a suitable dataset for feeding in the imputer later on. Note that this would not guarantee the dataset is fully cleaned.}
+\title{Data cleaning}
 \usage{
 data_clean(rawdata, levels.tol = 0.2)
 }
 \arguments{
-\item{rawdata}{A data frame. (a raw dataset)}
+\item{rawdata}{A data frame.}
 
-\item{levels.tol}{Tolerant proportion of the number of levels to the number of observations in a dataset. Default: 0.2}
+\item{levels.tol}{Tolerant proportion of the number of levels to the number of observations in a multiclass variable. Default: 0.2}
+}
+\value{
+A roughly cleaned dataset
 }
 \description{
-This function is used to check some common errors of a raw dataset and return a suitable dataset for feeding in the imputer later on. Note that this would not guarantee the dataset is fully cleaned.
+Check some common errors of a raw dataset and return a suitable dataset to be fed into the imputer. Note that this function is just a rough check. It will not guarantee the output dataset is fully cleaned.
 }

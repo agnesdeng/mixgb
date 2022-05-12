@@ -1,17 +1,21 @@
-#' Create missing value for a dataset
-#' @param data a dataframe
-#' @param p the proportion of missing values in the dataframe
-#' @param seed random seed, a singlue value
+#' Create missing values for a dataset
+#' @description This function creates missing values under the missing complete at random mechanism (MCAR). It is for demonstration purposes only.
+#' @param data A complete data frame.
+#' @param names The names of variables where missing values will be generated.
+#' @param p The proportion of missing values in the data frame or the proportions of missing values corresponding to the variables specified in \code{names}.
+#' @param seed An integer value. Default: \code{NULL}
+#' @return A data frame with artificial missing values
 #' @export
 #' @examples
-#' # create 30% MCAR data across all variables in a dataset
+#' # Create 30% MCAR data across all variables in a dataset
 #' withNA.df <- createNA(iris, p = 0.3)
 #'
-#' # create 30% MCAR data in a specified variable in a dataset
+#' # Create 30% MCAR data in a specified variable in a dataset
 #' withNA.df <- createNA(iris, names = c("Sepal.Length"), p = 0.3)
 #'
-#' # create MCAR data in several specified variables in a dataset
-#' withNA.df <- createNA(iris, names = c("Sepal.Length", "Petal.Width", "Species"), p = c(0.3, 0.2, 0.1))
+#' # Create MCAR data in several specified variables in a dataset
+#' withNA.df <- createNA(iris, names = c("Sepal.Length", "Petal.Width", "Species"),
+#'                       p = c(0.3, 0.2, 0.1))
 createNA <- function(data, names = NULL, p = 0.3, seed = NULL) {
   Nrow <- nrow(data)
   Ncol <- ncol(data)

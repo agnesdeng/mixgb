@@ -1,23 +1,32 @@
-#' PMM for numeric or binary variable
-#' @importFrom mice matchindex
-#' @export
-pmm <- function(yhatobs, yhatmis, yobs, k = pmm.k) {
+# PMM for numeric or binary variable
+pmm <- function(yhatobs, yhatmis, yobs, k) {
+  #@param yhatobs The predicted values of observed entries in a variable
+  #@param yhatmis The predicted values of missing entries in a variable
+  #@param yobs The actual observed values of observed entries in a variable
+  #@param k The number of donors.
+  #@return The matched observed values of all missing entries
+  #@importFrom mice matchindex
   # idx=.Call('_mice_matcher', PACKAGE = 'mice', yhatobs, yhatmis, k)
   idx <- mice::matchindex(d = yhatobs, t = yhatmis, k = k)
   yobs[idx]
 }
 
 
-#' PMM for multiclass variable
-#' @importFrom  Rfast knn
-#' @export
-pmm.multiclass <- function(donor.pred, target.pred, donor.obs, k = pmm.k) {
+# PMM for multiclass variable
+pmm.multiclass <- function(yhatobs, yhatmis, yobs, k) {
+  #@param yhatobs The predicted values of observed entries in a variable
+  #@param yhatmis The predicted values of missing entries in a variable
+  #@param yobs The actual observed values of observed entries in a variable
+  #@param k The number of donors.
+  #@return The matched observed values of all missing entries
+  #@importFrom  Rfast knn
+
   # shuffle donors to break ties
-  donor.size <- length(donor.obs)
+  donor.size <- length(yobs)
   idx <- sample(donor.size, replace = F)
-  donor.randompred <- donor.pred[idx, ]
-  donor.randomobs <- donor.obs[idx]
+  random.yhatobs <- yhatobs[idx, ]
+  random.yobs <- yobs[idx]
   # matching
-  match.class <- Rfast::knn(xnew = target.pred, y = donor.randomobs, x = donor.randompred, k = k)
+  match.class <- Rfast::knn(xnew = yhatmis, y = random.yobs, x = random.yhatobs, k = k)
   as.vector(match.class)
 }

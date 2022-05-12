@@ -1,8 +1,9 @@
-#' This function is used to check some common errors of a raw dataset and return a suitable dataset for feeding in the imputer later on. Note that this would not guarantee the dataset is fully cleaned.
-#' @param  rawdata A data frame. (a raw dataset)
-#' @param  levels.tol Tolerant proportion of the number of levels to the number of observations in a dataset. Default: 0.2
+#' Data cleaning
+#' @description  Check some common errors of a raw dataset and return a suitable dataset to be fed into the imputer. Note that this function is just a rough check. It will not guarantee the output dataset is fully cleaned.
+#' @param  rawdata A data frame.
+#' @param  levels.tol Tolerant proportion of the number of levels to the number of observations in a multiclass variable. Default: 0.2
+#' @return A roughly cleaned dataset
 #' @export
-
 
 data_clean <- function(rawdata, levels.tol = 0.2) {
   names <- colnames(rawdata)
@@ -76,7 +77,7 @@ data_clean <- function(rawdata, levels.tol = 0.2) {
     rawdata <- droplevels(rawdata)
   }
 
-  if (any(rawdata == "")) {
+  if (any(rawdata == "", na.rm = TRUE)) {
     col.idx <- which(rawdata == "", arr.ind = T)[, 2]
     empty.col <- names[unique(col.idx)]
     msg1 <- paste("There exists at least one entry coded as empty cell \"\" in the following variable(s): ", paste(empty.col, collapse = ";"),

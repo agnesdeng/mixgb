@@ -1,5 +1,4 @@
-#' multiple imputation using xgboost with bootstrap
-#' @export
+# Multiple imputation using xgboost with bootstrap
 
 mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
                        xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, colsample_bytree = 1, min_child_weight = 1, subsample = 1, tree_method = "auto", gpu_id = 0, predictor = "auto", scale_pos_weight = 1),
@@ -69,11 +68,8 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
       if (is.na(bin.t[2])) {
         # this binary variable only have one class being observed (e.g., observed values are all "0"s)
         # skip xgboost training, just impute the only existent class
-        msg <- paste("The binary variable", var, "in the bootstrapped sample only have single class. Imputation model for this variable is not reliable. Recommend to get more data. If continue, the only existent class will be used to impute NAs. Do you want to continue?")
-        action <- askYesNo(msg)
-        if (!isTRUE(action)) {
-          stop("Please set bootstrap=FALSE or check this variable and get more data.")
-        }
+        msg <- paste("The binary variable", var, "in the bootstrapped sample only has a single class. The only existent class will be used to impute NAs. Imputation model for this variable may not be reliable. Recommend to get more data. ")
+        warning(msg)
         sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
       } else {
         if (!is.null(pmm) & pmm.link == "logit") {
@@ -130,13 +126,13 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
         yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
         if (pmm.type == 1) {
           # for pmm.type=1 (yobs.list[[var]] is original class "A" "B" "C")
-          yhatmis <- pmm.multiclass(donor.pred = yhatobs.list[[var]], target.pred = yhatmis, donor.obs = yobs.list[[var]], k = pmm.k)
+          yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
           sorted.dt[[var]][na.idx] <- yhatmis
         } else {
           # for pmm.type=0 or 2, obs.y is of interger form   as.integer(obs.y)-1
           # probability matrix for each class
           yhatobs <- predict(xgb.fit, Obs.data, reshape = TRUE)
-          sorted.dt[[var]][na.idx] <- pmm.multiclass(donor.pred = yhatobs, target.pred = yhatmis, donor.obs = yobs.list[[var]], k = pmm.k)
+          sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
 
         }
       }

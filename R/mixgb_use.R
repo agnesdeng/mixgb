@@ -1,18 +1,18 @@
-#' multiple imputation using xgboost (through saved models)
-#' @param m.set the ith imputation
-#' @param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
-#' @param yobs.list  observed values in the original training data
-#' @param yhatobs.list predicted observed values in the original training data,
-#' @param sorted.dt sorted new data after initial imputation (with the same order as the original data)
-#' @param missing.vars names of variables with missing values in new data
-#' @param missing.types types of variable with missing values in new data
-#' @param sorted.names all names of variables in sorted order
-#' @param Ncol number of columns in new data
-#' @export
-
+# Multiple imputation using xgboost (through saved models)
 
 mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL,
                       sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol) {
+
+  #param m.set the ith imputation
+  #param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
+  #param yobs.list  observed values in the original training data
+  #param yhatobs.list predicted observed values in the original training data,
+  #param sorted.dt sorted new data after initial imputation (with the same order as the original data)
+  #param missing.vars names of variables with missing values in new data
+  #param missing.types types of variable with missing values in new data
+  #param sorted.names all names of variables in sorted order
+  #param Ncol number of columns in new data
+
   for (var in missing.vars) {
     features <- setdiff(sorted.names, var)
     form <- reformulate(termlabels = features, response = var)
@@ -73,10 +73,10 @@ mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, e
         yhatmis <- predict(xgb.models[[var]], mis.data, reshape = TRUE)
         if (pmm.type == 1) {
           # for pmm.type=1
-          sorted.dt[[var]][na.idx] <- pmm.multiclass(donor.pred = yhatobs.list[[var]], target.pred = yhatmis, donor.obs = yobs.list[[var]], k = pmm.k)
+          sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         } else {
           # for pmm.type=0 or 2
-          sorted.dt[[var]][na.idx] <- pmm.multiclass(donor.pred = yhatobs.list[[m.set]][[var]], target.pred = yhatmis, donor.obs = yobs.list[[var]], k = pmm.k)
+          sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
       }
     }

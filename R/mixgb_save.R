@@ -1,12 +1,11 @@
-#' multiple imputation using xgboost (save models and imputations)
-#' @param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
-#' @export
+# Multiple imputation using xgboost (save models and imputations)
 
 mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt,
                        missing.vars, sorted.names, Na.idx, missing.types, Ncol,
                        xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, colsample_bytree = 1, min_child_weight = 1, subsample = 1, tree_method = "auto", gpu_id = 0, predictor = "auto", scale_pos_weight = 1),
                        nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                        ...) {
+  #yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   # pre-allocation for models
   xgb.models <- vector("list", save.p)
   names(xgb.models) <- save.vars
@@ -139,7 +138,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
           yhatobs.list[[var]] <- yhatobs
         }
-        sorted.dt[[var]][na.idx] <- pmm.multiclass(donor.pred = yhatobs, target.pred = yhatmis, donor.obs = yobs.list[[var]], k = pmm.k)
+        sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
 
       }
     }
@@ -177,7 +176,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
         # when bin.t only has one value: bin.t[1] the only existent class
         if (is.na(bin.t[2])) {
-          # this binary variable only have one class being observed (e.g., observed values are all "0"s)
+          # this binary variable only has a single class being observed (e.g., observed values are all "0"s)
           # skip xgboost training, just impute the only existent class
 
           xgb.models[[var]] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]

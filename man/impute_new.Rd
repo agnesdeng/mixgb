@@ -2,21 +2,32 @@
 % Please edit documentation in R/impute_new.R
 \name{impute_new}
 \alias{impute_new}
-\title{Impute new data using saved imputation models from training data}
+\title{Impute new data with a saved \code{mixgb} imputer object}
 \usage{
 impute_new(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL)
 }
 \arguments{
-\item{object}{training imputer object}
+\item{object}{A saved imputer object created by \code{$impute()}}
 
-\item{newdata}{a data.frame or data.table}
+\item{newdata}{A data.frame or data.table. New data with missing values.}
 
-\item{initial.newdata}{whether or not to use the information of the new data to initially impute new data (mean,median,sd etc). Default: FALSE (use training set information instead)}
+\item{initial.newdata}{Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{MIXGB$new()} will be used for initial imputation.}
 
-\item{pmm.k}{the number of donors for predictive mmean matching. Default: NULL}
+\item{pmm.k}{The number of donors for predictive mean matching. If \code{NULL} (the defualt), the \code{pmm.k} value in the saved imputer object will be used.}
 
-\item{m}{the number of imputed datasets. Default: NULL (m would be set to the same value as the training imputer object)}
+\item{m}{The number of imputed datasets. If \code{NULL} (the defualt), the \code{m} value in the saved imputer object will be used.}
 }
 \description{
-Impute new data using saved imputation models from training data
+Impute new data with a saved \code{mixgb} imputer object
+}
+\examples{
+set.seed(2022)
+n <- nrow(nhanes3_newborn)
+idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
+train.data <- nhanes3_newborn[idx, ]
+test.data <- nhanes3_newborn[-idx, ]
+
+MIXGB <- Mixgb$new(data = train.data)
+imputed.obj <- MIXGB$impute(m = 5, bootstrap = TRUE, save.models = TRUE)
+imputed.testdata <- impute_new(object = imputed.obj, newdata = test.data)
 }

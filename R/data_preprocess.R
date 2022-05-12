@@ -1,12 +1,21 @@
-#' Return the type ("numeric", "integer","binary","multiclass") of each variable in the dataset
-#' @param data A data.frame or a data.table
-#' @export
+# Classify the type of each variable in a dataset
 feature_type <- function(data) {
+  #@param data A data.frame or a data.table
+  #@return The type (numeric/integer/binary/multiclass) of each variable in a dataset
+
   Types <- sapply(data, class)
+
   if (any(Types == "character")) {
     stop("Data contains variables of character type. Please change them into factor.")
   }
-  factor.vars <- which(Types == "factor" | Types == "Ord.factor")
+
+  #ordinal.idx<-grep("ordered",Types)
+  ord.fac<-names(Filter(is.ordered,data))
+  if(length(ord.fac)>0){
+    Types[ord.fac]<-"factor"
+  }
+
+  factor.vars <- which(Types == "factor")
   for (fac in factor.vars) {
     if (length(levels(data[[fac]])) == 2) {
       Types[fac] <- "binary"
@@ -19,10 +28,11 @@ feature_type <- function(data) {
 }
 
 
-#' Sort data by increasing number of missing values
-#' @param data A data table (with missing values NA's)
-#' @export
+# Sort data by increasing number of missing values
 sortNA <- function(data) {
+  #@param data A data table (with missing values NA's)
+  #@return A list whose first component is the sorted data, second component is the sorted indices and third component is the sorted variable names according to the amount of missingness.
+
   Names <- colnames(data)
   na.loc <- is.na(data)
   sorted.idx <- order(colSums(na.loc))
@@ -30,7 +40,8 @@ sortNA <- function(data) {
 
   if (is.data.table(data)) {
     # data.table
-    sorted.data <- data[, ..sorted.names]
+    #sorted.data <- data[, ..sorted.names]
+    sorted.data <- data[, sorted.names, with = FALSE]
   } else {
     # data.frame
     sorted.data <- data[, sorted.names]
@@ -44,10 +55,10 @@ sortNA <- function(data) {
 
 
 
-#' This function is used to obtain a list of binary and multiclass variables
-#' @param  data A data frame
-#' @export
+# Obtain a list of the names of binary and multiclass variables.
 variable_class <- function(data) {
+  #@param  data A data frame
+  #@return A list whose first component is the names of binary variables and the second component is the names of multiclass variables.
   Types <- feature_type(data)
   Names <- names(data)
   binary <- Names[Types == "binary"]
@@ -57,12 +68,3 @@ variable_class <- function(data) {
 
 
 
-#' Sort the dataset by increasing number of missing values (use in old version Xgb-imputer0)
-#' @param data A data frame (with missing values NA's)
-#' @export
-sortNA_df <- function(data) {
-  na.loc <- is.na(data)
-  sorted.idx <- order(colSums(na.loc))
-  sorted.df <- data[sorted.idx]
-  return(list("sorted.df" = sorted.df, "sorted.idx" = sorted.idx))
-}

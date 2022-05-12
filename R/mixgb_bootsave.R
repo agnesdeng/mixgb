@@ -1,6 +1,4 @@
-#' multiple imputation using xgboost with bootstrap (save models and imputations)
-#' @param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
-#' @export
+# Multiple imputation using xgboost with bootstrap (save models and imputations)
 
 mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k,
                            yobs.list, yhatobs.list = NULL, sorted.dt,
@@ -9,6 +7,7 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
                            nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                            ...) {
 
+  #yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
 
   # pre-allocation for models
   xgb.models <- vector("list", save.p)
@@ -92,11 +91,8 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
       if (is.na(bin.t[2])) {
         # this binary variable only have one class being observed (e.g., observed values are all "0"s)
         # skip xgboost training, just impute the only existent class
-        msg <- paste("The binary variable", var, "in the bootstrapped sample only have single class. Imputation model for this variable may not reliable. Recommend to get more data. If continue, the only existent class will be used to impute NAs. Do you want to continue?")
-        action <- askYesNo(msg)
-        if (!isTRUE(action)) {
-          stop("Please set bootstrap=FALSE or check this variable and get more data.")
-        }
+        msg <- paste("The binary variable", var, "in the bootstrapped sample only has a single class. The only existent class will be used to impute NAs. Imputation model for this variable may not be reliable. Recommend to get more data. ")
+        warning(msg)
         sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
         # save models
         xgb.models[[var]] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
@@ -168,7 +164,7 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
           yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
           yhatobs.list[[var]] <- yhatobs
         }
-        sorted.dt[[var]][na.idx] <- pmm.multiclass(donor.pred = yhatobs, target.pred = yhatmis, donor.obs = yobs.list[[var]], k = pmm.k)
+        sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
       }
     }
   } # end of for each missing variable
@@ -216,11 +212,8 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
         if (is.na(bin.t[2])) {
           # this binary variable only have one class being observed (e.g., observed values are all "0"s)
           # skip xgboost training, just impute the only existent class
-          msg <- paste("The binary variable", var, "in the bootstrapped sample only have single class. Imputation model for this variable may not reliable. Recommend to get more data. If continue, the only existent class will be used to impute NAs. Do you want to continue?")
-          action <- askYesNo(msg)
-          if (!isTRUE(action)) {
-            stop("Please set bootstrap=FALSE or check this variable and get more data.")
-          }
+          msg <- paste("The binary variable", var, "in the bootstrapped sample only has a single class. The only existent class will be used to impute NAs. Imputation model for this variable may not be reliable. Recommend to get more data. ")
+          warning(msg)
 
           xgb.models[[var]] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
           yhatobs.list[[var]] <- rep(levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1], length(yobs.list[[var]]))

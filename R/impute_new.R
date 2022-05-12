@@ -1,26 +1,24 @@
-#' Impute new data using saved imputation models from training data
-#' @param  object training imputer object
-#' @param  newdata a data.frame or data.table
-#' @param  initial.newdata whether or not to use the information of the new data to initially impute new data (mean,median,sd etc). Default: FALSE (use training set information instead)
-#' @param  pmm.k the number of donors for predictive mmean matching. Default: NULL
-#' @param  m the number of imputed datasets. Default: NULL (m would be set to the same value as the training imputer object)
+#' Impute new data with a saved \code{mixgb} imputer object
+#' @param  object A saved imputer object created by \code{$impute()}
+#' @param  newdata A data.frame or data.table. New data with missing values.
+#' @param  initial.newdata Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{MIXGB$new()} will be used for initial imputation.
+#' @param  pmm.k The number of donors for predictive mean matching. If \code{NULL} (the defualt), the \code{pmm.k} value in the saved imputer object will be used.
+#' @param  m The number of imputed datasets. If \code{NULL} (the defualt), the \code{m} value in the saved imputer object will be used.
+#' @examples
+#' set.seed(2022)
+#' n <- nrow(nhanes3_newborn)
+#' idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
+#' train.data <- nhanes3_newborn[idx, ]
+#' test.data <- nhanes3_newborn[-idx, ]
+#'
+#' MIXGB <- Mixgb$new(data = train.data)
+#' imputed.obj <- MIXGB$impute(m = 5, bootstrap = TRUE, save.models = TRUE)
+#' imputed.testdata <- impute_new(object = imputed.obj, newdata = test.data)
 #' @export
 
 
-
 impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL) {
-  origin.names <- colnames(newdata)
 
-
-  # extract imputer models from the training object
-  XGB.models <- object$XGB.models
-
-
-
-  # extract one imputed set from the training object for initial imputation
-  if (initial.newdata == FALSE) {
-    train.dt <- object$imputed.data[[1]]
-  }
 
 
   # extract params from the training object
@@ -46,7 +44,7 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
 
 
 
-  # must have...........................................--------------------------------
+
   # need to use the order of sorted variables in the original training data: otherwise xgboost has errors
   sorted.names <- params$sorted.names
   sorted.types <- params$sorted.types
@@ -71,21 +69,51 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   # new data variables should be in the same order as the training dataset
   sorted.idx <- object$params$sorted.idx
 
-  ############################### -----------------------------------------------
-
-
   # sort the newdata according to the sorted order of the training dataset
   if (!is.data.table(newdata)) {
     newdata <- as.data.table(newdata)
   }
+
+  ordinalAsInteger <- params$ordinalAsInteger
+  if(ordinalAsInteger==TRUE){
+    ord.fac<-names(Filter(is.ordered,newdata))
+    #ord.fac<- colnames(data)[sapply(data,is.ordered)]
+    newdata[,c(ord.fac) := lapply(.SD, as.integer), .SDcols = ord.fac]
+  }
+
+
   # sortedNA.dt: sorted newdata according to the original training dataset
-  sortedNA.dt <- newdata[, ..sorted.names]
+  #sortedNA.dt <- newdata[, ..sorted.names]
+  sortedNA.dt <- newdata[, sorted.names, with = FALSE]
 
 
   # newdata data structure
   Ncol <- ncol(sortedNA.dt)
   Nrow <- nrow(sortedNA.dt)
   naSums <- colSums(is.na(sortedNA.dt))
+
+
+  origin.names <- colnames(newdata)
+
+
+  # extract imputer models from the training object
+  XGB.models <- object$XGB.models
+
+
+
+  # extract one imputed set from the training object for initial imputation
+  if (initial.newdata == FALSE) {
+    train.dt <- object$imputed.data[[1]]
+    # initial imputation.......................................................................................................
+    trainNA.dt <- train.dt
+    for (var in omissing.vars) {
+      na.idx <- Na.idx[[var]]
+      trainNA.dt[[var]][na.idx] <- NA
+    }
+    # traindata=train.dt (one imputed train set)  or traindata=trainNA.dt (the original train set with NAs)
+  }else{
+    trainNA.dt <- NULL
+  }
 
 
   # check new data and give some warning messages (unfinished)...........................................................................
@@ -109,18 +137,11 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   }
 
 
-  # initial imputation.......................................................................................................
-  trainNA.dt <- train.dt
-  for (var in omissing.vars) {
-    na.idx <- Na.idx[[var]]
-    trainNA.dt[[var]][na.idx] <- NA
-  }
-  # traindata=train.dt (one imputed train set)  or traindata=trainNA.dt (the original train set with NAs)
+
 
   initial.obj <- initial_impnew(initial.newdata = initial.newdata, new.sorted = sortedNA.dt, traindata = trainNA.dt, sorted.names = sorted.names, sorted.types = sorted.types, initial.num = initial.num, initial.fac = initial.fac, bootstrap = bootstrap)
   # if initial.newdata=TRUE use newdata information to initially impute newdata
   # if initial.newdata=FALSE use training data information to initially impute newdata
-
 
 
   # After initial imputation of newdata
@@ -130,10 +151,10 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   sorted.dt <- initial.obj$sorted.dt
 
   imputed.data <- vector("list", m)
-
+  cat("Imputing new data with mixgb: ", "set")
 
     for (i in seq_len(m)) {
-      cat("Imputing new dataset", i, "with mixgb\n")
+      cat(" --", i)
       # feed in the initial imputed dataset
       sorted.dt <- initial.obj$sorted.dt
       sorted.dt <- mixgb_use(
@@ -141,13 +162,12 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
         missing.vars = missing.vars, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol
       )
 
-      imputed.data[[i]] <- sorted.dt[, ..origin.names]
+      imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
     }
 
 
   # ...............................................................
-
-
+  cat("\n")
 
   return(imputed.data)
 }
