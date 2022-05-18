@@ -154,34 +154,44 @@
 <code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">evaluation.log</span>
 <span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span>
-<span class="co">#&gt;  1:    1       1.6936077     0.01887730       1.725766    0.08928817</span>
-<span class="co">#&gt;  2:    2       1.4346523     0.01702015       1.506116    0.08673267</span>
-<span class="co">#&gt;  3:    3       1.2728056     0.01663911       1.389438    0.08383957</span>
-<span class="co">#&gt;  4:    4       1.1688409     0.02195700       1.333667    0.08441898</span>
-<span class="co">#&gt;  5:    5       1.0971883     0.02313580       1.302694    0.08333356</span>
-<span class="co">#&gt;  6:    6       1.0448835     0.02009783       1.284366    0.07631481</span>
-<span class="co">#&gt;  7:    7       1.0040352     0.01908136       1.278283    0.07659307</span>
-<span class="co">#&gt;  8:    8       0.9688864     0.02298233       1.277035    0.07411202</span>
-<span class="co">#&gt;  9:    9       0.9403755     0.02124551       1.277484    0.07551448</span>
-<span class="co">#&gt; 10:   10       0.9210552     0.02768082       1.277486    0.07297838</span>
-<span class="co">#&gt; 11:   11       0.8948498     0.02781294       1.281533    0.07021061</span>
-<span class="co">#&gt; 12:   12       0.8774007     0.03067334       1.281213    0.06663978</span>
-<span class="co">#&gt; 13:   13       0.8609970     0.02678307       1.282024    0.06599026</span>
-<span class="co">#&gt; 14:   14       0.8383845     0.03492104       1.282838    0.06726625</span>
-<span class="co">#&gt; 15:   15       0.8299227     0.03623354       1.285236    0.06684684</span>
-<span class="co">#&gt; 16:   16       0.8124397     0.03101191       1.289604    0.06400413</span>
-<span class="co">#&gt; 17:   17       0.7891220     0.02852971       1.291721    0.06012721</span>
-<span class="co">#&gt; 18:   18       0.7792403     0.02705907       1.295125    0.06038230</span>
+<span class="co">#&gt;  1:    1       5.6201391    0.006034446      5.6187399    0.03723214</span>
+<span class="co">#&gt;  2:    2       3.9794356    0.005524706      3.9840627    0.04530634</span>
+<span class="co">#&gt;  3:    3       2.8356450    0.006186468      2.8448086    0.05065088</span>
+<span class="co">#&gt;  4:    4       2.0403093    0.007580600      2.0607049    0.05645595</span>
+<span class="co">#&gt;  5:    5       1.4908088    0.008201288      1.5327873    0.06439425</span>
+<span class="co">#&gt;  6:    6       1.1140581    0.009197048      1.1817889    0.07376739</span>
+<span class="co">#&gt;  7:    7       0.8591465    0.009867956      0.9589845    0.08094975</span>
+<span class="co">#&gt;  8:    8       0.6900214    0.011211355      0.8269363    0.08883849</span>
+<span class="co">#&gt;  9:    9       0.5780240    0.011687914      0.7493374    0.09415784</span>
+<span class="co">#&gt; 10:   10       0.5056352    0.011902614      0.7080500    0.09589041</span>
+<span class="co">#&gt; 11:   11       0.4593661    0.010937389      0.6862614    0.09687646</span>
+<span class="co">#&gt; 12:   12       0.4270136    0.009520578      0.6759208    0.09682395</span>
+<span class="co">#&gt; 13:   13       0.4088345    0.009494484      0.6698870    0.09654617</span>
+<span class="co">#&gt; 14:   14       0.3898725    0.008630954      0.6693822    0.09706877</span>
+<span class="co">#&gt; 15:   15       0.3796010    0.009012791      0.6694360    0.09557257</span>
+<span class="co">#&gt; 16:   16       0.3683944    0.008117098      0.6692779    0.09484169</span>
+<span class="co">#&gt; 17:   17       0.3606271    0.007336251      0.6690448    0.09486998</span>
+<span class="co">#&gt; 18:   18       0.3528846    0.008137850      0.6699500    0.09356785</span>
+<span class="co">#&gt; 19:   19       0.3445314    0.008273639      0.6701747    0.09257943</span>
+<span class="co">#&gt; 20:   20       0.3384785    0.007987981      0.6711693    0.09206280</span>
+<span class="co">#&gt; 21:   21       0.3335006    0.008754717      0.6722695    0.09155965</span>
+<span class="co">#&gt; 22:   22       0.3262872    0.010510213      0.6729877    0.09061719</span>
+<span class="co">#&gt; 23:   23       0.3214140    0.012564740      0.6722159    0.09082395</span>
+<span class="co">#&gt; 24:   24       0.3153246    0.010529373      0.6718304    0.09050242</span>
+<span class="co">#&gt; 25:   25       0.3115973    0.011101340      0.6735604    0.08939972</span>
+<span class="co">#&gt; 26:   26       0.3043630    0.010241503      0.6739214    0.08914721</span>
+<span class="co">#&gt; 27:   27       0.2985105    0.010016746      0.6747881    0.08995485</span>
+<span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">response</span>
-<span class="co">#&gt; [1] "DMPPIR"</span>
+<span class="co">#&gt; [1] "BMPWT"</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 8</span></code></pre></div>
+<span class="co">#&gt; [1] 17</span></code></pre></div>
 <p>By default, <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_covariates</code>, respectively.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>, response <span class="op">=</span> <span class="st">"BMPHEAD"</span>, select_covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSHSIZER"</span>,<span class="st">"HSAGEIR"</span>, <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>,          <span class="st">"BMPRECUM"</span>, <span class="st">"BMPSB1"</span>, <span class="st">"BMPSB2"</span>, <span class="st">"BMPTR1"</span>, <span class="st">"BMPTR2"</span>, <span class="st">"BMPWT"</span>, <span class="st">"DMPPIR"</span>, <span class="st">"HFF1"</span>, <span class="st">"HYD1"</span><span class="op">)</span>,verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 17</span></code></pre></div>
+<span class="co">#&gt; [1] 18</span></code></pre></div>
 <p>Since the results returned by <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> are mostly less than 20, I’ll set <code>nrounds = 20</code> in the imputer. We now use this imputer to obtain m imputed datasets, which will be stored in a list of <code>m</code> data tables. If <code>m = 1</code>, single imputation will be undertaken. Users can also specify the number of imputation iterations <code>maxit</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
@@ -213,12 +223,12 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>,ordinalAsInteger <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   7.736   1.142   7.194</span>
+<span class="co">#&gt;   8.081   1.084   7.550</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>,ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   7.114   1.083   6.640</span></code></pre></div>
+<span class="co">#&gt;   7.194   0.906   6.662</span></code></pre></div>
 </div>
 </div>
 </div>

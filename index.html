@@ -176,9 +176,9 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">response</span>
-<span class="co">#&gt; [1] "BMPTR2"</span>
+<span class="co">#&gt; [1] "DMPPIR"</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 15</span></code></pre></div>
+<span class="co">#&gt; [1] 9</span></code></pre></div>
 <p>By default, <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_covariates</code>, respectively.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>,
@@ -292,21 +292,18 @@
 </h2>
 <p>Multiple imputation can be run with GPU support for machines with NVIDIA GPUs. Note that users have to install the R package <code>xgboost</code> with GPU support first.</p>
 <p>The xgboost R package pre-built binary on Linux x86_64 with GPU supportcan be downloaded from the release page <a href="https://github.com/dmlc/xgboost/releases/tag/v1.4.0" class="external-link uri">https://github.com/dmlc/xgboost/releases/tag/v1.4.0</a></p>
-<p>The package can then be installed by running the following commands: ``` # Install dependencies $ R -q -e “install.packages(c(‘data.table’, ‘jsonlite’))”</p>
-</div>
-</div>
-<div class="section level1">
-<h1 id="install-xgboost">Install XGBoost<a class="anchor" aria-label="anchor" href="#install-xgboost"></a>
-</h1>
-<p>$ R CMD INSTALL ./xgboost_r_gpu_linux.tar.gz</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>Then users can install package <span class="st">`</span><span class="dt">mixgb</span><span class="st">`</span> <span class="cf">in</span> R. </span>
-<span id="cb22-2"><a href="#cb22-2"></a></span>
+<p>The package can then be installed by running the following commands:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># Install dependencies</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="op">$</span><span class="st"> </span>R <span class="op">-</span>q <span class="op">-</span>e <span class="st">"install.packages(c('data.table', 'jsonlite'))"</span></span>
 <span id="cb22-3"><a href="#cb22-3"></a></span>
-<span id="cb22-4"><a href="#cb22-4"></a><span class="st">```</span><span class="dt">r</span></span>
-<span id="cb22-5"><a href="#cb22-5"></a><span class="dt">devtools::install_github("agnesdeng/mixgb")</span></span>
-<span id="cb22-6"><a href="#cb22-6"></a><span class="dt">library(mixgb)</span></span></code></pre></div>
-<p>Users just need to specify <code>tree_method = "gpu_list"</code> in the params list when setting up the Mixgb imputer. Other GPU-realted arguments include <code>gpu_id</code> and <code>predictor</code>. By default, <code>gpu_id = 0</code> and <code>predictor = "auto"</code>.</p>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="co"># Install XGBoost</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a><span class="op">$</span><span class="st"> </span>R CMD INSTALL .<span class="op">/</span>xgboost_r_gpu_linux.tar.gz</span></code></pre></div>
+<p>Then users can install package <code>mixgb</code> in R.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"agnesdeng/mixgb"</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></code></pre></div>
+<p>Users just need to specify <code>tree_method = "gpu_list"</code> in the params list when setting up the Mixgb imputer. Other GPU-realted arguments include <code>gpu_id</code> and <code>predictor</code>. By default, <code>gpu_id = 0</code> and <code>predictor = "auto"</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">params</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, gamma <span class="op">=</span> <span class="fl">0.1</span>, eta <span class="op">=</span> <span class="fl">0.3</span>, min_child_weight <span class="op">=</span> <span class="fl">1</span>,
     subsample <span class="op">=</span> <span class="fl">1</span>, colsample_bytree <span class="op">=</span> <span class="fl">1</span>, colsample_bylevel <span class="op">=</span> <span class="fl">1</span>,
     colsample_bynode <span class="op">=</span> <span class="fl">1</span>, nthread <span class="op">=</span> <span class="fl">4</span>, tree_method <span class="op">=</span> <span class="st">"gpu_list"</span>,
@@ -316,7 +313,7 @@
 
 <span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 </div>
-
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
