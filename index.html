@@ -176,9 +176,9 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">response</span>
-<span class="co">#&gt; [1] "HFF1"</span>
+<span class="co">#&gt; [1] "BMPTR2"</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 6</span></code></pre></div>
+<span class="co">#&gt; [1] 15</span></code></pre></div>
 <p>By default, <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_covariates</code>, respectively.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>,
@@ -188,7 +188,7 @@
         <span class="st">"DMPPIR"</span>, <span class="st">"HFF1"</span>, <span class="st">"HYD1"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 19</span></code></pre></div>
+<span class="co">#&gt; [1] 17</span></code></pre></div>
 <p>Since the results returned by <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> are mostly less than 20, I’ll set <code>nrounds = 20</code> in the imputer. We now use this imputer to obtain m imputed datasets, which will be stored in a list of <code>m</code> data tables. If <code>m = 1</code>, single imputation will be undertaken. Users can also specify the number of imputation iterations <code>maxit</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
@@ -256,7 +256,7 @@
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/plot_2fac.html">plot_2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac1 <span class="op">=</span> <span class="st">"HYD1"</span>,
     var.fac2 <span class="op">=</span> <span class="st">"HSSEX"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-13-1.png" width="95%"></p>
+<p><img src="reference/figures/README-unnamed-chunk-12-5.png" width="95%"></p>
 </div>
 <div class="section level2">
 <h2 id="impute-new-unseen-data-using-a-trained-imputer">Impute new unseen data using a trained imputer<a class="anchor" aria-label="anchor" href="#impute-new-unseen-data-using-a-trained-imputer"></a>
