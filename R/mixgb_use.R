@@ -1,17 +1,16 @@
 # Multiple imputation using xgboost (through saved models)
-
 mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL,
                       sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol) {
 
-  #param m.set the ith imputation
-  #param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
-  #param yobs.list  observed values in the original training data
-  #param yhatobs.list predicted observed values in the original training data,
-  #param sorted.dt sorted new data after initial imputation (with the same order as the original data)
-  #param missing.vars names of variables with missing values in new data
-  #param missing.types types of variable with missing values in new data
-  #param sorted.names all names of variables in sorted order
-  #param Ncol number of columns in new data
+  # param m.set the ith imputation
+  # param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
+  # param yobs.list  observed values in the original training data
+  # param yhatobs.list predicted observed values in the original training data,
+  # param sorted.dt sorted new data after initial imputation (with the same order as the original data)
+  # param missing.vars names of variables with missing values in new data
+  # param missing.types types of variable with missing values in new data
+  # param sorted.names all names of variables in sorted order
+  # param Ncol number of columns in new data
 
   for (var in missing.vars) {
     features <- setdiff(sorted.names, var)
@@ -65,9 +64,8 @@ mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, e
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
         # use softmax, predict returns class
         # for pmm.type=NULL or "auto"
-        yhatmis<- predict(xgb.models[[var]], mis.data)
-        sorted.dt[[var]][na.idx] <-levels(sorted.dt[[var]])[yhatmis + 1]
-
+        yhatmis <- predict(xgb.models[[var]], mis.data)
+        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis + 1]
       } else {
         # predict returns probability matrix for each class
         yhatmis <- predict(xgb.models[[var]], mis.data, reshape = TRUE)

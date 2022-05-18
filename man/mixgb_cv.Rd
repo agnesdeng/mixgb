@@ -36,10 +36,10 @@ mixgb_cv(
 \item{...}{Extra arguments to pass to XGBoost.}
 }
 \value{
-A list of the optimal \code{nrounds} and \code{evaluation.log}
+A list of the optimal \code{nrounds}, \code{evaluation.log} and the chosen \code{response}.
 }
 \description{
-Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to find the optimal \code{nrounds}. This is a preliminary feature and functions to pre-tune other hyperparameters are under development.
+Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to find the optimal \code{nrounds}.
 }
 \examples{
 cv.results <- mixgb_cv(data = nhanes3_newborn)

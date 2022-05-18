@@ -12,8 +12,8 @@ data_clean(rawdata, levels.tol = 0.2)
 \item{levels.tol}{Tolerant proportion of the number of levels to the number of observations in a multiclass variable. Default: 0.2}
 }
 \value{
-A roughly cleaned dataset
+A preliminary cleaned dataset
 }
 \description{
-Check some common errors of a raw dataset and return a suitable dataset to be fed into the imputer. Note that this function is just a rough check. It will not guarantee the output dataset is fully cleaned.
+Check some common errors of a raw dataset and return a suitable dataset to be fed into the imputer. Note that this function is just a preliminary check. It will not guarantee the output dataset is fully cleaned.
 }

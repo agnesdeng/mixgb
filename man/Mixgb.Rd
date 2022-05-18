@@ -8,6 +8,7 @@
 Set up an XGBoost imputer object with specified hyperparameters and obtain multiply imputed datasets
 }
 \examples{
+\dontrun{
 #use default
 MIXGB <- Mixgb$new(data = nhanes3_newborn)
 #obtain m multiply datasets without saving models
@@ -15,6 +16,7 @@ imputed.data <- MIXGB$impute(m = 5)
 
 #obtain m multiply imputed datasets and save models for imputing new data later on
 imputed.obj <- MIXGB$impute(m = 5, save.models = TRUE)
+}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -36,13 +38,13 @@ imputed.obj <- MIXGB$impute(m = 5, save.models = TRUE)
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{Mixgb$new()}}
-\item \href{#method-impute}{\code{Mixgb$impute()}}
+\item \href{#method-Mixgb-new}{\code{Mixgb$new()}}
+\item \href{#method-Mixgb-impute}{\code{Mixgb$impute()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Mixgb-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Mixgb-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new \code{Mixgb} object. This is used to set up an XGBoost imputer with chosen hyperparameters and verbose options
 \subsection{Usage}{
@@ -80,8 +82,8 @@ An XGBoost imputer object with chosen hyperparameters and verbose options
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-impute"></a>}}
-\if{latex}{\out{\hypertarget{method-impute}{}}}
+\if{html}{\out{<a id="method-Mixgb-impute"></a>}}
+\if{latex}{\out{\hypertarget{method-Mixgb-impute}{}}}
 \subsection{Method \code{impute()}}{
 Impute missing values with the pre-set XGBoost imputer and obtain multiply imputed datasets, with an option to save models for imputing new data later on.
 \subsection{Usage}{

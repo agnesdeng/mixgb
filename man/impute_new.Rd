@@ -13,14 +13,15 @@ impute_new(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL)
 
 \item{initial.newdata}{Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{MIXGB$new()} will be used for initial imputation.}
 
-\item{pmm.k}{The number of donors for predictive mean matching. If \code{NULL} (the defualt), the \code{pmm.k} value in the saved imputer object will be used.}
+\item{pmm.k}{The number of donors for predictive mean matching. If \code{NULL} (the default), the \code{pmm.k} value in the saved imputer object will be used.}
 
-\item{m}{The number of imputed datasets. If \code{NULL} (the defualt), the \code{m} value in the saved imputer object will be used.}
+\item{m}{The number of imputed datasets. If \code{NULL} (the default), the \code{m} value in the saved imputer object will be used.}
 }
 \description{
 Impute new data with a saved \code{mixgb} imputer object
 }
 \examples{
+\dontrun{
 set.seed(2022)
 n <- nrow(nhanes3_newborn)
 idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
@@ -30,4 +31,6 @@ test.data <- nhanes3_newborn[-idx, ]
 MIXGB <- Mixgb$new(data = train.data)
 imputed.obj <- MIXGB$impute(m = 5, bootstrap = TRUE, save.models = TRUE)
 imputed.testdata <- impute_new(object = imputed.obj, newdata = test.data)
+}
+
 }

@@ -1,5 +1,5 @@
 #' Use cross-validation to find the optimal \code{nrounds}
-#' @description Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to find the optimal \code{nrounds}. This is a preliminary feature and functions to pre-tune other hyperparameters are under development.
+#' @description Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to find the optimal \code{nrounds}.
 #' @param data A data.frame or a data.table with missing values.
 #' @param nfold The number of subsamples which are randomly partitioned and of equal size. Default: 5
 #' @param nrounds The max number of iterations in XGBoost training. Default: 100
@@ -9,16 +9,14 @@
 #' @param stringsAsFactors A logical value indicating whether character vectors should be converted to factors.
 #' @param verbose A logical value. Whether to print out cross-validation results during the process.
 #' @param ... Extra arguments to pass to XGBoost.
-#' @return A list of the optimal \code{nrounds} and \code{evaluation.log}
+#' @return A list of the optimal \code{nrounds}, \code{evaluation.log} and the chosen \code{response}.
+#' @export
 #' @examples
 #' cv.results <- mixgb_cv(data = nhanes3_newborn)
 #' cv.results$best.nrounds
 #'
 #' MIXGB <- Mixgb$new(data = nhanes3_newborn, nrounds = cv.results$best.nrounds)
 #' imputed.data <- MIXGB$impute(m = 5)
-#' @export
-
-
 mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_covariates = NULL, stringsAsFactors = FALSE, verbose = TRUE, ...) {
   num.cc <- sum(complete.cases(data))
 
@@ -47,12 +45,13 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     stop("This datset contains variables with character type. Please set stringsAsFactors = TRUE")
   }
 
-  na.col<-which(colSums(is.na(data))!=0)
+  na.col <- which(colSums(is.na(data)) != 0)
 
   if (is.null(response)) {
-    #r.idx <- sample(1:ncol(cc.data), size = 1)
+    # r.idx <- sample(1:ncol(cc.data), size = 1)
     r.idx <- sample(na.col, size = 1)
     response <- Names[r.idx]
+    response
   } else if (!is.character(response)) {
     response <- Names[response]
   }
@@ -80,7 +79,7 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     obj.type <- "binary:logistic"
     eval_metric <- "logloss"
     obs.y <- as.integer(cc.data[[response]]) - 1
-    cv.train <- xgb.cv(data = obs.data, label = obs.y, objective = obj.type,  eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    cv.train <- xgb.cv(data = obs.data, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else {
     obj.type <- "multi:softmax"
     eval_metric <- "mlogloss"
@@ -93,5 +92,5 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
 
   evaluation.log <- cv.train$evaluation_log
   best.nrounds <- cv.train$best_iteration
-  return(list("best.nrounds" = best.nrounds, "evaluation.log" = evaluation.log))
+  return(list("best.nrounds" = best.nrounds, "evaluation.log" = evaluation.log, "response" = response))
 }

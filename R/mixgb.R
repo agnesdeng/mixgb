@@ -1,10 +1,9 @@
 # Multiple imputation using xgboost
-
 mixgb <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
                   xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, colsample_bytree = 1, min_child_weight = 1, subsample = 1, tree_method = "auto", gpu_id = 0, predictor = "auto", scale_pos_weight = 1),
                   nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                   ...) {
-  #param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
+  # param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   for (var in missing.vars) {
     features <- setdiff(sorted.names, var)
     form <- reformulate(termlabels = features, response = var)
@@ -80,7 +79,6 @@ mixgb <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sor
           }
           sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
-
       }
     } else {
       # multiclass ---------------------------------------------------------------------------
@@ -116,8 +114,6 @@ mixgb <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sor
         }
         sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
       }
-
-
     }
   } # end of for each missing variable
   return(sorted.dt)

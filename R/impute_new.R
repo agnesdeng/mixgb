@@ -2,9 +2,11 @@
 #' @param  object A saved imputer object created by \code{$impute()}
 #' @param  newdata A data.frame or data.table. New data with missing values.
 #' @param  initial.newdata Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{MIXGB$new()} will be used for initial imputation.
-#' @param  pmm.k The number of donors for predictive mean matching. If \code{NULL} (the defualt), the \code{pmm.k} value in the saved imputer object will be used.
-#' @param  m The number of imputed datasets. If \code{NULL} (the defualt), the \code{m} value in the saved imputer object will be used.
+#' @param  pmm.k The number of donors for predictive mean matching. If \code{NULL} (the default), the \code{pmm.k} value in the saved imputer object will be used.
+#' @param  m The number of imputed datasets. If \code{NULL} (the default), the \code{m} value in the saved imputer object will be used.
+#' @export
 #' @examples
+#' \dontrun{
 #' set.seed(2022)
 #' n <- nrow(nhanes3_newborn)
 #' idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
@@ -14,9 +16,8 @@
 #' MIXGB <- Mixgb$new(data = train.data)
 #' imputed.obj <- MIXGB$impute(m = 5, bootstrap = TRUE, save.models = TRUE)
 #' imputed.testdata <- impute_new(object = imputed.obj, newdata = test.data)
-#' @export
-
-
+#' }
+#'
 impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL) {
 
 
@@ -75,15 +76,15 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   }
 
   ordinalAsInteger <- params$ordinalAsInteger
-  if(ordinalAsInteger==TRUE){
-    ord.fac<-names(Filter(is.ordered,newdata))
-    #ord.fac<- colnames(data)[sapply(data,is.ordered)]
-    newdata[,c(ord.fac) := lapply(.SD, as.integer), .SDcols = ord.fac]
+  if (ordinalAsInteger == TRUE) {
+    ord.fac <- names(Filter(is.ordered, newdata))
+    # ord.fac<- colnames(data)[sapply(data,is.ordered)]
+    newdata[, c(ord.fac) := lapply(.SD, as.integer), .SDcols = ord.fac]
   }
 
 
   # sortedNA.dt: sorted newdata according to the original training dataset
-  #sortedNA.dt <- newdata[, ..sorted.names]
+  # sortedNA.dt <- newdata[, ..sorted.names]
   sortedNA.dt <- newdata[, sorted.names, with = FALSE]
 
 
@@ -111,7 +112,7 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
       trainNA.dt[[var]][na.idx] <- NA
     }
     # traindata=train.dt (one imputed train set)  or traindata=trainNA.dt (the original train set with NAs)
-  }else{
+  } else {
     trainNA.dt <- NULL
   }
 
@@ -153,17 +154,17 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   imputed.data <- vector("list", m)
   cat("Imputing new data with mixgb: ", "set")
 
-    for (i in seq_len(m)) {
-      cat(" --", i)
-      # feed in the initial imputed dataset
-      sorted.dt <- initial.obj$sorted.dt
-      sorted.dt <- mixgb_use(
-        m.set = i, xgb.models = XGB.models[[i]], pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt,
-        missing.vars = missing.vars, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol
-      )
+  for (i in seq_len(m)) {
+    cat(" --", i)
+    # feed in the initial imputed dataset
+    sorted.dt <- initial.obj$sorted.dt
+    sorted.dt <- mixgb_use(
+      m.set = i, xgb.models = XGB.models[[i]], pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt,
+      missing.vars = missing.vars, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol
+    )
 
-      imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
-    }
+    imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
+  }
 
 
   # ...............................................................

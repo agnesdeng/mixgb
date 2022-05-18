@@ -1,12 +1,12 @@
 # Initially impute a dataset with missing values
 
 initial_imp <- function(data, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = TRUE) {
-  #@param data A data table (with missing values NA's)
-  #@param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
-  #@param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode"
-  #@param initial.fac Initial imputation method for factor type data ("mode","sample"). Default: "mode"
-  #@param bootstrap Whether or not use bootstrap for multiple imputation. If TRUE, also return sortedNA.dt
-  #@return A list of objects that will be used for imputation later
+  # @param data A data table (with missing values NA's)
+  # @param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
+  # @param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode"
+  # @param initial.fac Initial imputation method for factor type data ("mode","sample"). Default: "mode"
+  # @param bootstrap Whether or not use bootstrap for multiple imputation. If TRUE, also return sortedNA.dt
+  # @return A list of objects that will be used for imputation later
 
 
   Ncol <- ncol(data)
@@ -34,7 +34,8 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
   missing.vars <- sorted.names[missing.idx]
   missing.types <- sorted.types[missing.idx]
   missing.method <- ifelse(missing.types == "numeric", initial.num,
-                           ifelse(missing.types == "integer", initial.int, initial.fac))
+    ifelse(missing.types == "integer", initial.int, initial.fac)
+  )
 
 
   if (all(sorted.naSums == 0)) {
@@ -109,8 +110,8 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
 # method ------------------------------------------------------------------
 # Impute the missing values of a vector with sampled observed values
 imp.sample <- function(vec, na.idx = NULL) {
-  #@param vec A vector of numeric or factor values
-  #@param na.idx Indices of missing values
+  # @param vec A vector of numeric or factor values
+  # @param na.idx Indices of missing values
 
   if (is.null(na.idx)) {
     na.idx <- which(is.na(vec))
@@ -137,8 +138,8 @@ imp.sample <- function(vec, na.idx = NULL) {
 
 # Impute the missing values of a vector with randomly selected values from a normal distribution with mean and sd extracted from observed values
 imp.normal <- function(vec, na.idx = NULL) {
-  #@param vec A vector of numeric values
-  #@param na.idx Indices of missing values
+  # @param vec A vector of numeric values
+  # @param na.idx Indices of missing values
   if (!is.numeric(vec)) {
     stop("imp.normal(vec,...) only applies to a numeric vector")
   }
@@ -168,8 +169,8 @@ imp.normal <- function(vec, na.idx = NULL) {
 
 # Impute the missing values of a vector with the mean of observed values
 imp.mean <- function(vec, na.idx = NULL) {
-  #@param vec A vector of numeric values
-  #@param na.idx Indices of missing values
+  # @param vec A vector of numeric values
+  # @param na.idx Indices of missing values
 
   if (!is.numeric(vec)) {
     stop("imp.mean(vec,...) only applies to a numeric vector")
@@ -191,10 +192,10 @@ imp.mean <- function(vec, na.idx = NULL) {
 }
 
 
-#Impute the missing values of a vector with the median of observed values
+# Impute the missing values of a vector with the median of observed values
 imp.median <- function(vec, na.idx = NULL) {
-  #@param vec A vector of numeric values
-  #@param na.idx Indices of missing values
+  # @param vec A vector of numeric values
+  # @param na.idx Indices of missing values
 
   if (!is.numeric(vec)) {
     stop("imp.median(vec,...) only applies to a numeric vector")
@@ -217,8 +218,8 @@ imp.median <- function(vec, na.idx = NULL) {
 
 # Impute the missing values of a vector with the mode (majority class) of observed values
 imp.mode <- function(vec, na.idx = NULL) {
-  #@param vec A vector of numeric values (ideally integer type) or factor
-  #@param na.idx Indices of missing values
+  # @param vec A vector of numeric values (ideally integer type) or factor
+  # @param na.idx Indices of missing values
   if (is.null(na.idx)) {
     na.idx <- which(is.na(vec))
   }

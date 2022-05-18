@@ -6,6 +6,7 @@
 #' @import xgboost data.table
 #' @export
 #' @examples
+#' \dontrun{
 #' #use default
 #' MIXGB <- Mixgb$new(data = nhanes3_newborn)
 #' #obtain m multiply datasets without saving models
@@ -13,6 +14,7 @@
 #'
 #' #obtain m multiply imputed datasets and save models for imputing new data later on
 #' imputed.obj <- MIXGB$impute(m = 5, save.models = TRUE)
+#' }
 
 Mixgb <- R6Class("Mixgb",
                  cloneable = FALSE,
@@ -40,7 +42,9 @@ Mixgb <- R6Class("Mixgb",
                    #' @return An XGBoost imputer object with chosen hyperparameters and verbose options
 
 
-                   initialize = function(data, xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1, subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,nthread = 4, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+                   initialize = function(data, xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1,
+                                                                 subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
+                                                                 nthread = 4, tree_method = "auto", gpu_id = 0, predictor = "auto"),
                                          nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
                                         ) {
 
@@ -115,7 +119,8 @@ Mixgb <- R6Class("Mixgb",
                        }
                        ord.fac<-names(Filter(is.ordered,data))
                        #ord.fac<- colnames(data)[sapply(data,is.ordered)]
-                       data[,c(ord.fac) := lapply(.SD, as.integer), .SDcols = ord.fac]
+                       ##data[,c(ord.fac) := lapply(.SD, as.integer), .SDcols = ord.fac]
+                       data[,c(ord.fac) := lapply(.SD, fac2int), .SDcols = ord.fac]
                      }
 
 

@@ -7,7 +7,7 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
                            nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                            ...) {
 
-  #yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
+  # yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
 
   # pre-allocation for models
   xgb.models <- vector("list", save.p)
@@ -150,7 +150,7 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
         # use softmax, predict returns class
         # for pmm.type=NULL or "auto"
-        yhatmis<-predict(xgb.fit, mis.data)
+        yhatmis <- predict(xgb.fit, mis.data)
         sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis + 1]
       } else {
         # predict returns probability matrix for each class

@@ -52,7 +52,7 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
         if (pmm.type != 1) {
           # for pmm.type=0 or 2 or auto (type 2 for numeric or integer)
           yhatobs <- predict(xgb.fit, Obs.data)
-          yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs =  yobs.list[[var]], k = pmm.k)
+          yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         } else {
           # for pmm.type=1
           yhatmis <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
@@ -84,7 +84,7 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
           ...
         )
-          yhatmis <- predict(xgb.fit, mis.data)
+        yhatmis <- predict(xgb.fit, mis.data)
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
           # for pmm.type=NULL or "auto"
           yhatmis <- ifelse(yhatmis >= 0.5, 1, 0)
@@ -96,7 +96,7 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
           } else {
             # for pmm.type=0 or 2
             yhatobs <- predict(xgb.fit, Obs.data)
-            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs =  yobs.list[[var]], k = pmm.k)
+            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
           }
         }
       }
@@ -133,7 +133,6 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
           # probability matrix for each class
           yhatobs <- predict(xgb.fit, Obs.data, reshape = TRUE)
           sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
-
         }
       }
     }
