@@ -24,7 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/mixgb-vignette.html">mixgb: Multiple Imputation Through XGBoost</a>
+    <a class="dropdown-item" href="../articles/Imputing-newdata.html">Imputing newdata with a saved mixgb imputer</a>
+    <a class="dropdown-item" href="../articles/Using-mixgb.html">mixgb: Multiple Imputation Through XGBoost</a>
+    <a class="dropdown-item" href="../articles/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -54,19 +56,17 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">createNA</span><span class="op">(</span><span class="va">data</span>, names <span class="op">=</span> <span class="cn">NULL</span>, p <span class="op">=</span> <span class="fl">0.3</span>, seed <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">createNA</span><span class="op">(</span><span class="va">data</span>, var.names <span class="op">=</span> <span class="cn">NULL</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
 <dd><p>A complete data frame.</p></dd>
-<dt>names</dt>
-<dd><p>The names of variables where missing values will be generated.</p></dd>
+<dt>var.names</dt>
+<dd><p>The var.names of variables where missing values will be generated.</p></dd>
 <dt>p</dt>
-<dd><p>The proportion of missing values in the data frame or the proportions of missing values corresponding to the variables specified in <code>names</code>.</p></dd>
-<dt>seed</dt>
-<dd><p>An integer value. Default: <code>NULL</code></p></dd>
+<dd><p>The proportion of missing values in the data frame or the proportions of missing values corresponding to the variables specified in <code>var.names</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -76,14 +76,16 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Create 30% MCAR data across all variables in a dataset</span></span>
-<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span><span class="va">iris</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Create 30% MCAR data in a specified variable in a dataset</span></span>
-<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span><span class="va">iris</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Create MCAR data in several specified variables in a dataset</span></span>
-<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span><span class="va">iris</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Petal.Width"</span>, <span class="st">"Species"</span><span class="op">)</span>,</span>
-<span class="r-in">                      p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>,</span>
+<span class="r-in">  var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Petal.Width"</span>, <span class="st">"Species"</span><span class="op">)</span>,</span>
+<span class="r-in">  p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">)</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

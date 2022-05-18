@@ -24,7 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/mixgb-vignette.html">mixgb: Multiple Imputation Through XGBoost</a>
+    <a class="dropdown-item" href="../articles/Imputing-newdata.html">Imputing newdata with a saved mixgb imputer</a>
+    <a class="dropdown-item" href="../articles/Using-mixgb.html">mixgb: Multiple Imputation Through XGBoost</a>
+    <a class="dropdown-item" href="../articles/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -66,14 +68,15 @@
 <dt>initial.newdata</dt>
 <dd><p>Whether to use the information of the new data to initially impute new data. By default, this is set to <code>FALSE</code>, the original data passed to <code>MIXGB$new()</code> will be used for initial imputation.</p></dd>
 <dt>pmm.k</dt>
-<dd><p>The number of donors for predictive mean matching. If <code>NULL</code> (the defualt), the <code>pmm.k</code> value in the saved imputer object will be used.</p></dd>
+<dd><p>The number of donors for predictive mean matching. If <code>NULL</code> (the default), the <code>pmm.k</code> value in the saved imputer object will be used.</p></dd>
 <dt>m</dt>
-<dd><p>The number of imputed datasets. If <code>NULL</code> (the defualt), the <code>m</code> value in the saved imputer object will be used.</p></dd>
+<dd><p>The number of imputed datasets. If <code>NULL</code> (the default), the <code>m</code> value in the saved imputer object will be used.</p></dd>
 </dl></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.7</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
@@ -81,9 +84,9 @@
 <span class="r-in"></span>
 <span class="r-in"><span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">imputed.obj</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, bootstrap <span class="op">=</span> <span class="cn">TRUE</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mixgb with bootstrap: saving models and imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
 <span class="r-in"><span class="va">imputed.testdata</span> <span class="op">&lt;-</span> <span class="fu">impute_new</span><span class="op">(</span>object <span class="op">=</span> <span class="va">imputed.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Imputing new data with mixgb:  set -- 1 -- 2 -- 3 -- 4 -- 5</span>
+<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -7,10 +7,16 @@
     <loc>https://agnesdeng.github.io/mixgb/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://agnesdeng.github.io/mixgb/articles/index.html</loc>
+    <loc>https://agnesdeng.github.io/mixgb/articles/Imputing-newdata.html</loc>
   </url>
   <url>
-    <loc>https://agnesdeng.github.io/mixgb/articles/mixgb-vignette.html</loc>
+    <loc>https://agnesdeng.github.io/mixgb/articles/Using-mixgb.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/articles/Visual-diagnostics.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/articles/index.html</loc>
   </url>
   <url>
     <loc>https://agnesdeng.github.io/mixgb/authors.html</loc>
@@ -31,9 +37,6 @@
     <loc>https://agnesdeng.github.io/mixgb/reference/impute_new.html</loc>
   </url>
   <url>
-    <loc>https://agnesdeng.github.io/mixgb/reference/imputed_var.html</loc>
-  </url>
-  <url>
     <loc>https://agnesdeng.github.io/mixgb/reference/index.html</loc>
   </url>
   <url>
@@ -44,5 +47,38 @@
   </url>
   <url>
     <loc>https://agnesdeng.github.io/mixgb/reference/nhanes3_newborn.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/plot_1num1fac.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/plot_1num2fac.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/plot_2fac.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/plot_2num.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/plot_2num1fac.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/plot_bar.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/plot_box.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/plot_hist.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/pmm.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/pmm.multiclass.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/show_var.html</loc>
   </url>
 </urlset>

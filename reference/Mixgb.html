@@ -24,7 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/mixgb-vignette.html">mixgb: Multiple Imputation Through XGBoost</a>
+    <a class="dropdown-item" href="../articles/Imputing-newdata.html">Imputing newdata with a saved mixgb imputer</a>
+    <a class="dropdown-item" href="../articles/Using-mixgb.html">mixgb: Multiple Imputation Through XGBoost</a>
+    <a class="dropdown-item" href="../articles/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -87,9 +89,9 @@
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-new"><code>Mixgb$new()</code></a></p></li>
-<li><p><a href="#method-impute"><code>Mixgb$impute()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-new"></a><div class="section">
+<ul><li><p><a href="#method-Mixgb-new"><code>Mixgb$new()</code></a></p></li>
+<li><p><a href="#method-Mixgb-impute"><code>Mixgb$impute()</code></a></p></li>
+</ul></div><p></p><hr><a id="method-Mixgb-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>Create a new <code>Mixgb</code> object. This is used to set up an XGBoost imputer with chosen hyperparameters and verbose options</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
@@ -138,7 +140,7 @@
 <p>An XGBoost imputer object with chosen hyperparameters and verbose options</p>
 </div>
 
-</div><p></p><hr><a id="method-impute"></a><div class="section">
+</div><p></p><hr><a id="method-Mixgb-impute"></a><div class="section">
 <h3 id="method-impute-">Method <code>impute()</code><a class="anchor" aria-label="anchor" href="#method-impute-"></a></h3>
 <p>Impute missing values with the pre-set XGBoost imputer and obtain multiply imputed datasets, with an option to save models for imputing new data later on.</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
@@ -242,15 +244,15 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">#use default</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co">#use default</span></span>
 <span class="r-in"><span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va">Mixgb</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span><span class="op">)</span></span>
 <span class="r-in"><span class="co">#obtain m multiply datasets without saving models</span></span>
 <span class="r-in"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">#obtain m multiply imputed datasets and save models for imputing new data later on</span></span>
 <span class="r-in"><span class="va">imputed.obj</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mixgb with bootstrap: saving models and imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
