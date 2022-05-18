@@ -143,9 +143,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 optimal.nrounds$response
-#> [1] "BMPTR2"
+#> [1] "DMPPIR"
 optimal.nrounds$best.nrounds
-#> [1] 15
+#> [1] 9
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -361,20 +361,19 @@ supportcan be downloaded from the release page
 <https://github.com/dmlc/xgboost/releases/tag/v1.4.0>
 
 The package can then be installed by running the following commands:
-\`\`\` \# Install dependencies $ R -q -e
-“install.packages(c(‘data.table’, ‘jsonlite’))”
 
-# Install XGBoost
+    # Install dependencies
+    $ R -q -e "install.packages(c('data.table', 'jsonlite'))"
 
-$ R CMD INSTALL ./xgboost\_r\_gpu\_linux.tar.gz
+    # Install XGBoost
+    $ R CMD INSTALL ./xgboost_r_gpu_linux.tar.gz
 
+Then users can install package `mixgb` in R.
 
-    Then users can install package `mixgb` in R. 
-
-
-    ```r
-    devtools::install_github("agnesdeng/mixgb")
-    library(mixgb)
+``` r
+devtools::install_github("agnesdeng/mixgb")
+library(mixgb)
+```
 
 Users just need to specify `tree_method = "gpu_list"` in the params list
 when setting up the Mixgb imputer. Other GPU-realted arguments include

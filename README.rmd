@@ -242,7 +242,8 @@ Multiple imputation can be run with GPU support for machines with NVIDIA GPUs. N
 The xgboost R package pre-built binary on Linux x86_64 with GPU supportcan be downloaded from the release page https://github.com/dmlc/xgboost/releases/tag/v1.4.0
 
 The package can then be installed by running the following commands:
-  ``` 
+
+``` 
 # Install dependencies
 $ R -q -e "install.packages(c('data.table', 'jsonlite'))"
 
