@@ -176,9 +176,9 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">response</span>
-<span class="co">#&gt; [1] "DMPPIR"</span>
+<span class="co">#&gt; [1] "BMPRECUM"</span>
 <span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 9</span></code></pre></div>
+<span class="co">#&gt; [1] 17</span></code></pre></div>
 <p>By default, <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_covariates</code>, respectively.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>,
@@ -236,7 +236,7 @@
 <li><p>Three variables: <code><a href="reference/plot_2num1fac.html">plot_2num1fac()</a></code>, <code><a href="reference/plot_1num2fac.html">plot_1num2fac()</a></code>.</p></li>
 </ol>
 <p>Each function will return <code>m+1</code> panels to compare the observed data with <code>m</code> sets of actual imputed values.</p>
-<p>Here are some examples. For more details, please check the vignettes <code>Visual-diagnostics</code>.</p>
+<p>Here are some examples. For more details, please check the vignettes <a href="https://agnesdeng.github.io/mixgb/articles/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>,
     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
