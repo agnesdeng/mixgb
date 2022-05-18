@@ -186,14 +186,17 @@ The `mixgb` package provides the following visual diagnostics functions:
 Each function will return `m+1` panels to compare the observed data with `m` sets of actual imputed values.
 
 Here are some examples. For more details, please check the vignettes `Visual-diagnostics`.
-    ```{r}
-    plot_hist(imputation.list = imputed.data, var.num="BMPHEAD",original.data = withNA.df)
-    plot_2num(imputation.list = imputed.data, var.x="BMPHEAD",var.y="BMPRECUM",original.data = withNA.df)
-    plot_2num(imputation.list = imputed.data, var.x="HSAGEIR",var.y="BMPHEAD",original.data = withNA.df)
-    plot_1num1fac(imputation.list = imputed.data, var.num="BMPHEAD",var.fac="HSSEX",original.data = withNA.df)
-    plot_2fac(imputation.list = imputed.data, var.fac1="HYD1",var.fac2="HSSEX",original.data = withNA.df)
-    ```
+```{r}
+plot_hist(imputation.list = imputed.data, var.num="BMPHEAD",original.data = withNA.df)
+plot_2num(imputation.list = imputed.data, var.x="BMPHEAD",var.y="BMPRECUM",original.data = withNA.df)
+plot_2num(imputation.list = imputed.data, var.x="HSAGEIR",var.y="BMPHEAD",original.data = withNA.df)
+plot_1num1fac(imputation.list = imputed.data, var.num="BMPHEAD",var.fac="HSSEX",original.data = withNA.df)
+```
     
+```{r}
+plot_2fac(imputation.list = imputed.data, var.fac1="HYD1",var.fac2="HSSEX",original.data = withNA.df)
+```
+
 ## Impute new unseen data using a trained imputer
 
 First we can split the `nhanes3_newborn` dataset into training data and test data.

@@ -143,9 +143,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 optimal.nrounds$response
-#> [1] "BMPHEAD"
+#> [1] "HFF1"
 optimal.nrounds$best.nrounds
-#> [1] 18
+#> [1] 6
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -163,7 +163,7 @@ optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, nfold = 10,
         "DMPPIR", "HFF1", "HYD1"), verbose = FALSE)
 
 optimal.nrounds$best.nrounds
-#> [1] 18
+#> [1] 19
 ```
 
 Since the results returned by `mixgb_cv()` are mostly less than 20, I’ll
@@ -247,40 +247,40 @@ Each function will return `m+1` panels to compare the observed data with
 Here are some examples. For more details, please check the vignettes
 `Visual-diagnostics`.
 
-    ```r
-    plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD",
-        original.data = withNA.df)
-    ```
+``` r
+plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD",
+    original.data = withNA.df)
+```
 
-    <img src="man/figures/README-unnamed-chunk-12-1.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-12-1.png" width="95%" />
 
-    ```r
-    plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD",
-        var.y = "BMPRECUM", original.data = withNA.df)
-    ```
+``` r
+plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD",
+    var.y = "BMPRECUM", original.data = withNA.df)
+```
 
-    <img src="man/figures/README-unnamed-chunk-12-2.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-12-2.png" width="95%" />
 
-    ```r
-    plot_2num(imputation.list = imputed.data, var.x = "HSAGEIR",
-        var.y = "BMPHEAD", original.data = withNA.df)
-    ```
+``` r
+plot_2num(imputation.list = imputed.data, var.x = "HSAGEIR",
+    var.y = "BMPHEAD", original.data = withNA.df)
+```
 
-    <img src="man/figures/README-unnamed-chunk-12-3.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-12-3.png" width="95%" />
 
-    ```r
-    plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD",
-        var.fac = "HSSEX", original.data = withNA.df)
-    ```
+``` r
+plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD",
+    var.fac = "HSSEX", original.data = withNA.df)
+```
 
-    <img src="man/figures/README-unnamed-chunk-12-4.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-12-4.png" width="95%" />
 
-    ```r
-    plot_2fac(imputation.list = imputed.data, var.fac1 = "HYD1",
-        var.fac2 = "HSSEX", original.data = withNA.df)
-    ```
+``` r
+plot_2fac(imputation.list = imputed.data, var.fac1 = "HYD1",
+    var.fac2 = "HSSEX", original.data = withNA.df)
+```
 
-    <img src="man/figures/README-unnamed-chunk-12-5.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-13-1.png" width="95%" />
 
 ## Impute new unseen data using a trained imputer
 
