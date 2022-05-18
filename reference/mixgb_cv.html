@@ -98,40 +98,33 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu">mixgb_cv</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:6.977734+0.008407	test-rmse:6.982330+0.034550 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:1.693778+0.011506	test-rmse:1.729222+0.061551 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Multiple eval metrics are present. Will use test_rmse for early stopping.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Will train until test_rmse hasn't improved in 10 rounds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:4.980301+0.007629	test-rmse:4.984879+0.049889 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:3.605812+0.008259	test-rmse:3.630812+0.062291 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:2.670249+0.007992	test-rmse:2.719201+0.070907 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:2.040768+0.008859	test-rmse:2.144098+0.077083 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:1.626858+0.011555	test-rmse:1.782651+0.075632 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:1.356005+0.013275	test-rmse:1.570834+0.065979 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:1.183080+0.015563	test-rmse:1.459082+0.060410 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:1.073659+0.018449	test-rmse:1.404915+0.058551 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:1.004532+0.017907	test-rmse:1.376342+0.057885 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11]	train-rmse:0.958828+0.015649	test-rmse:1.362037+0.056504 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12]	train-rmse:0.926975+0.019885	test-rmse:1.357675+0.057592 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13]	train-rmse:0.906604+0.022656	test-rmse:1.354548+0.060335 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14]	train-rmse:0.889011+0.023641	test-rmse:1.357644+0.060966 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15]	train-rmse:0.871974+0.019056	test-rmse:1.357042+0.056860 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16]	train-rmse:0.860243+0.021528	test-rmse:1.353945+0.056256 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:0.846022+0.021812	test-rmse:1.357185+0.059414 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18]	train-rmse:0.831619+0.024216	test-rmse:1.360414+0.058229 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19]	train-rmse:0.821738+0.024294	test-rmse:1.361370+0.059842 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20]	train-rmse:0.805310+0.018586	test-rmse:1.365112+0.056893 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21]	train-rmse:0.784719+0.008646	test-rmse:1.367025+0.057388 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22]	train-rmse:0.765369+0.017614	test-rmse:1.366926+0.058436 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23]	train-rmse:0.750353+0.017339	test-rmse:1.369511+0.057899 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [24]	train-rmse:0.734255+0.016847	test-rmse:1.376185+0.059478 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25]	train-rmse:0.722958+0.020126	test-rmse:1.377358+0.059999 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [26]	train-rmse:0.703894+0.019738	test-rmse:1.378114+0.058985 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:1.433838+0.007129	test-rmse:1.506808+0.054285 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:1.273204+0.008781	test-rmse:1.386234+0.045350 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:1.170204+0.010282	test-rmse:1.322907+0.042199 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:1.097383+0.012667	test-rmse:1.293113+0.042304 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:1.043655+0.014806	test-rmse:1.281645+0.040088 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:1.000328+0.015723	test-rmse:1.281781+0.044976 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:0.966310+0.016623	test-rmse:1.280145+0.042114 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:0.938999+0.012918	test-rmse:1.278418+0.043416 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:0.916240+0.016033	test-rmse:1.280713+0.044940 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11]	train-rmse:0.893594+0.018290	test-rmse:1.278762+0.043551 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12]	train-rmse:0.877342+0.012947	test-rmse:1.280590+0.039854 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13]	train-rmse:0.861843+0.013399	test-rmse:1.283381+0.038549 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14]	train-rmse:0.841114+0.009546	test-rmse:1.287290+0.035513 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15]	train-rmse:0.821997+0.011015	test-rmse:1.291436+0.035139 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16]	train-rmse:0.803467+0.014531	test-rmse:1.293081+0.037359 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:0.781440+0.008432	test-rmse:1.295293+0.035486 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18]	train-rmse:0.770143+0.008704	test-rmse:1.296562+0.035489 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19]	train-rmse:0.756476+0.009570	test-rmse:1.299343+0.035602 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stopping. Best iteration:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16]	train-rmse:0.860243+0.021528	test-rmse:1.353945+0.056256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:0.938999+0.012918	test-rmse:1.278418+0.043416</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 9</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nrounds <span class="op">=</span> <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
