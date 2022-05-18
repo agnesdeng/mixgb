@@ -143,9 +143,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 optimal.nrounds$response
-#> [1] "HFF1"
+#> [1] "BMPTR2"
 optimal.nrounds$best.nrounds
-#> [1] 6
+#> [1] 15
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -163,7 +163,7 @@ optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, nfold = 10,
         "DMPPIR", "HFF1", "HYD1"), verbose = FALSE)
 
 optimal.nrounds$best.nrounds
-#> [1] 19
+#> [1] 17
 ```
 
 Since the results returned by `mixgb_cv()` are mostly less than 20, I’ll
@@ -280,7 +280,7 @@ plot_2fac(imputation.list = imputed.data, var.fac1 = "HYD1",
     var.fac2 = "HSSEX", original.data = withNA.df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-13-1.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-12-5.png" width="95%" />
 
 ## Impute new unseen data using a trained imputer
 

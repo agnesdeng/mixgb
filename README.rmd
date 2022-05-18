@@ -191,9 +191,6 @@ plot_hist(imputation.list = imputed.data, var.num="BMPHEAD",original.data = with
 plot_2num(imputation.list = imputed.data, var.x="BMPHEAD",var.y="BMPRECUM",original.data = withNA.df)
 plot_2num(imputation.list = imputed.data, var.x="HSAGEIR",var.y="BMPHEAD",original.data = withNA.df)
 plot_1num1fac(imputation.list = imputed.data, var.num="BMPHEAD",var.fac="HSSEX",original.data = withNA.df)
-```
-    
-```{r}
 plot_2fac(imputation.list = imputed.data, var.fac1="HYD1",var.fac2="HSSEX",original.data = withNA.df)
 ```
 
