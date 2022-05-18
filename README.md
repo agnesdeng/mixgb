@@ -1,15 +1,14 @@
 
-<!--This is an R Markdown document that generates a github readme.md file.-->
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # mixgb
 
-<!--badges-->
+<!-- badges: start -->
 
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/Version-0.1.0-brightgreen)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/Lifecycle-Experimental-ff69b4)](https://github.com/agnesdeng/mixgb)
-
-## Overview
+<!-- badges: end -->
 
 `mixgb` is a scalable multiple imputation framework based on XGBoost,
 bootstrapping and predictive mean matching. The proposed framework is
@@ -55,9 +54,13 @@ expected. Revised paper and adapted code will be updated soon.)
     multithreading with OpenMP support. However, MacOS has disabled
     OpenMP support.
 
-## Install `mixgb`
+## Installation
+
+You can install the development version of mixgb from
+[GitHub](https://github.com/) with:
 
 ``` r
+# install.packages("devtools")
 devtools::install_github("agnesdeng/mixgb")
 ```
 
@@ -140,9 +143,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 optimal.nrounds$response
-#> [1] "BMPRECUM"
+#> [1] "BMPHEAD"
 optimal.nrounds$best.nrounds
-#> [1] 15
+#> [1] 18
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -358,19 +361,20 @@ supportcan be downloaded from the release page
 <https://github.com/dmlc/xgboost/releases/tag/v1.4.0>
 
 The package can then be installed by running the following commands:
+\`\`\` \# Install dependencies $ R -q -e
+“install.packages(c(‘data.table’, ‘jsonlite’))”
 
-    # Install dependencies
-    $ R -q -e "install.packages(c('data.table', 'jsonlite'))"
+# Install XGBoost
 
-    # Install XGBoost
-    $ R CMD INSTALL ./xgboost_r_gpu_linux.tar.gz
+$ R CMD INSTALL ./xgboost\_r\_gpu\_linux.tar.gz
 
-Then users can install package `mixgb` in R.
 
-``` r
-devtools::install_github("agnesdeng/mixgb")
-library(mixgb)
-```
+    Then users can install package `mixgb` in R. 
+
+
+    ```r
+    devtools::install_github("agnesdeng/mixgb")
+    library(mixgb)
 
 Users just need to specify `tree_method = "gpu_list"` in the params list
 when setting up the Mixgb imputer. Other GPU-realted arguments include
