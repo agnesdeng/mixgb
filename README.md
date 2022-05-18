@@ -143,9 +143,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 optimal.nrounds$response
-#> [1] "DMPPIR"
+#> [1] "BMPRECUM"
 optimal.nrounds$best.nrounds
-#> [1] 9
+#> [1] 17
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -245,7 +245,8 @@ Each function will return `m+1` panels to compare the observed data with
 `m` sets of actual imputed values.
 
 Here are some examples. For more details, please check the vignettes
-`Visual-diagnostics`.
+[Visual diagnostics for multiply imputed
+values](https://agnesdeng.github.io/mixgb/articles/Visual-diagnostics.html).
 
 ``` r
 plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD",

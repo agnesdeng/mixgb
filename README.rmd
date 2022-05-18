@@ -185,7 +185,7 @@ The `mixgb` package provides the following visual diagnostics functions:
 
 Each function will return `m+1` panels to compare the observed data with `m` sets of actual imputed values.
 
-Here are some examples. For more details, please check the vignettes `Visual-diagnostics`.
+Here are some examples. For more details, please check the vignettes [Visual diagnostics for multiply imputed values][Visual-diagnostics].
 ```{r}
 plot_hist(imputation.list = imputed.data, var.num="BMPHEAD",original.data = withNA.df)
 plot_2num(imputation.list = imputed.data, var.x="BMPHEAD",var.y="BMPRECUM",original.data = withNA.df)
@@ -278,3 +278,4 @@ MIXGB<-Mixgb$new(withNA.df,xgb.params = params)
 mixgb.data<-MIXGB$impute(m=5)
 ```
 
+[Visual-diagnostics]:https://agnesdeng.github.io/mixgb/articles/Visual-diagnostics.html
