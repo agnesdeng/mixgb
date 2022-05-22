@@ -24,7 +24,7 @@ A list of `m` imputed datasets for new data.
 Impute new data with a saved \code{mixgb} imputer object
 }
 \examples{
-\dontrun{
+\donttest{
 set.seed(2022)
 n <- nrow(nhanes3_newborn)
 idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)

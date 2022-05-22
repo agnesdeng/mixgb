@@ -100,7 +100,7 @@ If \code{save.models = FALSE}, will return a list of \code{m} imputed datasets. 
 Obtain multiply imputed datasets using XGBoost, with an option to save models for imputing new data later on. Users can choose different settings regarding bootstrapping and predictive mean matching as well as XGBoost hyperparameters.
 }
 \examples{
-\dontrun{
+\donttest{
 
 # obtain m multiply datasets without saving models
 mixgb.data <- mixgb(data = nhanes3_newborn, m = 2)

@@ -16,11 +16,11 @@
 #' \donttest{
 #'
 #' #obtain m multiply datasets
-#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
 #' #plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM" conditional on "HFF1"
 #' plot_2num1fac(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
-#'  var.fac = "HFF1", original.data = nhanes3_newborn)
+#'  con.fac = "HFF1", original.data = nhanes3_newborn)
 #' }
 plot_2num1fac <- function(imputation.list, var.x, var.y, con.fac, original.data, color.pal = NULL) {
   if(!identical(dim(imputation.list[[1]]),dim(original.data))){
@@ -136,12 +136,12 @@ plot_2num1fac <- function(imputation.list, var.x, var.y, con.fac, original.data,
 #' \donttest{
 #'
 #' #obtain m multiply datasets
-#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
 #' #plot the multiply imputed values for variables "BMPRECUM" versus "HFF1" conditional on "HSSEX"
 #' plot_1num2fac(
 #'   imputation.list = imputed.data, var.fac = "HFF1", var.num = "BMPRECUM",
-#'   var.con = "HSSEX", original.data = nhanes3_newborn)
+#'   con.fac = "HSSEX", original.data = nhanes3_newborn)
 #' }
 plot_1num2fac <- function(imputation.list, var.fac, var.num, con.fac, original.data, color.pal = NULL) {
   if(!identical(dim(imputation.list[[1]]),dim(original.data))){

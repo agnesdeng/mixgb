@@ -33,13 +33,13 @@ Scatter plots
 Plot observed values with m sets of imputed values for two specified numeric variables and a factor using \pkg{ggplot2}.
 }
 \examples{
-\dontrun{
+\donttest{
 
 #obtain m multiply datasets
-mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 
 #plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM" conditional on "HFF1"
 plot_2num1fac(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
- var.fac = "HFF1", original.data = nhanes3_newborn)
+ con.fac = "HFF1", original.data = nhanes3_newborn)
 }
 }

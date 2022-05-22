@@ -15,7 +15,7 @@
 #' \donttest{
 #'
 #' #obtain m multiply datasets
-#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
 #' #plot the multiply imputed values for variable "BMPHEAD"
 #' plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD",
@@ -110,7 +110,7 @@ plot_hist <- function(imputation.list, var.num, original.data, color.pal = NULL)
 #' \donttest{
 #'
 #' #obtain m multiply datasets
-#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
 #' #plot the multiply imputed values for variable "BMPHEAD"
 #' plot_box(imputation.list = imputed.data, var.num = "BMPHEAD",
@@ -207,7 +207,7 @@ plot_box <- function(imputation.list, var.num, original.data, color.pal = NULL) 
 #' \donttest{
 #'
 #' #obtain m multiply datasets
-#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
 #' #plot the multiply imputed values for variable "HFF1"
 #' plot_bar(imputation.list = imputed.data, var.fac = "HFF1",

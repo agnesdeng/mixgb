@@ -22,7 +22,7 @@ A data.table with \code{m} columns, each column represents the imputed values of
 Show m sets of imputed values for a specified variable.
 }
 \examples{
-\dontrun{
+\donttest{
 #obtain m multiply datasets
 mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 
