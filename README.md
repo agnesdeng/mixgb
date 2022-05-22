@@ -25,6 +25,7 @@ expected. Revised paper and adapted code will be updated soon.)
 **May 2022**
 
 -   Visual diagnostic functions of multiply imputed data
+-   Use S3 instead of R6
 
 **April 2022**
 
@@ -54,7 +55,7 @@ expected. Revised paper and adapted code will be updated soon.)
     multithreading with OpenMP support. However, MacOS has disabled
     OpenMP support.
 
-## Installation
+## 1. Installation
 
 You can install the development version of mixgb from
 [GitHub](https://github.com/) with:
@@ -64,7 +65,12 @@ You can install the development version of mixgb from
 devtools::install_github("agnesdeng/mixgb")
 ```
 
-## Data cleaning before imputation
+``` r
+# load mixgb
+library(mixgb)
+```
+
+### Data cleaning before imputation
 
 It is highly recommended to clean and check your data before imputation.
 Here are some common issues:
@@ -83,11 +89,10 @@ obvious problems. However, it would not fix all issues related to data
 quality.
 
 ``` r
-library(mixgb)
 cleanWithNA.df <- data_clean(rawdata)
 ```
 
-## Imputing missing values with `mixgb`
+## 2. Impute missing values with `mixgb`
 
 We first load the `mixgb` package and the `nhanes3_newborn` dataset,
 which contains 16 variables of various types
@@ -95,8 +100,33 @@ which contains 16 variables of various types
 missing values.
 
 ``` r
-library(mixgb)
 data(nhanes3_newborn)
+str(nhanes3_newborn)
+#> tibble [2,107 × 16] (S3: tbl_df/tbl/data.frame)
+#>  $ HSHSIZER: int [1:2107] 4 3 5 4 4 3 5 3 3 3 ...
+#>  $ HSAGEIR : int [1:2107] 2 5 10 10 8 3 10 7 2 7 ...
+#>  $ HSSEX   : Factor w/ 2 levels "1","2": 2 1 2 2 1 1 2 2 2 1 ...
+#>  $ DMARACER: Factor w/ 3 levels "1","2","3": 1 1 2 1 1 1 2 1 2 2 ...
+#>  $ DMAETHNR: Factor w/ 3 levels "1","2","3": 3 1 3 3 3 3 3 3 3 3 ...
+#>  $ DMARETHN: Factor w/ 4 levels "1","2","3","4": 1 3 2 1 1 1 2 1 2 2 ...
+#>  $ BMPHEAD : num [1:2107] 39.3 45.4 43.9 45.8 44.9 42.2 45.8 NA 40.2 44.5 ...
+#>   ..- attr(*, "label")= chr "Head circumference (cm)"
+#>  $ BMPRECUM: num [1:2107] 59.5 69.2 69.8 73.8 69 61.7 74.8 NA 64.5 70.2 ...
+#>   ..- attr(*, "label")= chr "Recumbent length (cm)"
+#>  $ BMPSB1  : num [1:2107] 8.2 13 6 8 8.2 9.4 5.2 NA 7 5.9 ...
+#>   ..- attr(*, "label")= chr "First subscapular skinfold (mm)"
+#>  $ BMPSB2  : num [1:2107] 8 13 5.6 10 7.8 8.4 5.2 NA 7 5.4 ...
+#>   ..- attr(*, "label")= chr "Second subscapular skinfold (mm)"
+#>  $ BMPTR1  : num [1:2107] 9 15.6 7 16.4 9.8 9.6 5.8 NA 11 6.8 ...
+#>   ..- attr(*, "label")= chr "First triceps skinfold (mm)"
+#>  $ BMPTR2  : num [1:2107] 9.4 14 8.2 12 8.8 8.2 6.6 NA 10.9 7.6 ...
+#>   ..- attr(*, "label")= chr "Second triceps skinfold (mm)"
+#>  $ BMPWT   : num [1:2107] 6.35 9.45 7.15 10.7 9.35 7.15 8.35 NA 7.35 8.65 ...
+#>   ..- attr(*, "label")= chr "Weight (kg)"
+#>  $ DMPPIR  : num [1:2107] 3.186 1.269 0.416 2.063 1.464 ...
+#>   ..- attr(*, "label")= chr "Poverty income ratio"
+#>  $ HFF1    : Factor w/ 2 levels "1","2": 2 2 1 1 1 2 2 1 2 1 ...
+#>  $ HYD1    : Ord.factor w/ 5 levels "1"<"2"<"3"<"4"<..: 1 3 1 1 1 1 1 1 2 1 ...
 colSums(is.na(nhanes3_newborn))
 #> HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM 
 #>        0        0        0        0        0        0      124      114 
@@ -104,30 +134,57 @@ colSums(is.na(nhanes3_newborn))
 #>      161      169      124      167      117      192        7        0
 ```
 
+To impute this dataset, we can use the default settings. The default
+number of imputed datasets `m = 5`. Note that we do not need to convert
+our data into dgCMatrix or one-hot coding format. Our package will
+convert it automatically. Variables should be of the following types:
+numeric, integer, factor or ordinal factor.
+
 ``` r
 # use mixgb with default settings
-MIXGB <- Mixgb$new(data = nhanes3_newborn)
-imputed.data <- MIXGB$impute(m = 5, maxit = 1)
+imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
-To impute this dataset, first we need to set up an Mixgb imputer with
-our choice of settings or leave it as default. Note that we do not need
-to convert our data into dgCMatrix or one-hot coding format. Our package
-will convert it automatically. Variables should be of the following
-types: numeric, integer, factor or ordinal factor. Except `data`, other
-arguments in `Mixgb$new( )` are either hyperparameters or verbose
-settings for XGBoost training.
+### Customise imputation settings
+
+We can also customise imputation settings:
+
+-   The number of imputed datasets `m`
+
+-   The number of imputation iterations `maxit`
+
+-   Whether to convert ordinal factors to integer (imputation process
+    will be faster) `ordinalAsInteger`
+
+-   Whether to use bootstrapping `bootstrap`
+
+-   Predictive mean matching settings `pmm.type`, `pmm.k` and
+    `pmm.link`.
+
+-   Initial imputation methods for different types of variables
+    `initial.num`, `initial.int` and `initial.fac`.
+
+-   Whether to save models for imputing newdata `save.models` and
+    `save.vars`.
+
+-   XGBoost hyperparameters and verbose settings. `xgb.params`,
+    `nrounds`, `early_stopping_rounds`, `print_every_n` and `verbose`.
 
 ``` r
-# Set up mixgb imputer with chosen settings
-params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1,
+# Use mixgb with chosen settings
+params <- list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1,
     subsample = 1, colsample_bytree = 1, colsample_bylevel = 1,
     colsample_bynode = 1, nthread = 4, tree_method = "auto",
     gpu_id = 0, predictor = "auto")
 
-MIXGB <- Mixgb$new(data = nhanes3_newborn, xgb.params = params,
-    nrounds = 100, early_stopping_rounds = 1, print_every_n = 1,
-    verbose = 0)
+imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1,
+    ordinalAsInteger = TRUE, bootstrap = TRUE, pmm.type = "auto",
+    pmm.k = 5, pmm.link = "prob", initial.num = "normal", initial.int = "mode",
+    initial.fac = "mode", save.models = FALSE, save.vars = NULL,
+    xgb.params = params, nrounds = 50, early_stopping_rounds = 10,
+    print_every_n = 10L, verbose = 0)
+#> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
 ### Tune hyperparameters
@@ -141,11 +198,11 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 `mixgb_cv()` to find the optimal `nrounds` first.
 
 ``` r
-optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
-optimal.nrounds$response
-#> [1] "BMPRECUM"
-optimal.nrounds$best.nrounds
-#> [1] 17
+cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
+cv.results$response
+#> [1] "BMPTR1"
+cv.results$best.nrounds
+#> [1] 14
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -156,49 +213,25 @@ and covariates in the argument `response` and `select_covariates`,
 respectively.
 
 ``` r
-optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, nfold = 10,
-    nrounds = 100, early_stopping_rounds = 1, response = "BMPHEAD",
-    select_covariates = c("HSHSIZER", "HSAGEIR", "HSSEX", "DMARETHN",
-        "BMPRECUM", "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT",
-        "DMPPIR", "HFF1", "HYD1"), verbose = FALSE)
+cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
+    early_stopping_rounds = 1, response = "BMPHEAD", select_covariates = c("HSHSIZER",
+        "HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1",
+        "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT", "DMPPIR", "HFF1",
+        "HYD1"), verbose = FALSE)
 
-optimal.nrounds$best.nrounds
-#> [1] 17
+cv.results$best.nrounds
+#> [1] 19
 ```
 
-Since the results returned by `mixgb_cv()` are mostly less than 20, I’ll
-set `nrounds = 20` in the imputer. We now use this imputer to obtain m
-imputed datasets, which will be stored in a list of `m` data tables. If
-`m = 1`, single imputation will be undertaken. Users can also specify
-the number of imputation iterations `maxit`.
+Since using `mixgb_cv()` with this dataset mostly returns a number less
+than `20`, I’ll set `nrounds = 20` in `mixgb()` to obtain `m` imputed
+datasets.
 
 ``` r
-MIXGB <- Mixgb$new(data = nhanes3_newborn, nrounds = 20)
-imputed.data <- MIXGB$impute(m = 5, maxit = 1)
+imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = 20)
 ```
 
-### Customise imputation settings
-
-We can also customise other imputation settings:
-
--   Whether to use bootstrapping
-
--   The types of predictive mean matching
-
--   The number of donors for predictive mean matching
-
--   Whether to convert ordinal factors to integer (imputation process
-    will be faster)
-
--   Initial imputation methods for different types of variables
-
-``` r
-imputed.data <- MIXGB$impute(m = 5, maxit = 1, bootstrap = TRUE,
-    pmm.type = "auto", pmm.k = 5, ordinalAsInteger = TRUE, initial.num = "normal",
-    initial.int = "sample", initial.fac = "mode")
-```
-
-## Visualize multiply imputed values
+## 3. Visualize multiply imputed values
 
 It is important to assess the plausibility of imputations before doing
 analysis. The `mixgb` package provides several visual diagnostic
@@ -223,13 +256,12 @@ colSums(is.na(withNA.df))
 #>      161      169      124      167      117      192        7      211
 ```
 
-We then impute this dataset using `mixgb` with default settings. A list
-of five imputed datasets are assigned to `imputed.data`. The dimension
-of each imputed dataset will be the same as the original data.
+We then impute this dataset using `mixgb()` with default settings. A
+list of five imputed datasets are assigned to `imputed.data`. The
+dimension of each imputed dataset will be the same as the original data.
 
 ``` r
-MIXGB <- Mixgb$new(data = withNA.df)
-imputed.data <- MIXGB$impute(m = 5)
+imputed.data <- mixgb(data = withNA.df, m = 5)
 #> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
@@ -246,7 +278,7 @@ Each function will return `m+1` panels to compare the observed data with
 
 Here are some examples. For more details, please check the vignettes
 [Visual diagnostics for multiply imputed
-values](https://agnesdeng.github.io/mixgb/articles/Visual-diagnostics.html).
+values](https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html).
 
 ``` r
 plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD",
@@ -276,14 +308,7 @@ plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD",
 
 <img src="man/figures/README-unnamed-chunk-12-4.png" width="95%" />
 
-``` r
-plot_2fac(imputation.list = imputed.data, var.fac1 = "HYD1",
-    var.fac2 = "HSSEX", original.data = withNA.df)
-```
-
-<img src="man/figures/README-unnamed-chunk-12-5.png" width="95%" />
-
-## Impute new unseen data using a trained imputer
+## 4. Impute new unseen data using a saved imputer object
 
 First we can split the `nhanes3_newborn` dataset into training data and
 test data.
@@ -311,16 +336,45 @@ in the new data, we recommend specifying the names or indices of these
 variables in `save.vars` instead of saving models for all variables.
 
 ``` r
-MIXGB <- Mixgb$new(data = train.data)
-mixgb.obj <- MIXGB$impute(m = 5, maxit = 1, save.models = TRUE,
+# obtain m imputed datasets for train.data and save
+# imputation models
+mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE,
     save.vars = NULL)
+#> mixgb with bootstrap: saving models and imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
+
+When `save.models = TRUE`, `mixgb()` will return an object containing
+the following:
+
+-   `imputed.data`: a list of `m` imputed dataset for training data
+
+-   `XGB.models`: a list of `m` sets of XGBoost models for variables
+    specified in `save.vars`.
+
+-   `params`: a list of parameters that are required for imputing new
+    data using `impute_new()` later on.
 
 We can extract `m` imputed datasets from the saved imputer object by
 `$imputed.data`.
 
 ``` r
-imputed.traindata <- mixgb.obj$imputed.data
+train.imputed <- mixgb.obj$imputed.data
+# the 5th imputed dataset
+head(train.imputed[[5]])
+#>    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1
+#> 1:        7       2     1        1        1        3    42.4     66.7    7.8
+#> 2:        4       3     2        2        3        2    42.6     67.1    8.8
+#> 3:        3       9     2        2        3        2    46.5     64.3    8.6
+#> 4:        3       9     2        1        3        1    46.2     68.5   10.8
+#> 5:        5       4     1        1        3        1    44.7     63.0    6.0
+#> 6:        5      10     1        1        3        1    45.2     72.0    5.4
+#>    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1
+#> 1:    8.0    8.8    9.5  7.60  1.701    2    1
+#> 2:    8.8   13.3   12.2  8.70  0.102    2    1
+#> 3:    8.0   10.4    9.2  8.00  0.359    1    3
+#> 4:   10.0   16.6   16.0  8.98  0.561    1    3
+#> 5:    5.8    9.0    9.0  7.60  2.379    2    1
+#> 6:    5.4    9.2    9.4  9.00  2.173    2    2
 ```
 
 To impute new data with this saved imputer object, we use the
@@ -332,26 +386,27 @@ considerably faster as we don’t need to build the imputation models
 again.
 
 ``` r
-imputed.testdata <- impute_new(object = mixgb.obj, newdata = test.data)
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
+#> Imputing new data with mixgb:  set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
-If PMM is used in the trained imputer, predicted values of missing
+If PMM is used when we call `mixgb()`, predicted values of missing
 entries in the new dataset are matched with donors from training data.
 Users can also set the number of donors for PMM when imputing new data.
 By default, `pmm.k = NULL` , which means the same setting as the
 training object will be used.
 
 Similarly, users can set the number of imputed datasets `m`. Note that
-this value has to be smaller than or equal to the `m` in the trained
-imputer. If it is not specified, it will use the same `m` value as the
-trained imputer.
+this value has to be smaller than or equal to the `m` in `mixgb()`. If
+it is not specified, it will use the same `m` value as the saved object.
 
 ``` r
-imputed.testdata <- impute_new(object = mixgb.obj, newdata = test.data,
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data,
     initial.newdata = FALSE, pmm.k = 3, m = 4)
+#> Imputing new data with mixgb:  set -- 1 -- 2 -- 3 -- 4
 ```
 
-## Install `mixgb` with GPU support
+## 5. Install `mixgb` with GPU support
 
 Multiple imputation can be run with GPU support for machines with NVIDIA
 GPUs. Note that users have to install the R package `xgboost` with GPU
@@ -377,17 +432,16 @@ library(mixgb)
 ```
 
 Users just need to specify `tree_method = "gpu_list"` in the params list
-when setting up the Mixgb imputer. Other GPU-realted arguments include
-`gpu_id` and `predictor`. By default, `gpu_id = 0` and
-`predictor = "auto"`.
+which will then be passed to `xgb.params` in `mixgb()`. Other
+GPU-realted arguments include `gpu_id` and `predictor`. By default,
+`gpu_id = 0` and `predictor = "auto"`.
 
 ``` r
-params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1,
+params <- list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1,
     subsample = 1, colsample_bytree = 1, colsample_bylevel = 1,
     colsample_bynode = 1, nthread = 4, tree_method = "gpu_list",
     gpu_id = 0, predictor = "auto")
 
-MIXGB <- Mixgb$new(withNA.df, xgb.params = params)
 
-mixgb.data <- MIXGB$impute(m = 5)
+mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 ```

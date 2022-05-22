@@ -7,10 +7,11 @@
 #' @return A data.table with \code{m} columns, each column represents the imputed values of all missing entries in the specified variable. If \code{true.values} is provided, the last column will be the true values of the missing values.
 #' @export
 #' @examples
-#' \dontrun{
-#' MIXGB <- Mixgb$new(data = nhanes3_newborn)
-#' imputed.data <- MIXGB$impute(m = 5)
-#' imputed.BMPHEAD <- show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
+#' \donttest{
+#' #obtain m multiply datasets
+#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+#'
+#' imputed.BMPHEAD <- show_var(imputation.list = mixgb.data, var.name = "BMPHEAD",
 #'   original.data = nhanes3_newborn)
 #' imputed.BMPHEAD
 #' }

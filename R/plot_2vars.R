@@ -12,15 +12,19 @@
 #' @return Scatter plots for two numeric/integer variable
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
-#' MIXGB <- Mixgb$new(data = nhanes3_newborn)
-#' imputed.data <- MIXGB$impute(m = 5)
+#' #obtain m multiply datasets
+#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
+#' #plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM"
 #' plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
 #'   original.data = nhanes3_newborn)
 #' }
 plot_2num <- function(imputation.list, var.x, var.y, original.data, color.pal = NULL) {
+  if(!identical(dim(imputation.list[[1]]),dim(original.data))){
+    stop("The dimension of the imputed dataset needs to be the same as the dimension of the data specified in `original.data`.")
+  }
   Names <- colnames(original.data)
 
   if (!any(Names == var.x)) {
@@ -131,15 +135,19 @@ plot_2num <- function(imputation.list, var.x, var.y, original.data, color.pal = 
 #' @return Box plot with jittered data points for a numeric/integer variable; Bar plot for a categorical variable.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
-#' MIXGB <- Mixgb$new(data = nhanes3_newborn)
-#' imputed.data <- MIXGB$impute(m = 5)
+#' #obtain m multiply datasets
+#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
+#' #plot the multiply imputed values for variables "BMPHEAD" versus "HFF1"
 #' plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HFF1",
 #'   original.data = nhanes3_newborn)
 #' }
 plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, color.pal = NULL) {
+  if(!identical(dim(imputation.list[[1]]),dim(original.data))){
+    stop("The dimension of the imputed dataset needs to be the same as the dimension of the data specified in `original.data`.")
+  }
   Names <- colnames(original.data)
 
   if (!any(Names == var.num)) {
@@ -261,15 +269,19 @@ plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, colo
 #' @return Scatter plots for two numeric/integer variable
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
-#' MIXGB <- Mixgb$new(data = nhanes3_newborn)
-#' imputed.data <- MIXGB$impute(m = 5)
+#' #obtain m multiply datasets
+#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
+#' #plot the multiply imputed values for variables "HFF1" versus "DMARETHN"
 #' plot_2fac(imputation.list = imputed.data, var.fac1 = "HFF1", var.fac2 = "DMARETHN",
 #'   original.data = nhanes3_newborn)
 #' }
 plot_2fac <- function(imputation.list, var.fac1, var.fac2, original.data, color.pal = NULL) {
+  if(!identical(dim(imputation.list[[1]]),dim(original.data))){
+    stop("The dimension of the imputed dataset needs to be the same as the dimension of the data specified in `original.data`.")
+  }
   Names <- colnames(original.data)
   if (!any(Names == var.fac1)) {
     stop("The variable ", var.fac1, " does not exist in the original data.")

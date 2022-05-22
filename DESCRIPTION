@@ -25,7 +25,6 @@ Imports:
     ggplot2,
     Matrix,
     mice,
-    R6,
     Rfast,
     rlang,
     scales,

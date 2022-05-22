@@ -12,15 +12,19 @@
 #' @return Histogram with density plots
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
-#' MIXGB <- Mixgb$new(data = nhanes3_newborn)
-#' imputed.data <- MIXGB$impute(m = 5)
+#' #obtain m multiply datasets
+#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
+#' #plot the multiply imputed values for variable "BMPHEAD"
 #' plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD",
 #'   original.data = nhanes3_newborn)
 #' }
 plot_hist <- function(imputation.list, var.num, original.data, color.pal = NULL) {
+  if(!identical(dim(imputation.list[[1]]),dim(original.data))){
+    stop("The dimension of the imputed dataset needs to be the same as the dimension of the data specified in `original.data`.")
+  }
   Names <- colnames(original.data)
   if (!any(Names == var.num)) {
     stop("The variable ", var.num, " does not exist in the original data.")
@@ -103,15 +107,19 @@ plot_hist <- function(imputation.list, var.num, original.data, color.pal = NULL)
 #' @return Boxplots with data points for a numeric variable
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
-#' MIXGB <- Mixgb$new(data = nhanes3_newborn)
-#' imputed.data <- MIXGB$impute(m = 5)
+#' #obtain m multiply datasets
+#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
+#' #plot the multiply imputed values for variable "BMPHEAD"
 #' plot_box(imputation.list = imputed.data, var.num = "BMPHEAD",
 #'   original.data = nhanes3_newborn)
 #' }
 plot_box <- function(imputation.list, var.num, original.data, color.pal = NULL) {
+  if(!identical(dim(imputation.list[[1]]),dim(original.data))){
+    stop("The dimension of the imputed dataset needs to be the same as the dimension of the data specified in `original.data`.")
+  }
   Names <- colnames(original.data)
   if (!any(Names == var.num)) {
     stop("The variable ", var.num, " does not exist in the original data.")
@@ -196,17 +204,20 @@ plot_box <- function(imputation.list, var.num, original.data, color.pal = NULL) 
 #' @return Bar plots for a factor variable
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
-#' MIXGB <- Mixgb$new(data = nhanes3_newborn)
-#' imputed.data <- MIXGB$impute(m = 5)
+#' #obtain m multiply datasets
+#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
-#' # numeric variable
+#' #plot the multiply imputed values for variable "HFF1"
 #' plot_bar(imputation.list = imputed.data, var.fac = "HFF1",
 #'   original.data = nhanes3_newborn)
 #' }
 #'
 plot_bar <- function(imputation.list, var.fac, original.data, color.pal = NULL) {
+  if(!identical(dim(imputation.list[[1]]),dim(original.data))){
+    stop("The dimension of the imputed dataset needs to be the same as the dimension of the data specified in `original.data`.")
+  }
   Names <- colnames(original.data)
   if (!any(Names == var.fac)) {
     stop("The variable ", var.fac, " does not exist in the original data.")

@@ -23,9 +23,10 @@ Show m sets of imputed values for a specified variable.
 }
 \examples{
 \dontrun{
-MIXGB <- Mixgb$new(data = nhanes3_newborn)
-imputed.data <- MIXGB$impute(m = 5)
-imputed.BMPHEAD <- show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
+#obtain m multiply datasets
+mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+
+imputed.BMPHEAD <- show_var(imputation.list = mixgb.data, var.name = "BMPHEAD",
   original.data = nhanes3_newborn)
 imputed.BMPHEAD
 }

@@ -1,120 +1,322 @@
-# Multiple imputation using xgboost
-mixgb <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
-                  xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, colsample_bytree = 1, min_child_weight = 1, subsample = 1, tree_method = "auto", gpu_id = 0, predictor = "auto", scale_pos_weight = 1),
-                  nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
-                  ...) {
-  # param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
-  for (var in missing.vars) {
-    features <- setdiff(sorted.names, var)
-    form <- reformulate(termlabels = features, response = var)
+#' Multiple imputation through XGBoost
+#' @description Obtain multiply imputed datasets using XGBoost, with an option to save models for imputing new data later on. Users can choose different settings regarding bootstrapping and predictive mean matching as well as XGBoost hyperparameters.
+#' @param data A data.frame or data.table with missing values
+#' @param m The number of imputed datasets. Default: 5
+#' @param maxit The number of imputation iterations. Default: 1
+#' @param ordinalAsInteger Whether to convert ordinal factors to integers. The default setting \code{ordinalAsInteger = TRUE} can speed up the imputation process.
+#' @param bootstrap Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = TRUE}. If \code{FALSE}, users are recommended to specify sampling-related hyperparameters of XGBoost to obtain imputations with adequate variability.
+#' @param pmm.type The types of predictive mean matching (PMM). Possible values:
+#' \itemize{
+#'  \item \code{NULL}: Imputations without PMM;
+#'  \item \code{0}: Imputations with PMM type 0;
+#'  \item \code{1}: Imputations with PMM type 1;
+#'  \item \code{2}: Imputations with PMM type 2;
+#'  \item \code{"auto"} (Default): Imputations with PMM type 2 for numeric/integer variables; imputations without PMM for categorical variables.
+#' }
+#' @param pmm.k The number of donors for predictive mean matching. Default: 5
+#' @param pmm.link The link for predictive mean matching binary variables
+#' \itemize{
+#'  \item \code{"prob"} (Default): use probabilities;
+#'  \item \code{"logit"}: use logit values.
+#' }
+#' @param initial.num Initial imputation method for numeric type data:
+#' \itemize{
+#'  \item \code{"normal"} (Default);
+#'  \item \code{"mean"};
+#'  \item \code{"median"};
+#'  \item \code{"mode"};
+#'  \item \code{"sample"}.
+#' }
+#' @param initial.int Initial imputation method for integer type data:
+#' \itemize{
+#'  \item \code{"mode"} (Default);
+#'  \item \code{"sample"}.
+#' }
+#' @param initial.fac Initial imputation method for factor type data:
+#' \itemize{
+#'  \item \code{"mode"} (Default);
+#'  \item \code{"sample"}.
+#' }
+#' @param save.models Whether to save models for imputing new data later on. Default: \code{FALSE}
+#' @param save.vars Response models for variables specified in \code{save.vars} will be saved for imputing new data. Can be a vector of names or indices. By default, \code{save.vars = NULL}, response models for variables with missing values will be saved. To save all models, please specify \code{save.vars = colnames(data)}.
+#' @param xgb.params A list of XGBoost hyperparameters.
+#' @param nrounds The maximum number of boosting iterations for XGBoost. Default: 50
+#' @param early_stopping_rounds An integer value \code{k}. XGBoost training will stop if the validation performance hasn't improved for \code{k} rounds. Default: 10.
+#' @param print_every_n Print XGBoost evaluation information at every nth iteration if \code{verbose > 0}.
+#' @param verbose Verbose setting for XGBoost training: 0 (silent), 1 (print information) and 2 (print additional information). Default: 0
+#' @param ... Extra arguments to pass to XGBoost
+#' @return If \code{save.models = FALSE}, will return a list of \code{m} imputed datasets. If \code{save.models = TRUE}, will return an object with imputed datasets, saved models and parameters.
+#' @export
+#' @examples
+#' \donttest{
+#'
+#' # obtain m multiply datasets without saving models
+#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 2)
+#'
+#' # obtain m multiply imputed datasets and save models for imputing new data later on
+#' mixgb.obj <- mixgb(data = nhanes3_newborn, m = 2, save.models = TRUE)
+#' }
+mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = TRUE,
+                  pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
+                  initial.num = "normal", initial.int = "mode", initial.fac = "mode",
+                  save.models = FALSE, save.vars = NULL,
+                  xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1, subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, nthread = 4, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+                  nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0, ...) {
+  if (!(is.data.frame(data) || is.matrix(data))) {
+    stop("Data need to be a data frame or a matrix.")
+  }
 
-    na.idx <- Na.idx[[var]]
-    obs.y <- yobs.list[[var]]
+  if (!is.data.table(data)) {
+    data <- as.data.table(data)
+  }
 
-    if (Ncol == 2) {
-      obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])
-      mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])
-    } else {
-      obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])[, -1, drop = FALSE]
-      mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])[, -1, drop = FALSE]
+
+  if (ordinalAsInteger == TRUE) {
+    if (is.null(pmm.type)) {
+      stop("pmm.type can't be NULL when ordinalAsInteger = TRUE")
     }
-    # numeric or integer ---------------------------------------------------------------------------
-    if (missing.types[var] == "numeric" | missing.types[var] == "integer") {
-      obj.type <- "reg:squarederror"
-      xgb.fit <- xgboost(
-        data = obs.data, label = obs.y, objective = obj.type,
-        params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
-        ...
-      )
-      yhatmis <- predict(xgb.fit, mis.data)
-      if (!is.null(pmm.type)) {
-        if (pmm.type != 1) {
-          # for pmm.type=0 or 2 or auto (type 2 for numeric or integer)
-          yhatobs <- predict(xgb.fit, obs.data)
-        } else {
-          # for pmm.type=1
-          yhatobs <- yhatobs.list[[var]]
+    ord.fac <- names(Filter(is.ordered, data))
+    # ord.fac<- colnames(data)[sapply(data,is.ordered)]
+    ## data[,c(ord.fac) := lapply(.SD, as.integer), .SDcols = ord.fac]
+    data[, c(ord.fac) := lapply(.SD, fac2int), .SDcols = ord.fac]
+  }
+
+
+  # initial imputation
+  # initial.obj: An object including some basic data information and a pre-fill dataset after initial imputation
+  initial.obj <- initial_imp(data, initial.num = initial.num, initial.int = initial.int, initial.fac = initial.fac, bootstrap = bootstrap)
+  sorted.naSums <- initial.obj$sorted.naSums
+  sorted.types <- initial.obj$sorted.types
+  Nrow <- initial.obj$Nrow
+
+
+  # checking
+  check_pmm(pmm.type = pmm.type, bootstrap = bootstrap, xgb.params = xgb.params, Nrow = Nrow, sorted.naSums = sorted.naSums, sorted.types = sorted.types, pmm.k = pmm.k)
+
+  imputed.data <- vector("list", m)
+
+  origin.names <- initial.obj$origin.names
+  sorted.types <- initial.obj$sorted.types
+  sorted.names <- initial.obj$sorted.names
+  sorted.naSums <- initial.obj$sorted.naSums
+  ##
+  sorted.idx <- initial.obj$sorted.idx
+
+  missing.idx <- initial.obj$missing.idx
+  missing.vars <- initial.obj$missing.vars
+  missing.types <- initial.obj$missing.types
+  Obs.idx <- initial.obj$Obs.idx
+  Na.idx <- initial.obj$Na.idx
+  Ncol <- initial.obj$Ncol
+  mp <- initial.obj$mp
+
+  # validate save.vars :
+  if (save.models == TRUE) {
+    extra.vars <- save_vars(save.vars = save.vars, origin.names = origin.names, missing.vars = missing.vars)
+    extra.types <- sorted.types[extra.vars]
+    save.vars <- c(missing.vars, extra.vars)
+    save.p <- length(save.vars)
+    # for each variable in save.vars, save its observed values for PMM
+    yobs.list <- vector("list", save.p)
+    names(yobs.list) <- save.vars
+    # variables with NAs
+    for (var in missing.vars) {
+      na.idx <- Na.idx[[var]]
+      # obs.y
+      yobs.list[[var]] <- initial.obj$sorted.dt[[var]][-na.idx]
+    }
+    # variables fully observed
+    for (var in extra.vars) {
+      yobs.list[[var]] <- initial.obj$sorted.dt[[var]]
+    }
+  } else {
+    # save.models=FALSE
+    extra.vars <- NULL
+    extra.types <- NULL
+    yobs.list <- vector("list", mp)
+    names(yobs.list) <- missing.vars
+    for (var in missing.vars) {
+      na.idx <- Na.idx[[var]]
+      # obs.y
+      yobs.list[[var]] <- initial.obj$sorted.dt[[var]][-na.idx]
+    }
+  }
+
+
+  yhatobs.list <- NULL
+  if (isTRUE(pmm.type == 1)) {
+    yhatobs.list <- save_yhatobs(
+      yobs.list = yobs.list, maxit = maxit, pmm.link = pmm.link, sorted.dt = initial.obj$sorted.dt, missing.vars = missing.vars, extra.vars = extra.vars, extra.types = extra.types, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+      xgb.params = xgb.params,
+      nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+    )
+  }
+
+  # ............................................................................................................
+  if (save.models == FALSE) {
+    # Default: don't save any models
+
+    if (bootstrap == FALSE) {
+      # bootstrap=FALSE--------------------------------------------------------------
+      cat("mixgb without bootstrap:", "imputing set")
+      for (i in seq_len(m)) {
+        cat(" --", i)
+        # feed in the initial imputed dataset
+        sorted.dt <- initial.obj$sorted.dt
+        for (j in seq_len(maxit)) {
+          sorted.dt <- mixgb_null(
+            pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list,
+            sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
+            Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+            xgb.params = xgb.params,
+            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+          )
         }
-        yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = obs.y, k = pmm.k)
+        imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
       }
-      # update dataset
-      sorted.dt[[var]][na.idx] <- yhatmis
-    } else if (missing.types[var] == "binary") {
-      # binary ---------------------------------------------------------------------------
-      obs.y <- as.integer(obs.y) - 1
-      bin.t <- sort(table(obs.y))
-      # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
-      # when bin.t only has one value: bin.t[1] the only existent class
-      if (is.na(bin.t[2])) {
-        # this binary variable only has a single class being observed (e.g., observed values are all "0"s)
-        # skip xgboost training, just impute the only existent class
-        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
-        msg <- paste("The binary variable", var, "in the data only have single class. Imputation models can't be built.")
-        stop(msg)
-      } else {
-        if (!is.null(pmm) & pmm.link == "logit") {
-          # pmm by "logit" value
-          obj.type <- "binary:logitraw"
-        } else {
-          # pmm by "prob" and for no pmm
-          obj.type <- "binary:logistic"
+    } else {
+      # bootstrap=TRUE--------------------------------------------------------------
+      cat("mixgb with bootstrap:", "imputing set")
+      for (i in seq_len(m)) {
+        cat(" --", i)
+        # feed in the initial imputed dataset
+        sorted.dt <- initial.obj$sorted.dt
+        boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
+        for (j in seq_len(maxit)) {
+          sorted.dt <- mixgb_boot(
+            BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+            yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
+            sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+            xgb.params = xgb.params,
+            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+          )
         }
-        xgb.fit <- xgboost(
-          data = obs.data, label = obs.y, objective = obj.type, eval_metric = "logloss",
-          params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
-          ...
-        )
-        yhatmis <- predict(xgb.fit, mis.data)
-        if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
-          # for pmm.type=NULL or "auto"
-          yhatmis <- ifelse(yhatmis >= 0.5, 1, 0)
-          sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis + 1]
-        } else {
-          if (pmm.type == 1) {
-            # for pmm.type=1
-            yhatobs <- yhatobs.list[[var]]
-          } else {
-            # for pmm.type=0 or 2
-            yhatobs <- predict(xgb.fit, obs.data)
+        imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
+      }
+    } # end of if(bootstrap)
+
+    cat("\n")
+    return(imputed.data)
+    # mixgb.obj <- list("imputed.data" = imputed.data, "XGB.models" =NULL, "params" = NULL)
+    # class(mixgb.obj)<-"mixgbObj"
+    # return(mixgb.obj)
+  } else {
+    # save.models=TRUE, save models for imputing new data..........................................................................................
+
+    # save params of this imputer for impute.new().....................................................
+    params <- list()
+    params$initial.num <- initial.num
+    params$initial.fac <- initial.fac
+    params$pmm.k <- pmm.k
+    params$pmm.type <- pmm.type
+    params$pmm.link <- pmm.link
+    params$m <- m
+    params$maxit <- maxit
+    params$sorted.names <- sorted.names
+    params$sorted.types <- sorted.types
+    params$sorted.naSums <- sorted.naSums
+    params$save.vars <- save.vars
+    params$missing.vars <- missing.vars
+    params$extra.vars <- extra.vars
+    params$Na.idx <- Na.idx
+    params$sorted.idx <- sorted.idx
+    params$Obs.idx <- Obs.idx
+    params$bootstrap <- bootstrap
+    params$yobs.list <- yobs.list
+    params$ordinalAsInteger <- ordinalAsInteger
+
+
+    # pre-allocation for saved models: for each of m, save Nmodels
+    XGB.models <- vector("list", m)
+
+    #--------------------------------------------------------
+    if (bootstrap == FALSE) {
+      # bootstrap=FALSE--------------------------------------------------------------
+      cat("mixgb without bootstrap:", "saving models and imputing set")
+      for (i in seq_len(m)) {
+        cat(" --", i)
+        # feed in the initial imputed dataset
+        sorted.dt <- initial.obj$sorted.dt
+        if (maxit > 1) {
+          for (j in seq_len(maxit - 1)) {
+            # for j=1:(maxit-1)  only update the imputed dataset
+            sorted.dt <- mixgb_null(
+              pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
+              sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+              xgb.params = xgb.params,
+              nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+            )
           }
-          sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
+        # the last iteration, update the imputed dataset, also save models
+        saved.obj <- mixgb_save(
+          save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+          yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
+          Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+          xgb.params = xgb.params,
+          nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+        )
+        # if pmm.type=NULL
+        imputed.data[[i]] <- saved.obj$sorted.dt[, origin.names, with = FALSE]
+        XGB.models[[i]] <- saved.obj$xgb.models
+        # if pmm.type=0,2,auto
+        if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
+          yhatobs.list[[i]] <- saved.obj$yhatobs.list
+        }
+        # if pmm.type=1  (only use one set of yhatobs.list across all m, it's saved ahead)
       }
     } else {
-      # multiclass ---------------------------------------------------------------------------
-      obs.y <- as.integer(obs.y) - 1
-      if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
-        obj.type <- "multi:softmax"
-      } else {
-        # use probability to do matching
-        obj.type <- "multi:softprob"
-      }
-      N.class <- length(levels(sorted.dt[[var]]))
-      xgb.fit <- xgboost(
-        data = obs.data, label = obs.y, num_class = N.class, objective = obj.type, eval_metric = "mlogloss",
-        params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
-        ...
-      )
-
-      if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
-        # use softmax, predict returns class
-        # for pmm.type=NULL or "auto"
-        yhatmis <- predict(xgb.fit, mis.data)
-        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis + 1]
-      } else {
-        # predict returns probability matrix for each class
-        yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
-        if (pmm.type == 1) {
-          # for pmm.type=1
-          yhatobs <- yhatobs.list[[var]]
-        } else {
-          # for pmm.type=0 or 2
-          # probability matrix for each class
-          yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
+      # bootstrap=TRUE--------------------------------------------------------------
+      cat("mixgb with bootstrap:", "saving models and imputing set")
+      for (i in seq_len(m)) {
+        cat(" --", i)
+        # feed in the initial imputed dataset
+        sorted.dt <- initial.obj$sorted.dt
+        boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
+        if (maxit > 1) {
+          for (j in seq_len(maxit - 1)) {
+            sorted.dt <- mixgb_boot(
+              BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+              yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
+              sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+              xgb.params = xgb.params,
+              nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+            )
+          }
         }
-        sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        saved.obj <- mixgb_bootsave(
+          BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+          yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
+          Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+          xgb.params = xgb.params,
+          nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+        )
+
+        # if pmm.type=NULL
+        imputed.data[[i]] <- saved.obj$sorted.dt[, origin.names, with = FALSE]
+        XGB.models[[i]] <- saved.obj$xgb.models
+        # if pmm.type=0,2,auto
+        if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
+          yhatobs.list[[i]] <- saved.obj$yhatobs.list
+        }
+        # if pmm.type=1  (only use one set of yhatobs.list across all m, it's saved ahead)
       }
-    }
-  } # end of for each missing variable
-  return(sorted.dt)
-}
+    } # end of if(bootstrap)
+
+
+
+    #---------------------------------------------------------
+
+    # pmm.type=NULL, yhatobs.list=NULL
+    # pmm.type=1, yhatobs.list only one list with different vars
+    # pmm.type=0,2,"auto" yhatlobs.list has m list with different vars
+
+    params$yhatobs.list <- yhatobs.list
+    params$yobs.list <- yobs.list
+
+    cat("\n")
+    mixgb.obj <- list("imputed.data" = imputed.data, "XGB.models" = XGB.models, "params" = params)
+    class(mixgb.obj) <- "mixgbObj"
+    return(mixgb.obj)
+  }
+} # end of impute function

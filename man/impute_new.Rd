@@ -7,7 +7,7 @@
 impute_new(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL)
 }
 \arguments{
-\item{object}{A saved imputer object created by \code{$impute()}}
+\item{object}{A saved imputer object created by \code{mixgb(..., save.models = TRUE)}}
 
 \item{newdata}{A data.frame or data.table. New data with missing values.}
 
@@ -16,6 +16,9 @@ impute_new(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL)
 \item{pmm.k}{The number of donors for predictive mean matching. If \code{NULL} (the default), the \code{pmm.k} value in the saved imputer object will be used.}
 
 \item{m}{The number of imputed datasets. If \code{NULL} (the default), the \code{m} value in the saved imputer object will be used.}
+}
+\value{
+A list of `m` imputed datasets for new data.
 }
 \description{
 Impute new data with a saved \code{mixgb} imputer object
@@ -28,9 +31,13 @@ idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
 train.data <- nhanes3_newborn[idx, ]
 test.data <- nhanes3_newborn[-idx, ]
 
-MIXGB <- Mixgb$new(data = train.data)
-imputed.obj <- MIXGB$impute(m = 5, bootstrap = TRUE, save.models = TRUE)
-imputed.testdata <- impute_new(object = imputed.obj, newdata = test.data)
-}
+mixgb.obj <- mixgb(data = train.data, m = 2, save.models = TRUE)
+#obtain m imputed datasets for train.data
+train.imputed <- mixgb.obj$imputed.data
+train.imputed
 
+#use the saved imputer to impute new data
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
+
+}
 }

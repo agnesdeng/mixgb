@@ -24,9 +24,10 @@ Plot histograms with density curves of observed values versus m sets of imputed 
 \examples{
 \dontrun{
 
-MIXGB <- Mixgb$new(data = nhanes3_newborn)
-imputed.data <- MIXGB$impute(m = 5)
+#obtain m multiply datasets
+mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 
+#plot the multiply imputed values for variable "BMPHEAD"
 plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD",
   original.data = nhanes3_newborn)
 }

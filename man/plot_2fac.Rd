@@ -26,9 +26,10 @@ Plot observed values with m sets of imputed values for two specified numeric var
 \examples{
 \dontrun{
 
-MIXGB <- Mixgb$new(data = nhanes3_newborn)
-imputed.data <- MIXGB$impute(m = 5)
+#obtain m multiply datasets
+mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 
+#plot the multiply imputed values for variables "HFF1" versus "DMARETHN"
 plot_2fac(imputation.list = imputed.data, var.fac1 = "HFF1", var.fac2 = "DMARETHN",
   original.data = nhanes3_newborn)
 }

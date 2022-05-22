@@ -24,10 +24,10 @@ Plot bar plots of observed values versus m sets of imputed values for a specifie
 \examples{
 \dontrun{
 
-MIXGB <- Mixgb$new(data = nhanes3_newborn)
-imputed.data <- MIXGB$impute(m = 5)
+#obtain m multiply datasets
+mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 
-# numeric variable
+#plot the multiply imputed values for variable "HFF1"
 plot_bar(imputation.list = imputed.data, var.fac = "HFF1",
   original.data = nhanes3_newborn)
 }

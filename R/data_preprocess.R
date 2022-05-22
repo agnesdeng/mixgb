@@ -38,7 +38,9 @@ feature_type <- function(data) {
 }
 
 
-# Sort data by increasing number of missing values
+#' Sort data by increasing number of missing values
+#' @import data.table
+#' @keywords internal
 sortNA <- function(data) {
   # @param data A data table (with missing values NA's)
   # @return A list whose first component is the sorted data, second component is the sorted indices and third component is the sorted variable names according to the amount of missingness.

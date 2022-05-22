@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Impute new unseen data using a trained imputer
+## Impute new unseen data using a saved imputer object
 
 First we can split the `nhanes3_newborn` dataset into training data and test data.
 
@@ -33,28 +33,36 @@ test.data <- nhanes3_newborn[-idx, ]
 We can use the training data to obtain `m` imputed datasets and save their imputation models. To achieve this, users need to set `save.models = TRUE`. By default `save.vars = NULL`, imputation models for variables with missing data in the training data will be saved. However, the unseen data may also have missing values in other variables. Users can be comprehensive by saving models for all variables by setting `save.vars = colnames(train.data)`. Note that this would take much longer as we need to train and save a model for each variable. If users are confident that only certain variables will have missing values in the new data, we recommend specifying the names or indices of these variables in `save.vars` instead of saving models for all variables.
 
 ```{r}
-MIXGB <- Mixgb$new(data = train.data)
-mixgb.obj <- MIXGB$impute(m = 5, maxit = 1, save.models = TRUE, save.vars = NULL)
+# obtain m imputed datasets for train.data and save imputation models
+mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE, save.vars = NULL)
 ```
+
+When `save.models = TRUE`, `mixgb()` will return an object containing the following:
+
+-   `imputed.data`: a list of `m` imputed dataset for training data
+
+-   `XGB.models`: a list of `m` sets of XGBoost models for variables specified in `save.vars`.
+
+-   `params`: a list of parameters that are required for imputing new data using `impute_new()` later on.
 
 We can extract `m` imputed datasets from the saved imputer object by `$imputed.data`.
 
 ```{r}
-imputed.traindata <- mixgb.obj$imputed.data
-#the 5th imputed dataset
-head(imputed.traindata[[5]])
+train.imputed <- mixgb.obj$imputed.data
+# the 5th imputed dataset
+head(train.imputed[[5]])
 ```
 
 To impute new data with this saved imputer object, we use the `impute_new()` function. User can also specify whether to use new data for initial imputation. By default, `initial.newdata = FALSE`, we will use the information of training data to initially impute the new data. New data will be imputed with the saved models. This process will be considerably faster as we don't need to build the imputation models again.
 
 ```{r}
-imputed.testdata <- impute_new(object = mixgb.obj, newdata = test.data) 
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
 ```
 
-If PMM is used in the trained imputer, predicted values of missing entries in the new dataset are matched with donors from training data. Users can also set the number of donors for PMM when imputing new data. By default, `pmm.k = NULL` , which means the same setting as the training object will be used.
+If PMM is used when we call `mixgb()`, predicted values of missing entries in the new dataset are matched with donors from training data. Users can also set the number of donors for PMM when imputing new data. By default, `pmm.k = NULL` , which means the same setting as the training object will be used.
 
-Similarly, users can set the number of imputed datasets `m`. Note that this value has to be smaller than or equal to the `m` in the trained imputer. If it is not specified, it will use the same `m` value as the trained imputer.
+Similarly, users can set the number of imputed datasets `m`. Note that this value has to be smaller than or equal to the `m` in `mixgb()`. If it is not specified, it will use the same `m` value as the saved object.
 
 ```{r}
-imputed.testdata <- impute_new(object = mixgb.obj, newdata = test.data, initial.newdata = FALSE, pmm.k = 3, m = 4)
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data, initial.newdata = FALSE, pmm.k = 3, m = 4)
 ```

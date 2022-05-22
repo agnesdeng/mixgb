@@ -32,9 +32,10 @@ Plot observed values versus m sets of imputed values for one numeric variable vs
 \examples{
 \dontrun{
 
-MIXGB <- Mixgb$new(data = nhanes3_newborn)
-imputed.data <- MIXGB$impute(m = 5)
+#obtain m multiply datasets
+mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
 
+#plot the multiply imputed values for variables "BMPHEAD" versus "HFF1"
 plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HFF1",
   original.data = nhanes3_newborn)
 }

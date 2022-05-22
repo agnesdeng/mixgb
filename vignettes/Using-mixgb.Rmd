@@ -24,37 +24,75 @@ knitr::opts_chunk$set(
 
 We first load the `mixgb` package and the `nhanes3_newborn` dataset, which contains 16 variables of various types (integer/numeric/factor/ordinal factor). There are 9 variables with missing values.
 
-```{r setup}
-#devtools::load_all()
+```{r}
+# devtools::load_all()
 library(mixgb)
 data(nhanes3_newborn)
 str(nhanes3_newborn)
 colSums(is.na(nhanes3_newborn))
-
-#use mixgb with default settings
-MIXGB <- Mixgb$new(data = nhanes3_newborn)
-imputed.data <- MIXGB$impute(m = 5, maxit = 1)
-
 ```
 
-To impute this dataset, first we need to set up an Mixgb imputer with our choice of settings or leave it as default. Note that we do not need to convert our data into dgCMatrix or one-hot coding format. Our package will convert it automatically. Variables should be of the following types: numeric, integer, factor or ordinal factor. Except `data`, other arguments in `Mixgb$new( )` are either hyperparameters or verbose settings for XGBoost training.
+To impute this dataset, we can use the default settings. The default number of imputed datasets `m = 5`. Note that we do not need to convert our data into dgCMatrix or one-hot coding format. Our package will convert it automatically. Variables should be of the following types: numeric, integer, factor or ordinal factor. 
 
-```{r}
-#Set up mixgb imputer with chosen settings
-params = list(max_depth = 6, 
-              gamma = 0.1, 
-              eta = 0.3, 
-              min_child_weight = 1, 
-              subsample = 1, 
-              colsample_bytree = 1, 
-              colsample_bylevel = 1, 
-              colsample_bynode=1, 
-              nthread = 4, 
-              tree_method = "auto", 
-              gpu_id = 0, 
-              predictor = "auto")
+```{r, eval = FALSE}
+# use mixgb with default settings
+imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+```
 
-MIXGB <- Mixgb$new(data = nhanes3_newborn, xgb.params = params, nrounds = 100, early_stopping_rounds = 1, print_every_n = 1, verbose = 0)
+### Customise imputation settings
+
+We can also customise imputation settings:
+
+-   The number of imputed datasets
+    `m`
+    
+-   The number of imputation iterations
+    `maxit`
+    
+-   Whether to convert ordinal factors to integer (imputation process will be faster)
+    `ordinalAsInteger`
+
+-   Whether to use bootstrapping 
+    `bootstrap`
+
+-   Predictive mean matching settings
+    `pmm.type`, `pmm.k` and `pmm.link`.
+
+-   Initial imputation methods for different types of variables
+    `initial.num`, `initial.int` and `initial.fac`.
+
+-   Whether to save models for imputing newdata
+    `save.models` and `save.vars`.
+    
+-   XGBoost hyperparameters and verbose settings.
+    `xgb.params`, `nrounds`, `early_stopping_rounds`, `print_every_n` and `verbose`.
+
+
+```{r, eval = FALSE}
+# Use mixgb with chosen settings
+params <- list(
+  max_depth = 6,
+  gamma = 0.1,
+  eta = 0.3,
+  min_child_weight = 1,
+  subsample = 1,
+  colsample_bytree = 1,
+  colsample_bylevel = 1,
+  colsample_bynode = 1,
+  nthread = 4,
+  tree_method = "auto",
+  gpu_id = 0,
+  predictor = "auto"
+)
+
+imputed.data <- mixgb(
+  data = nhanes3_newborn, m = 5, maxit = 1,
+  ordinalAsInteger = TRUE, bootstrap = TRUE,
+  pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
+  initial.num = "normal", initial.int = "mode", initial.fac = "mode",
+  save.models = FALSE, save.vars = NULL,
+  xgb.params = params, nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
+)
 ```
 
 ### Tune hyperparameters
@@ -62,59 +100,34 @@ MIXGB <- Mixgb$new(data = nhanes3_newborn, xgb.params = params, nrounds = 100, e
 Imputation performance can be affected by the hyperparameter settings. It may seem daunting to tune a large set of hyperparameters, but often we can narrow down the search as many hyperparameters are correlated. In our package, we have a function `mixgb_cv()` to tune `nrounds`. There is no default `nrounds` value in `XGBoost,` so we need to specify it. The default `nrounds` in `mixgb` is 50. However, we recommend using `mixgb_cv()` to find the optimal `nrounds` first.
 
 ```{r}
-optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
-optimal.nrounds$evaluation.log
-optimal.nrounds$response
-optimal.nrounds$best.nrounds
+cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
+cv.results$evaluation.log
+cv.results$response
+cv.results$best.nrounds
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of `mixgb_cv()` is likely to return different results. Users can also specify the response and covariates in the argument `response` and `select_covariates`, respectively.
 
 ```{r}
-optimal.nrounds <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1, response = "BMPHEAD", select_covariates = c("HSHSIZER","HSAGEIR", "HSSEX", "DMARETHN",          "BMPRECUM", "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT", "DMPPIR", "HFF1", "HYD1"),verbose = FALSE)
+cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1, response = "BMPHEAD", select_covariates = c("HSHSIZER", "HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT", "DMPPIR", "HFF1", "HYD1"), verbose = FALSE)
 
-optimal.nrounds$best.nrounds
+cv.results$best.nrounds
 ```
 
-Since the results returned by `mixgb_cv()` are mostly less than 20, I'll set `nrounds = 20` in the imputer. We now use this imputer to obtain m imputed datasets, which will be stored in a list of `m` data tables. If `m = 1`, single imputation will be undertaken. Users can also specify the number of imputation iterations `maxit`.
+Since using `mixgb_cv()` with this dataset mostly returns a number less than `20`, I'll set `nrounds = 20` in `mixgb()` to obtain `m` imputed datasets. 
 
-```{r}
-MIXGB <- Mixgb$new(data = nhanes3_newborn, nrounds = 20)
-imputed.data <- MIXGB$impute(m = 5, maxit = 1)
+```{r, eval = FALSE}
+imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = 20)
 ```
 
-### Customise imputation settings
 
-We can also customise other imputation settings:
-
--   Whether to use bootstrapping
-
--   The types of predictive mean matching
-
--   The number of donors for predictive mean matching
-
--   Whether to convert ordinal factors to integer (imputation process will be faster)
-
--   Initial imputation methods for different types of variables
-
-```{r}
-imputed.data <- MIXGB$impute(m = 5, maxit = 1,  bootstrap = TRUE,
-                             pmm.type = "auto", pmm.k = 5, 
-                             ordinalAsInteger = TRUE,
-                             initial.num = "normal", initial.int = "sample", initial.fac = "mode")
-
-```
 
 #### Convert ordinal factors to integers
 
 If our dataset has ordinal factors, then the imputation process will be sped up by converting them to integers. In `nhanes3_newborn` data, there is only one ordinal factor, but we can still see that the imputation time is smaller with `ordinalAsInteger = TRUE`. If `m` and `maxit` are larger, the difference will be even more obvious. Note that when `ordinalAsInteger = TRUE` , the class of these ordinal factors in the imputed datasets will also be integer. We recommend to use the default PMM setting `pmm.type = "auto"`, which will impute numeric and integer variables with PMM (type 2) and impute categorical variables without PMM. If we don't apply PMM to integer variables, the missing values may be imputed as numeric. Sometimes this can be problematic, especially when the integers are actually converted from ordinal factors. Therefore, `pmm.type = NULL` is disabled when `ordinalAsInteger = TRUE` .
 
 ```{r}
-system.time(imputed.data <- MIXGB$impute(m = 5, maxit = 1,ordinalAsInteger = FALSE))
+system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordinalAsInteger = FALSE))
 
-system.time(imputed.data <- MIXGB$impute(m = 5, maxit = 1,ordinalAsInteger = TRUE))
-
+system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordinalAsInteger = TRUE))
 ```
-
-
-

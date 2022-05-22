@@ -2,11 +2,9 @@
 #' @name mixgb-package
 #' @docType package
 #' @description Mixgb offers a scalable solution for imputing large datasets using XGBoost, bootstrapping and predictive mean matching. Mixgb is built under Fully Conditional Specification (FCS), where XGBoost imputation models are built for each incomplete variable. Mixgb can automatically handle different types of variables and users do not need to encode categorical variables themselves. Users can also choose different settings regarding bootstrapping and predictive mean matching to enhance imputation performance.
-#' @import xgboost
-#' @import Matrix
-#' @importFrom R6  R6Class
-#' @importFrom Rfast knn
-#' @importFrom mice matchindex
+#' @import data.table
+#' @importFrom Matrix sparse.model.matrix
+#' @importFrom xgboost xgboost xgb.cv
 #' @importFrom stats median rnorm sd complete.cases na.omit reformulate predict
 #' @references
 #' Deng, Y., & Lumley, T. (2021). Multiple Imputation Through XGBoost.

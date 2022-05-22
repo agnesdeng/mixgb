@@ -12,11 +12,14 @@
 #' @return A list of the optimal \code{nrounds}, \code{evaluation.log} and the chosen \code{response}.
 #' @export
 #' @examples
+#' \dontrun{
+#'
 #' cv.results <- mixgb_cv(data = nhanes3_newborn)
 #' cv.results$best.nrounds
 #'
-#' MIXGB <- Mixgb$new(data = nhanes3_newborn, nrounds = cv.results$best.nrounds)
-#' imputed.data <- MIXGB$impute(m = 5)
+#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
+#'
+#' }
 mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_covariates = NULL, stringsAsFactors = FALSE, verbose = TRUE, ...) {
   num.cc <- sum(complete.cases(data))
 
