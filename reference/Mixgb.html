@@ -145,14 +145,16 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># obtain m multiply datasets without saving models</span></span>
 <span class="r-in"><span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu">mixgb</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mixgb with bootstrap: imputing set -- 1 -- 2</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># obtain m multiply imputed datasets and save models for imputing new data later on</span></span>
 <span class="r-in"><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu">mixgb</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">2</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mixgb with bootstrap: saving models and imputing set -- 1 -- 2</span>
+<span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
