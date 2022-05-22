@@ -4,8 +4,8 @@ pkgdown_sha: ~
 articles:
   Imputing-newdata: Imputing-newdata.html
   Using-mixgb: Using-mixgb.html
-  Visual-diagnostics: Visual-diagnostics.html
-last_built: 2022-05-18T13:59Z
+  Visual-diagnostics: web/Visual-diagnostics.html
+last_built: 2022-05-22T14:07Z
 urls:
   reference: https://agnesdeng.github.io/mixgb/reference
   article: https://agnesdeng.github.io/mixgb/articles

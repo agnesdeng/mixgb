@@ -13,10 +13,10 @@
     <loc>https://agnesdeng.github.io/mixgb/articles/Using-mixgb.html</loc>
   </url>
   <url>
-    <loc>https://agnesdeng.github.io/mixgb/articles/Visual-diagnostics.html</loc>
+    <loc>https://agnesdeng.github.io/mixgb/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://agnesdeng.github.io/mixgb/articles/index.html</loc>
+    <loc>https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html</loc>
   </url>
   <url>
     <loc>https://agnesdeng.github.io/mixgb/authors.html</loc>
@@ -80,5 +80,8 @@
   </url>
   <url>
     <loc>https://agnesdeng.github.io/mixgb/reference/show_var.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/sortNA.html</loc>
   </url>
 </urlset>

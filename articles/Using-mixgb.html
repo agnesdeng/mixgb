@@ -43,7 +43,7 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Imputing-newdata.html">Imputing newdata with a saved mixgb imputer</a>
     <a class="dropdown-item" href="../articles/Using-mixgb.html">mixgb: Multiple Imputation Through XGBoost</a>
-    <a class="dropdown-item" href="../articles/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
+    <a class="dropdown-item" href="../articles/web/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
   </div>
 </li>
       </ul>
@@ -72,7 +72,7 @@
       <img src="" class="logo" alt=""><h1>mixgb: Multiple Imputation Through XGBoost</h1>
                         <h4 data-toc-skip class="author">Yongshi Deng</h4>
             
-            <h4 data-toc-skip class="date">2022-05-18</h4>
+            <h4 data-toc-skip class="date">2022-05-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/Using-mixgb.Rmd" class="external-link"><code>vignettes/Using-mixgb.Rmd</code></a></small>
       <div class="d-none name"><code>Using-mixgb.Rmd</code></div>
@@ -90,7 +90,7 @@
 </h2>
 <p>We first load the <code>mixgb</code> package and the <code>nhanes3_newborn</code> dataset, which contains 16 variables of various types (integer/numeric/factor/ordinal factor). There are 9 variables with missing values.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#devtools::load_all()</span>
+<code class="sourceCode R"><span class="co"># devtools::load_all()</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span>
@@ -123,113 +123,113 @@
 <span class="co">#&gt; HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM </span>
 <span class="co">#&gt;        0        0        0        0        0        0      124      114 </span>
 <span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span>
-<span class="co">#&gt;      161      169      124      167      117      192        7        0</span>
-
-<span class="co">#use mixgb with default settings</span>
-<span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span><span class="op">)</span>
-<span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
-<p>To impute this dataset, first we need to set up an Mixgb imputer with our choice of settings or leave it as default. Note that we do not need to convert our data into dgCMatrix or one-hot coding format. Our package will convert it automatically. Variables should be of the following types: numeric, integer, factor or ordinal factor. Except <code>data</code>, other arguments in <code>Mixgb$new( )</code> are either hyperparameters or verbose settings for XGBoost training.</p>
+<span class="co">#&gt;      161      169      124      167      117      192        7        0</span></code></pre></div>
+<p>To impute this dataset, we can use the default settings. The default number of imputed datasets <code>m = 5</code>. Note that we do not need to convert our data into dgCMatrix or one-hot coding format. Our package will convert it automatically. Variables should be of the following types: numeric, integer, factor or ordinal factor.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#Set up mixgb imputer with chosen settings</span>
-<span class="va">params</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, 
-              gamma <span class="op">=</span> <span class="fl">0.1</span>, 
-              eta <span class="op">=</span> <span class="fl">0.3</span>, 
-              min_child_weight <span class="op">=</span> <span class="fl">1</span>, 
-              subsample <span class="op">=</span> <span class="fl">1</span>, 
-              colsample_bytree <span class="op">=</span> <span class="fl">1</span>, 
-              colsample_bylevel <span class="op">=</span> <span class="fl">1</span>, 
-              colsample_bynode<span class="op">=</span><span class="fl">1</span>, 
-              nthread <span class="op">=</span> <span class="fl">4</span>, 
-              tree_method <span class="op">=</span> <span class="st">"auto"</span>, 
-              gpu_id <span class="op">=</span> <span class="fl">0</span>, 
-              predictor <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co"># use mixgb with default settings</span>
+<span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<div class="section level3">
+<h3 id="customise-imputation-settings">Customise imputation settings<a class="anchor" aria-label="anchor" href="#customise-imputation-settings"></a>
+</h3>
+<p>We can also customise imputation settings:</p>
+<ul>
+<li><p>The number of imputed datasets <code>m</code></p></li>
+<li><p>The number of imputation iterations <code>maxit</code></p></li>
+<li><p>Whether to convert ordinal factors to integer (imputation process will be faster) <code>ordinalAsInteger</code></p></li>
+<li><p>Whether to use bootstrapping <code>bootstrap</code></p></li>
+<li><p>Predictive mean matching settings <code>pmm.type</code>, <code>pmm.k</code> and <code>pmm.link</code>.</p></li>
+<li><p>Initial imputation methods for different types of variables <code>initial.num</code>, <code>initial.int</code> and <code>initial.fac</code>.</p></li>
+<li><p>Whether to save models for imputing newdata <code>save.models</code> and <code>save.vars</code>.</p></li>
+<li><p>XGBoost hyperparameters and verbose settings. <code>xgb.params</code>, <code>nrounds</code>, <code>early_stopping_rounds</code>, <code>print_every_n</code> and <code>verbose</code>.</p></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Use mixgb with chosen settings</span>
+<span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+  max_depth <span class="op">=</span> <span class="fl">6</span>,
+  gamma <span class="op">=</span> <span class="fl">0.1</span>,
+  eta <span class="op">=</span> <span class="fl">0.3</span>,
+  min_child_weight <span class="op">=</span> <span class="fl">1</span>,
+  subsample <span class="op">=</span> <span class="fl">1</span>,
+  colsample_bytree <span class="op">=</span> <span class="fl">1</span>,
+  colsample_bylevel <span class="op">=</span> <span class="fl">1</span>,
+  colsample_bynode <span class="op">=</span> <span class="fl">1</span>,
+  nthread <span class="op">=</span> <span class="fl">4</span>,
+  tree_method <span class="op">=</span> <span class="st">"auto"</span>,
+  gpu_id <span class="op">=</span> <span class="fl">0</span>,
+  predictor <span class="op">=</span> <span class="st">"auto"</span>
+<span class="op">)</span>
 
-<span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="fl">100</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>, print_every_n <span class="op">=</span> <span class="fl">1</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
+<span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>
+  data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>,
+  ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span>, bootstrap <span class="op">=</span> <span class="cn">TRUE</span>,
+  pmm.type <span class="op">=</span> <span class="st">"auto"</span>, pmm.k <span class="op">=</span> <span class="fl">5</span>, pmm.link <span class="op">=</span> <span class="st">"prob"</span>,
+  initial.num <span class="op">=</span> <span class="st">"normal"</span>, initial.int <span class="op">=</span> <span class="st">"mode"</span>, initial.fac <span class="op">=</span> <span class="st">"mode"</span>,
+  save.models <span class="op">=</span> <span class="cn">FALSE</span>, save.vars <span class="op">=</span> <span class="cn">NULL</span>,
+  xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="fl">50</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">10</span>, print_every_n <span class="op">=</span> <span class="fl">10L</span>, verbose <span class="op">=</span> <span class="fl">0</span>
+<span class="op">)</span></code></pre></div>
+</div>
 <div class="section level3">
 <h3 id="tune-hyperparameters">Tune hyperparameters<a class="anchor" aria-label="anchor" href="#tune-hyperparameters"></a>
 </h3>
 <p>Imputation performance can be affected by the hyperparameter settings. It may seem daunting to tune a large set of hyperparameters, but often we can narrow down the search as many hyperparameters are correlated. In our package, we have a function <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> to tune <code>nrounds</code>. There is no default <code>nrounds</code> value in <code>XGBoost,</code> so we need to specify it. The default <code>nrounds</code> in <code>mixgb</code> is 50. However, we recommend using <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> to find the optimal <code>nrounds</code> first.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">evaluation.log</span>
-<span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span>
-<span class="co">#&gt;  1:    1      30.4115960    0.005733815      30.404396    0.03682630</span>
-<span class="co">#&gt;  2:    2      21.3284776    0.004157287      21.325650    0.03143540</span>
-<span class="co">#&gt;  3:    3      14.9724225    0.003184039      14.968147    0.03650367</span>
-<span class="co">#&gt;  4:    4      10.5283680    0.002153618      10.528435    0.03079155</span>
-<span class="co">#&gt;  5:    5       7.4260826    0.001751410       7.430884    0.03234314</span>
-<span class="co">#&gt;  6:    6       5.2686986    0.001638913       5.281689    0.03386233</span>
-<span class="co">#&gt;  7:    7       3.7772816    0.003137878       3.798092    0.03519801</span>
-<span class="co">#&gt;  8:    8       2.7551251    0.003804157       2.792866    0.03380398</span>
-<span class="co">#&gt;  9:    9       2.0670503    0.005360897       2.135150    0.03086166</span>
-<span class="co">#&gt; 10:   10       1.6091332    0.007679044       1.722804    0.03740937</span>
-<span class="co">#&gt; 11:   11       1.3110601    0.009769998       1.474642    0.04260070</span>
-<span class="co">#&gt; 12:   12       1.1180824    0.012208964       1.333722    0.05145706</span>
-<span class="co">#&gt; 13:   13       1.0038520    0.011244675       1.259573    0.06332762</span>
-<span class="co">#&gt; 14:   14       0.9305600    0.013875291       1.220179    0.06531781</span>
-<span class="co">#&gt; 15:   15       0.8752264    0.013878112       1.202048    0.06356098</span>
-<span class="co">#&gt; 16:   16       0.8345830    0.011923773       1.191464    0.06539197</span>
-<span class="co">#&gt; 17:   17       0.8021428    0.018846579       1.185257    0.06736631</span>
-<span class="co">#&gt; 18:   18       0.7824124    0.021448819       1.184452    0.06794397</span>
-<span class="co">#&gt; 19:   19       0.7586837    0.024721780       1.186279    0.06755815</span>
-<span class="co">#&gt; 20:   20       0.7403438    0.027067108       1.185933    0.06561779</span>
-<span class="co">#&gt; 21:   21       0.7258825    0.023703251       1.185460    0.06611880</span>
-<span class="co">#&gt; 22:   22       0.7091199    0.026999223       1.186813    0.06457626</span>
-<span class="co">#&gt; 23:   23       0.6890808    0.032927641       1.187848    0.06388615</span>
-<span class="co">#&gt; 24:   24       0.6775249    0.030126060       1.189640    0.06665926</span>
-<span class="co">#&gt; 25:   25       0.6680694    0.025928774       1.190394    0.06604245</span>
-<span class="co">#&gt; 26:   26       0.6550710    0.022262777       1.190056    0.06546795</span>
-<span class="co">#&gt; 27:   27       0.6443962    0.022920469       1.192550    0.06595871</span>
-<span class="co">#&gt; 28:   28       0.6330700    0.020243968       1.195343    0.06608480</span>
-<span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span>
-<span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">response</span>
-<span class="co">#&gt; [1] "BMPHEAD"</span>
-<span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 18</span></code></pre></div>
-<p>By default, <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_covariates</code>, respectively.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">optimal.nrounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>, response <span class="op">=</span> <span class="st">"BMPHEAD"</span>, select_covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSHSIZER"</span>,<span class="st">"HSAGEIR"</span>, <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>,          <span class="st">"BMPRECUM"</span>, <span class="st">"BMPSB1"</span>, <span class="st">"BMPSB2"</span>, <span class="st">"BMPTR1"</span>, <span class="st">"BMPTR2"</span>, <span class="st">"BMPWT"</span>, <span class="st">"DMPPIR"</span>, <span class="st">"HFF1"</span>, <span class="st">"HYD1"</span><span class="op">)</span>,verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="va">optimal.nrounds</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 19</span></code></pre></div>
-<p>Since the results returned by <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> are mostly less than 20, I’ll set <code>nrounds = 20</code> in the imputer. We now use this imputer to obtain m imputed datasets, which will be stored in a list of <code>m</code> data tables. If <code>m = 1</code>, single imputation will be undertaken. Users can also specify the number of imputation iterations <code>maxit</code>.</p>
+<code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">cv.results</span><span class="op">$</span><span class="va">evaluation.log</span>
+<span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span>
+<span class="co">#&gt;  1:    1       5.6199139    0.010481532      5.6202673    0.05419913</span>
+<span class="co">#&gt;  2:    2       3.9792435    0.007182177      3.9806393    0.03922463</span>
+<span class="co">#&gt;  3:    3       2.8350364    0.006177087      2.8426994    0.03493851</span>
+<span class="co">#&gt;  4:    4       2.0394449    0.005869297      2.0543915    0.03950362</span>
+<span class="co">#&gt;  5:    5       1.4902243    0.007224514      1.5269184    0.04135321</span>
+<span class="co">#&gt;  6:    6       1.1138480    0.008209613      1.1816400    0.05264571</span>
+<span class="co">#&gt;  7:    7       0.8580748    0.008548890      0.9573980    0.06420936</span>
+<span class="co">#&gt;  8:    8       0.6886212    0.008475200      0.8213351    0.07411260</span>
+<span class="co">#&gt;  9:    9       0.5770885    0.007840951      0.7434694    0.08261171</span>
+<span class="co">#&gt; 10:   10       0.5045066    0.005697814      0.7006947    0.08892985</span>
+<span class="co">#&gt; 11:   11       0.4582451    0.006433765      0.6788288    0.09190374</span>
+<span class="co">#&gt; 12:   12       0.4290678    0.006736013      0.6696827    0.09034972</span>
+<span class="co">#&gt; 13:   13       0.4085432    0.005258227      0.6635792    0.09154860</span>
+<span class="co">#&gt; 14:   14       0.3943286    0.005634709      0.6606977    0.09242086</span>
+<span class="co">#&gt; 15:   15       0.3823289    0.007470152      0.6579999    0.09239576</span>
+<span class="co">#&gt; 16:   16       0.3722146    0.004994445      0.6576818    0.09238474</span>
+<span class="co">#&gt; 17:   17       0.3665430    0.004899348      0.6579649    0.09171766</span>
+<span class="co">#&gt; 18:   18       0.3563860    0.004779097      0.6584529    0.09181145</span>
+<span class="co">#&gt; 19:   19       0.3474518    0.001820850      0.6602929    0.09186077</span>
+<span class="co">#&gt; 20:   20       0.3409278    0.002498087      0.6616014    0.09182737</span>
+<span class="co">#&gt; 21:   21       0.3348939    0.003518226      0.6621803    0.09186787</span>
+<span class="co">#&gt; 22:   22       0.3291246    0.004459409      0.6619372    0.09220347</span>
+<span class="co">#&gt; 23:   23       0.3217891    0.007708528      0.6643777    0.09171122</span>
+<span class="co">#&gt; 24:   24       0.3174384    0.008694511      0.6654002    0.09229420</span>
+<span class="co">#&gt; 25:   25       0.3125348    0.008174275      0.6655530    0.09283210</span>
+<span class="co">#&gt; 26:   26       0.3103014    0.009262036      0.6656526    0.09288555</span>
+<span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span>
+<span class="va">cv.results</span><span class="op">$</span><span class="va">response</span>
+<span class="co">#&gt; [1] "BMPWT"</span>
+<span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
+<span class="co">#&gt; [1] 16</span></code></pre></div>
+<p>By default, <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_covariates</code>, respectively.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
-<span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="customise-imputation-settings">Customise imputation settings<a class="anchor" aria-label="anchor" href="#customise-imputation-settings"></a>
-</h3>
-<p>We can also customise other imputation settings:</p>
-<ul>
-<li><p>Whether to use bootstrapping</p></li>
-<li><p>The types of predictive mean matching</p></li>
-<li><p>The number of donors for predictive mean matching</p></li>
-<li><p>Whether to convert ordinal factors to integer (imputation process will be faster)</p></li>
-<li><p>Initial imputation methods for different types of variables</p></li>
-</ul>
+<code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>, response <span class="op">=</span> <span class="st">"BMPHEAD"</span>, select_covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSHSIZER"</span>, <span class="st">"HSAGEIR"</span>, <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>, <span class="st">"BMPRECUM"</span>, <span class="st">"BMPSB1"</span>, <span class="st">"BMPSB2"</span>, <span class="st">"BMPTR1"</span>, <span class="st">"BMPTR2"</span>, <span class="st">"BMPWT"</span>, <span class="st">"DMPPIR"</span>, <span class="st">"HFF1"</span>, <span class="st">"HYD1"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
+<span class="co">#&gt; [1] 17</span></code></pre></div>
+<p>Since using <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> with this dataset mostly returns a number less than <code>20</code>, I’ll set <code>nrounds = 20</code> in <code><a href="../reference/Mixgb.html">mixgb()</a></code> to obtain <code>m</code> imputed datasets.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>,  bootstrap <span class="op">=</span> <span class="cn">TRUE</span>,
-                             pmm.type <span class="op">=</span> <span class="st">"auto"</span>, pmm.k <span class="op">=</span> <span class="fl">5</span>, 
-                             ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span>,
-                             initial.num <span class="op">=</span> <span class="st">"normal"</span>, initial.int <span class="op">=</span> <span class="st">"sample"</span>, initial.fac <span class="op">=</span> <span class="st">"mode"</span><span class="op">)</span>
-<span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
+<code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <div class="section level4">
 <h4 id="convert-ordinal-factors-to-integers">Convert ordinal factors to integers<a class="anchor" aria-label="anchor" href="#convert-ordinal-factors-to-integers"></a>
 </h4>
 <p>If our dataset has ordinal factors, then the imputation process will be sped up by converting them to integers. In <code>nhanes3_newborn</code> data, there is only one ordinal factor, but we can still see that the imputation time is smaller with <code>ordinalAsInteger = TRUE</code>. If <code>m</code> and <code>maxit</code> are larger, the difference will be even more obvious. Note that when <code>ordinalAsInteger = TRUE</code> , the class of these ordinal factors in the imputed datasets will also be integer. We recommend to use the default PMM setting <code>pmm.type = "auto"</code>, which will impute numeric and integer variables with PMM (type 2) and impute categorical variables without PMM. If we don’t apply PMM to integer variables, the missing values may be imputed as numeric. Sometimes this can be problematic, especially when the integers are actually converted from ordinal factors. Therefore, <code>pmm.type = NULL</code> is disabled when <code>ordinalAsInteger = TRUE</code> .</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>,ordinalAsInteger <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>, ordinalAsInteger <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   6.894   0.981   6.403</span>
+<span class="co">#&gt;  12.799   2.213  10.893</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>,ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>, ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   6.258   1.017   5.915</span></code></pre></div>
+<span class="co">#&gt;  12.078   2.025  10.299</span></code></pre></div>
 </div>
 </div>
 </div>

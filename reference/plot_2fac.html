@@ -26,7 +26,7 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Imputing-newdata.html">Imputing newdata with a saved mixgb imputer</a>
     <a class="dropdown-item" href="../articles/Using-mixgb.html">mixgb: Multiple Imputation Through XGBoost</a>
-    <a class="dropdown-item" href="../articles/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
+    <a class="dropdown-item" href="../articles/web/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -81,9 +81,10 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span class="r-in"><span class="co">#obtain m multiply datasets</span></span>
+<span class="r-in"><span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span class="r-in"></span>
+<span class="r-in"><span class="co">#plot the multiply imputed values for variables "HFF1" versus "DMARETHN"</span></span>
 <span class="r-in"><span class="fu">plot_2fac</span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac1 <span class="op">=</span> <span class="st">"HFF1"</span>, var.fac2 <span class="op">=</span> <span class="st">"DMARETHN"</span>,</span>
 <span class="r-in">  original.data <span class="op">=</span> <span class="va">nhanes3_newborn</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

@@ -26,7 +26,7 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Imputing-newdata.html">Imputing newdata with a saved mixgb imputer</a>
     <a class="dropdown-item" href="../articles/Using-mixgb.html">mixgb: Multiple Imputation Through XGBoost</a>
-    <a class="dropdown-item" href="../articles/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
+    <a class="dropdown-item" href="../articles/web/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -62,7 +62,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>A saved imputer object created by <code>$impute()</code></p></dd>
+<dd><p>A saved imputer object created by <code>mixgb(..., save.models = TRUE)</code></p></dd>
 <dt>newdata</dt>
 <dd><p>A data.frame or data.table. New data with missing values.</p></dd>
 <dt>initial.newdata</dt>
@@ -72,6 +72,10 @@
 <dt>m</dt>
 <dd><p>The number of imputed datasets. If <code>NULL</code> (the default), the <code>m</code> value in the saved imputer object will be used.</p></dd>
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A list of `m` imputed datasets for new data.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -82,11 +86,15 @@
 <span class="r-in"><span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
 <span class="r-in"><span class="va">test.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">MIXGB</span> <span class="op">&lt;-</span> <span class="va"><a href="Mixgb.html">Mixgb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">imputed.obj</span> <span class="op">&lt;-</span> <span class="va">MIXGB</span><span class="op">$</span><span class="fu">impute</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">5</span>, bootstrap <span class="op">=</span> <span class="cn">TRUE</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">imputed.testdata</span> <span class="op">&lt;-</span> <span class="fu">impute_new</span><span class="op">(</span>object <span class="op">=</span> <span class="va">imputed.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">2</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span class="co">#obtain m imputed datasets for train.data</span></span>
+<span class="r-in"><span class="va">train.imputed</span> <span class="op">&lt;-</span> <span class="va">mixgb.obj</span><span class="op">$</span><span class="va">imputed.data</span></span>
+<span class="r-in"><span class="va">train.imputed</span></span>
 <span class="r-in"></span>
+<span class="r-in"><span class="co">#use the saved imputer to impute new data</span></span>
+<span class="r-in"><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu">impute_new</span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
