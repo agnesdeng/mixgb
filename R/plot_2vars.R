@@ -68,9 +68,13 @@ plot_2num <- function(imputation.list, var.x, var.y, original.data, color.pal = 
 
   if (is.data.table(imputation.list[[1]])) {
     result.l <- lapply(imputation.list, function(dt) dt[na.union, c(var.x, var.y), with = FALSE])
-    observed <- original.data[-na.union, c(var.x, var.y), with = FALSE]
   } else {
     result.l <- lapply(imputation.list, function(df) df[na.union, c(var.x, var.y)])
+  }
+
+  if(is.data.table(original.data)){
+    observed <- original.data[-na.union, c(var.x, var.y), with = FALSE]
+  }else{
     observed <- original.data[-na.union, c(var.x, var.y)]
   }
 
@@ -190,11 +194,16 @@ plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, colo
 
   if (is.data.table(imputation.list[[1]])) {
     result.l <- lapply(imputation.list, function(dt) dt[na.union, c(var.num, var.fac), with = FALSE])
-    observed <- original.data[-na.union, c(var.num, var.fac), with = FALSE]
   } else {
     result.l <- lapply(imputation.list, function(df) df[na.union, c(var.num, var.fac)])
+  }
+
+  if(is.data.table(original.data)){
+    observed <- original.data[-na.union, c(var.num, var.fac), with = FALSE]
+  }else{
     observed <- original.data[-na.union, c(var.num, var.fac)]
   }
+
 
   N.imp <- length(result.l)
   M <- paste("m", 1:N.imp, sep = "")
@@ -318,9 +327,13 @@ plot_2fac <- function(imputation.list, var.fac1, var.fac2, original.data, color.
 
   if (is.data.table(imputation.list[[1]])) {
     result.l <- lapply(imputation.list, function(dt) dt[na.union, c(var.fac1, var.fac2), with = FALSE])
-    observed <- original.data[-na.union, c(var.fac1, var.fac2), with = FALSE]
   } else {
     result.l <- lapply(imputation.list, function(df) df[na.union, c(var.fac1, var.fac2)])
+  }
+
+  if(is.data.table(original.data)){
+    observed <- original.data[-na.union, c(var.fac1, var.fac2), with = FALSE]
+  }else{
     observed <- original.data[-na.union, c(var.fac1, var.fac2)]
   }
 

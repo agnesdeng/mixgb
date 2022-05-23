@@ -73,9 +73,13 @@ plot_2num1fac <- function(imputation.list, var.x, var.y, con.fac, original.data,
 
   if (is.data.table(imputation.list[[1]])) {
     result.l <- lapply(imputation.list, function(dt) dt[na.combine, c(var.x, var.y, con.fac), with = FALSE])
-    observed <- original.data[-na.combine, c(var.x, var.y, con.fac), with = FALSE]
   } else {
     result.l <- lapply(imputation.list, function(df) df[na.combine, c(var.x, var.y, con.fac)])
+  }
+
+  if(is.data.table(original.data)){
+    observed <- original.data[-na.combine, c(var.x, var.y, con.fac), with = FALSE]
+  }else{
     observed <- original.data[-na.combine, c(var.x, var.y, con.fac)]
   }
 
@@ -197,9 +201,13 @@ plot_1num2fac <- function(imputation.list, var.fac, var.num, con.fac, original.d
 
   if (is.data.table(imputation.list[[1]])) {
     result.l <- lapply(imputation.list, function(dt) dt[na.combine, c(var.fac, var.num, con.fac), with = FALSE])
-    observed <- original.data[-na.combine, c(var.fac, var.num, con.fac), with = FALSE]
   } else {
     result.l <- lapply(imputation.list, function(df) df[na.combine, c(var.fac, var.num, con.fac)])
+  }
+
+  if(is.data.table(original.data)){
+    observed <- original.data[-na.combine, c(var.fac, var.num, con.fac), with = FALSE]
+  }else{
     observed <- original.data[-na.combine, c(var.fac, var.num, con.fac)]
   }
 

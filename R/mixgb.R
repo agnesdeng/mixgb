@@ -78,7 +78,9 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
     ord.fac <- names(Filter(is.ordered, data))
     # ord.fac<- colnames(data)[sapply(data,is.ordered)]
     ## data[,c(ord.fac) := lapply(.SD, as.integer), .SDcols = ord.fac]
-    data[, c(ord.fac) := lapply(.SD, fac2int), .SDcols = ord.fac]
+    if(length(ord.fac)>0){
+      data[, c(ord.fac) := lapply(.SD, fac2int), .SDcols = ord.fac]
+    }
   }
 
 
