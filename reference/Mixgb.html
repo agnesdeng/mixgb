@@ -70,11 +70,11 @@
   initial.fac <span class="op">=</span> <span class="st">"mode"</span>,
   save.models <span class="op">=</span> <span class="cn">FALSE</span>,
   save.vars <span class="op">=</span> <span class="cn">NULL</span>,
-  xgb.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, gamma <span class="op">=</span> <span class="fl">0.1</span>, eta <span class="op">=</span> <span class="fl">0.3</span>, min_child_weight <span class="op">=</span> <span class="fl">1</span>,
+  xgb.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, gamma <span class="op">=</span> <span class="fl">0</span>, eta <span class="op">=</span> <span class="fl">0.3</span>, min_child_weight <span class="op">=</span> <span class="fl">1</span>,
     subsample <span class="op">=</span> <span class="fl">1</span>, colsample_bytree <span class="op">=</span> <span class="fl">1</span>, colsample_bylevel <span class="op">=</span> <span class="fl">1</span>, colsample_bynode <span class="op">=</span> <span class="fl">1</span>,
     nthread <span class="op">=</span> <span class="fl">4</span>, tree_method <span class="op">=</span> <span class="st">"auto"</span>, gpu_id <span class="op">=</span> <span class="fl">0</span>, predictor <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,
   nrounds <span class="op">=</span> <span class="fl">50</span>,
-  early_stopping_rounds <span class="op">=</span> <span class="fl">10</span>,
+  early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>,
   print_every_n <span class="op">=</span> <span class="fl">10L</span>,
   verbose <span class="op">=</span> <span class="fl">0</span>,
   <span class="va">...</span>

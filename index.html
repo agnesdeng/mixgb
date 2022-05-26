@@ -89,6 +89,7 @@
 <ul>
 <li>Visual diagnostic functions of multiply imputed data</li>
 <li>Use S3 instead of R6</li>
+<li>Plot functions can show masked missing data (if provided)</li>
 </ul>
 <p><strong>April 2022</strong></p>
 <ul>
@@ -127,7 +128,7 @@
 <code class="sourceCode R"><span class="co"># load mixgb</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></code></pre></div>
 <div class="section level3">
-<h3 id="data-cleaning-before-imputation">Data cleaning before imputation<a class="anchor" aria-label="anchor" href="#data-cleaning-before-imputation"></a>
+<h3 id="11-data-cleaning-before-imputation">1.1 Data cleaning before imputation<a class="anchor" aria-label="anchor" href="#11-data-cleaning-before-imputation"></a>
 </h3>
 <p>It is highly recommended to clean and check your data before imputation. Here are some common issues:</p>
 <ul>
@@ -190,7 +191,7 @@
 <span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
 <div class="section level3">
-<h3 id="customise-imputation-settings">Customise imputation settings<a class="anchor" aria-label="anchor" href="#customise-imputation-settings"></a>
+<h3 id="21-customise-imputation-settings">2.1 Customise imputation settings<a class="anchor" aria-label="anchor" href="#21-customise-imputation-settings"></a>
 </h3>
 <p>We can also customise imputation settings:</p>
 <ul>
@@ -219,15 +220,15 @@
 <span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="tune-hyperparameters">Tune hyperparameters<a class="anchor" aria-label="anchor" href="#tune-hyperparameters"></a>
+<h3 id="22-tune-hyperparameters">2.2 Tune hyperparameters<a class="anchor" aria-label="anchor" href="#22-tune-hyperparameters"></a>
 </h3>
 <p>Imputation performance can be affected by the hyperparameter settings. It may seem daunting to tune a large set of hyperparameters, but often we can narrow down the search as many hyperparameters are correlated. In our package, we have a function <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> to tune <code>nrounds</code>. There is no default <code>nrounds</code> value in <code>XGBoost,</code> so we need to specify it. The default <code>nrounds</code> in <code>mixgb</code> is 50. However, we recommend using <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> to find the optimal <code>nrounds</code> first.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">cv.results</span><span class="op">$</span><span class="va">response</span>
-<span class="co">#&gt; [1] "BMPTR1"</span>
+<span class="co">#&gt; [1] "BMPWT"</span>
 <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 14</span></code></pre></div>
+<span class="co">#&gt; [1] 17</span></code></pre></div>
 <p>By default, <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_covariates</code>, respectively.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>,
@@ -237,7 +238,7 @@
         <span class="st">"HYD1"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 19</span></code></pre></div>
+<span class="co">#&gt; [1] 22</span></code></pre></div>
 <p>Since using <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> with this dataset mostly returns a number less than <code>20</code>, I’ll set <code>nrounds = 20</code> in <code><a href="reference/Mixgb.html">mixgb()</a></code> to obtain <code>m</code> imputed datasets.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
@@ -267,9 +268,9 @@
 <li><p>Three variables: <code><a href="reference/plot_2num1fac.html">plot_2num1fac()</a></code>, <code><a href="reference/plot_1num2fac.html">plot_1num2fac()</a></code>.</p></li>
 </ol>
 <p>Each function will return <code>m+1</code> panels to compare the observed data with <code>m</code> sets of actual imputed values.</p>
-<p>Here are some examples. For more details, please check the vignettes <a href="https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>.</p>
+<p>Here are some examples. For more details, please check the vignette <a href="https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>,
+<code class="sourceCode R"><span class="fu"><a href="reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>,
     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-12-1.png" width="95%"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -316,14 +317,14 @@
 <span class="co"># the 5th imputed dataset</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">train.imputed</span><span class="op">[[</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1</span>
-<span class="co">#&gt; 1:        7       2     1        1        1        3    42.4     66.7    7.8</span>
+<span class="co">#&gt; 1:        7       2     1        1        1        3    43.0     67.1    9.2</span>
 <span class="co">#&gt; 2:        4       3     2        2        3        2    42.6     67.1    8.8</span>
 <span class="co">#&gt; 3:        3       9     2        2        3        2    46.5     64.3    8.6</span>
 <span class="co">#&gt; 4:        3       9     2        1        3        1    46.2     68.5   10.8</span>
 <span class="co">#&gt; 5:        5       4     1        1        3        1    44.7     63.0    6.0</span>
 <span class="co">#&gt; 6:        5      10     1        1        3        1    45.2     72.0    5.4</span>
 <span class="co">#&gt;    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1</span>
-<span class="co">#&gt; 1:    8.0    8.8    9.5  7.60  1.701    2    1</span>
+<span class="co">#&gt; 1:    8.5    8.8    8.8  7.80  1.701    2    1</span>
 <span class="co">#&gt; 2:    8.8   13.3   12.2  8.70  0.102    2    1</span>
 <span class="co">#&gt; 3:    8.0   10.4    9.2  8.00  0.359    1    3</span>
 <span class="co">#&gt; 4:   10.0   16.6   16.0  8.98  0.561    1    3</span>

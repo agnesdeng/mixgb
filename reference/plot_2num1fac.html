@@ -62,7 +62,9 @@
   <span class="va">var.y</span>,
   <span class="va">con.fac</span>,
   <span class="va">original.data</span>,
-  color.pal <span class="op">=</span> <span class="cn">NULL</span>
+  true.data <span class="op">=</span> <span class="cn">NULL</span>,
+  color.pal <span class="op">=</span> <span class="cn">NULL</span>,
+  shape.off <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -78,8 +80,12 @@
 <dd><p>A conditional factor</p></dd>
 <dt>original.data</dt>
 <dd><p>The original data with missing data</p></dd>
+<dt>true.data</dt>
+<dd><p>The true data without missing values. In general, this is unknown. Only use for simulation studies.</p></dd>
 <dt>color.pal</dt>
-<dd><p>A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length <code>m+1</code>. Default: <code>NULL</code> (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)</p></dd>
+<dd><p>A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length <code>m+1</code>. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)</p></dd>
+<dt>shape.off</dt>
+<dd><p>Whether to turn off the shape symbols for plotting. By default, this is set to TRUE to speed up plotting. We only recommend using `shape.off = FALSE` for small datasets.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
