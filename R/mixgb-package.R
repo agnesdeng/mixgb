@@ -5,7 +5,7 @@
 #' @import data.table
 #' @importFrom Matrix sparse.model.matrix
 #' @importFrom xgboost xgboost xgb.cv
-#' @importFrom stats median rnorm sd complete.cases na.omit reformulate predict
+#' @importFrom stats median rnorm sd complete.cases na.omit reformulate predict quantile rbinom
 #' @references
 #' Deng, Y., & Lumley, T. (2021). Multiple Imputation Through XGBoost.
 #' arXiv:2106.01574.

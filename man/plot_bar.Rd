@@ -4,14 +4,22 @@
 \alias{plot_bar}
 \title{Bar plots for multiply imputed values for a single factor variable}
 \usage{
-plot_bar(imputation.list, var.fac, original.data, color.pal = NULL)
+plot_bar(
+  imputation.list,
+  var.name,
+  original.data,
+  true.data = NULL,
+  color.pal = NULL
+)
 }
 \arguments{
 \item{imputation.list}{A list of \code{m} imputed datasets returned by the \code{mixgb} imputer}
 
-\item{var.fac}{The name of a factor variable of interest}
+\item{var.name}{The name of a factor variable of interest}
 
 \item{original.data}{The original data with missing data}
+
+\item{true.data}{The true data without missing values. In general, this is unknown. Only use for simulation studies.}
 
 \item{color.pal}{A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length \code{m+1}. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)}
 }
@@ -28,7 +36,7 @@ Plot bar plots of observed values versus m sets of imputed values for a specifie
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 
 #plot the multiply imputed values for variable "HFF1"
-plot_bar(imputation.list = imputed.data, var.fac = "HFF1",
+plot_bar(imputation.list = imputed.data, var.name = "HFF1",
   original.data = nhanes3_newborn)
 }
 

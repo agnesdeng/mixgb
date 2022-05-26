@@ -18,11 +18,11 @@ mixgb(
   initial.fac = "mode",
   save.models = FALSE,
   save.vars = NULL,
-  xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1,
+  xgb.params = list(max_depth = 6, gamma = 0, eta = 0.3, min_child_weight = 1,
     subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
     nthread = 4, tree_method = "auto", gpu_id = 0, predictor = "auto"),
   nrounds = 50,
-  early_stopping_rounds = 10,
+  early_stopping_rounds = 1,
   print_every_n = 10L,
   verbose = 0,
   ...

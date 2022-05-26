@@ -33,6 +33,7 @@ knitr::opts_chunk$set(
   
   * Visual diagnostic functions of multiply imputed data
   * Use S3 instead of R6 
+  * Plot functions can show masked missing data (if provided)
 
 **April 2022**
   
@@ -66,7 +67,7 @@ devtools::install_github("agnesdeng/mixgb")
 library(mixgb)
 ```
 
-### Data cleaning before imputation
+### 1.1 Data cleaning before imputation
 It is highly recommended to clean and check your data before imputation. Here are some common issues:
   
   - Data should be a data frame.
@@ -100,7 +101,7 @@ To impute this dataset, we can use the default settings. The default number of i
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 ```
 
-### Customise imputation settings
+### 2.1 Customise imputation settings
 
 We can also customise imputation settings:
 
@@ -157,7 +158,7 @@ imputed.data <- mixgb(
 ```
 
 
-### Tune hyperparameters
+### 2.2 Tune hyperparameters
 
 Imputation performance can be affected by the hyperparameter settings. It may seem daunting to tune a large set of hyperparameters, but often we can narrow down the search as many hyperparameters are correlated. In our package, we have a function `mixgb_cv()` to tune `nrounds`. There is no default `nrounds` value in `XGBoost,` so we need to specify it. The default `nrounds` in `mixgb` is 50. However, we recommend using `mixgb_cv()` to find the optimal `nrounds` first.
 
@@ -206,9 +207,9 @@ The `mixgb` package provides the following visual diagnostics functions:
 
 Each function will return `m+1` panels to compare the observed data with `m` sets of actual imputed values.
 
-Here are some examples. For more details, please check the vignettes [Visual diagnostics for multiply imputed values][Visual-diagnostics].
+Here are some examples. For more details, please check the vignette [Visual diagnostics for multiply imputed values][Visual-diagnostics].
 ```{r}
-plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD", original.data = withNA.df)
+plot_hist(imputation.list = imputed.data, var.name = "BMPHEAD", original.data = withNA.df)
 plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM", original.data = withNA.df)
 plot_2num(imputation.list = imputed.data, var.x = "HSAGEIR", var.y = "BMPHEAD", original.data = withNA.df)
 plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HSSEX", original.data = withNA.df)

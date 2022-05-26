@@ -26,6 +26,7 @@ expected. Revised paper and adapted code will be updated soon.)
 
 -   Visual diagnostic functions of multiply imputed data
 -   Use S3 instead of R6
+-   Plot functions can show masked missing data (if provided)
 
 **April 2022**
 
@@ -70,7 +71,7 @@ devtools::install_github("agnesdeng/mixgb")
 library(mixgb)
 ```
 
-### Data cleaning before imputation
+### 1.1 Data cleaning before imputation
 
 It is highly recommended to clean and check your data before imputation.
 Here are some common issues:
@@ -146,7 +147,7 @@ imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
-### Customise imputation settings
+### 2.1 Customise imputation settings
 
 We can also customise imputation settings:
 
@@ -187,7 +188,7 @@ imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1,
 #> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
-### Tune hyperparameters
+### 2.2 Tune hyperparameters
 
 Imputation performance can be affected by the hyperparameter settings.
 It may seem daunting to tune a large set of hyperparameters, but often
@@ -200,9 +201,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 cv.results$response
-#> [1] "BMPTR1"
+#> [1] "BMPWT"
 cv.results$best.nrounds
-#> [1] 14
+#> [1] 17
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -220,7 +221,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "HYD1"), verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 19
+#> [1] 22
 ```
 
 Since using `mixgb_cv()` with this dataset mostly returns a number less
@@ -276,12 +277,12 @@ The `mixgb` package provides the following visual diagnostics functions:
 Each function will return `m+1` panels to compare the observed data with
 `m` sets of actual imputed values.
 
-Here are some examples. For more details, please check the vignettes
+Here are some examples. For more details, please check the vignette
 [Visual diagnostics for multiply imputed
 values](https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html).
 
 ``` r
-plot_hist(imputation.list = imputed.data, var.num = "BMPHEAD",
+plot_hist(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 ```
 
@@ -362,14 +363,14 @@ train.imputed <- mixgb.obj$imputed.data
 # the 5th imputed dataset
 head(train.imputed[[5]])
 #>    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1
-#> 1:        7       2     1        1        1        3    42.4     66.7    7.8
+#> 1:        7       2     1        1        1        3    43.0     67.1    9.2
 #> 2:        4       3     2        2        3        2    42.6     67.1    8.8
 #> 3:        3       9     2        2        3        2    46.5     64.3    8.6
 #> 4:        3       9     2        1        3        1    46.2     68.5   10.8
 #> 5:        5       4     1        1        3        1    44.7     63.0    6.0
 #> 6:        5      10     1        1        3        1    45.2     72.0    5.4
 #>    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1
-#> 1:    8.0    8.8    9.5  7.60  1.701    2    1
+#> 1:    8.5    8.8    8.8  7.80  1.701    2    1
 #> 2:    8.8   13.3   12.2  8.70  0.102    2    1
 #> 3:    8.0   10.4    9.2  8.00  0.359    1    3
 #> 4:   10.0   16.6   16.0  8.98  0.561    1    3

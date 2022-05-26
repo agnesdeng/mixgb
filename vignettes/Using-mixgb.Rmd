@@ -131,3 +131,19 @@ system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordi
 
 system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordinalAsInteger = TRUE))
 ```
+
+## Inspect multiply imputed values
+
+The `mixgb` package provides the following visual diagnostics functions:
+
+(i) Single variable: `plot_hist()`, `plot_box()`, `plot_bar()` ;
+
+(ii) Two variables: `plot_2num()`, `plot_2fac()`, `plot_1num1fac()` ;
+
+(iii) Three variables: `plot_2num1fac()`, `plot_1num2fac()`.
+
+Each function will return `m+1` panels to compare the observed data with `m` sets of actual imputed values.
+
+For more details, please check the vignette on github[Visual diagnostics for multiply imputed values][Visual-diagnostics].
+
+[Visual-diagnostics]:https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html

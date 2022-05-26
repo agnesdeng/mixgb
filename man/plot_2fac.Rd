@@ -4,7 +4,14 @@
 \alias{plot_2fac}
 \title{Bar plots for two imputed factor variables}
 \usage{
-plot_2fac(imputation.list, var.fac1, var.fac2, original.data, color.pal = NULL)
+plot_2fac(
+  imputation.list,
+  var.fac1,
+  var.fac2,
+  original.data,
+  true.data = NULL,
+  color.pal = NULL
+)
 }
 \arguments{
 \item{imputation.list}{A list of \code{m} imputed datasets returned by the \code{mixgb} imputer}
@@ -14,6 +21,8 @@ plot_2fac(imputation.list, var.fac1, var.fac2, original.data, color.pal = NULL)
 \item{var.fac2}{A factor variable}
 
 \item{original.data}{The original data with missing data}
+
+\item{true.data}{The true data without missing values. In general, this is unknown. Only use for simulation studies.}
 
 \item{color.pal}{A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length \code{m+1}. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)}
 }

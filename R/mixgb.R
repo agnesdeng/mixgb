@@ -60,8 +60,8 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
                   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
                   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
                   save.models = FALSE, save.vars = NULL,
-                  xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1, subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, nthread = 4, tree_method = "auto", gpu_id = 0, predictor = "auto"),
-                  nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0, ...) {
+                  xgb.params = list(max_depth = 6, gamma = 0, eta = 0.3, min_child_weight = 1, subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, nthread = 4, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+                  nrounds = 50, early_stopping_rounds = 1, print_every_n = 10L, verbose = 0, ...) {
   if (!(is.data.frame(data) || is.matrix(data))) {
     stop("Data need to be a data frame or a matrix.")
   }
@@ -73,7 +73,8 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
 
   if (ordinalAsInteger == TRUE) {
     if (is.null(pmm.type)) {
-      stop("pmm.type can't be NULL when ordinalAsInteger = TRUE")
+      ordinalAsInteger <- FALSE
+      warning(" `ordinalAsInteger` will be coerced to FALSE when `pmm.type = NULL`")
     }
     ord.fac <- names(Filter(is.ordered, data))
     # ord.fac<- colnames(data)[sapply(data,is.ordered)]

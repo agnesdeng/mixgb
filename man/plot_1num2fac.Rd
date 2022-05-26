@@ -10,7 +10,9 @@ plot_1num2fac(
   var.num,
   con.fac,
   original.data,
-  color.pal = NULL
+  true.data = NULL,
+  color.pal = NULL,
+  shape.off = TRUE
 )
 }
 \arguments{
@@ -24,7 +26,11 @@ plot_1num2fac(
 
 \item{original.data}{The original data with missing data}
 
+\item{true.data}{The true data without missing values. In general, this is unknown. Only use for simulation studies.}
+
 \item{color.pal}{A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length \code{m+1}. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)}
+
+\item{shape.off}{Whether to turn off the shape symbols for plotting. By default, this is set to TRUE to speed up plotting. We only recommend using `shape.off = FALSE` for small datasets.}
 }
 \value{
 Boxplots with overlaying data points
