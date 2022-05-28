@@ -64,7 +64,7 @@
   <span class="va">original.data</span>,
   true.data <span class="op">=</span> <span class="cn">NULL</span>,
   color.pal <span class="op">=</span> <span class="cn">NULL</span>,
-  shape.off <span class="op">=</span> <span class="cn">TRUE</span>
+  shape <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -84,8 +84,8 @@
 <dd><p>The true data without missing values. In general, this is unknown. Only use for simulation studies.</p></dd>
 <dt>color.pal</dt>
 <dd><p>A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length <code>m+1</code>. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)</p></dd>
-<dt>shape.off</dt>
-<dd><p>Whether to turn off the shape symbols for plotting. By default, this is set to TRUE to speed up plotting. We only recommend using `shape.off = FALSE` for small datasets.</p></dd>
+<dt>shape</dt>
+<dd><p>Whether to plot shapes for different types of missing values. By default, this is set to FALSE to speed up plotting. We only recommend using `shape = TRUE` for small datasets.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -96,13 +96,15 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co">#obtain m multiply datasets</span></span>
+<span class="r-in"><span class="co"># obtain m multiply datasets</span></span>
 <span class="r-in"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co">#plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM" conditional on "HFF1"</span></span>
-<span class="r-in"><span class="fu">plot_2num1fac</span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,</span>
-<span class="r-in"> con.fac <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">nhanes3_newborn</span><span class="op">)</span></span>
+<span class="r-in"><span class="co"># plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM" conditional on "HFF1"</span></span>
+<span class="r-in"><span class="fu">plot_2num1fac</span><span class="op">(</span></span>
+<span class="r-in">  imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,</span>
+<span class="r-in">  con.fac <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">nhanes3_newborn</span></span>
+<span class="r-in"><span class="op">)</span></span>
 <span class="r-plt img"><img src="plot_2num1fac-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>

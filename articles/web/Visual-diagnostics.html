@@ -72,7 +72,7 @@
       <img src="" class="logo" alt=""><h1>Visual diagnostics for multiply imputed values</h1>
                         <h4 data-toc-skip class="author">Yongshi Deng</h4>
             
-            <h4 data-toc-skip class="date">2022-05-26</h4>
+            <h4 data-toc-skip class="date">2022-05-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/web/Visual-diagnostics.Rmd" class="external-link"><code>vignettes/web/Visual-diagnostics.Rmd</code></a></small>
       <div class="d-none name"><code>Visual-diagnostics.Rmd</code></div>
@@ -112,26 +112,26 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/show_var.html">show_var</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span>
 <span class="co">#&gt;        m1   m2   m3   m4   m5</span>
-<span class="co">#&gt;   1: 42.6 41.8 42.8 42.8 43.6</span>
-<span class="co">#&gt;   2: 45.8 47.1 45.3 43.2 44.0</span>
-<span class="co">#&gt;   3: 43.7 42.0 42.6 43.0 44.4</span>
-<span class="co">#&gt;   4: 42.6 44.7 44.6 41.2 43.8</span>
-<span class="co">#&gt;   5: 44.6 42.9 46.2 43.7 44.5</span>
+<span class="co">#&gt;   1: 41.4 42.2 43.0 42.3 43.2</span>
+<span class="co">#&gt;   2: 40.9 45.3 43.4 43.5 42.8</span>
+<span class="co">#&gt;   3: 42.5 42.6 41.8 42.2 42.5</span>
+<span class="co">#&gt;   4: 43.1 42.1 44.3 41.7 44.0</span>
+<span class="co">#&gt;   5: 45.2 45.8 45.0 45.8 45.8</span>
 <span class="co">#&gt;  ---                         </span>
-<span class="co">#&gt; 120: 46.0 47.1 45.8 46.3 44.3</span>
-<span class="co">#&gt; 121: 45.7 44.4 45.7 44.7 43.6</span>
-<span class="co">#&gt; 122: 40.9 41.8 40.7 42.1 39.9</span>
-<span class="co">#&gt; 123: 44.2 45.0 48.5 44.0 44.7</span>
-<span class="co">#&gt; 124: 44.5 45.3 42.4 44.9 44.3</span>
+<span class="co">#&gt; 120: 46.7 44.9 45.6 46.6 45.8</span>
+<span class="co">#&gt; 121: 45.6 44.5 45.9 45.2 44.3</span>
+<span class="co">#&gt; 122: 42.9 41.5 42.8 42.4 42.4</span>
+<span class="co">#&gt; 123: 44.1 43.8 44.9 44.8 45.4</span>
+<span class="co">#&gt; 124: 46.8 46.1 44.6 45.2 45.7</span>
 <span class="fu"><a href="../../reference/show_var.html">show_var</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span>
 <span class="co">#&gt;    m1 m2 m3 m4 m5</span>
-<span class="co">#&gt; 1:  2  2  2  1  2</span>
-<span class="co">#&gt; 2:  2  2  2  1  1</span>
-<span class="co">#&gt; 3:  2  2  2  2  2</span>
+<span class="co">#&gt; 1:  2  2  2  2  2</span>
+<span class="co">#&gt; 2:  1  2  1  2  1</span>
+<span class="co">#&gt; 3:  1  2  1  1  2</span>
 <span class="co">#&gt; 4:  2  2  2  2  2</span>
-<span class="co">#&gt; 5:  2  2  2  1  1</span>
+<span class="co">#&gt; 5:  1  2  1  1  1</span>
 <span class="co">#&gt; 6:  2  2  2  2  2</span>
-<span class="co">#&gt; 7:  1  1  2  1  2</span></code></pre></div>
+<span class="co">#&gt; 7:  1  1  2  2  2</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -157,14 +157,16 @@
 <p><code><a href="../../reference/plot_hist.html">plot_hist()</a></code>: plot histograms with density curves.</p>
 <p>Histograms are good at displaying the distribution of numeric data. Users can identify any unusual pattern of the imputed values from their shapes. Under MCAR, we would expect the distribution of imputed values to be the same as that of the observed ones. Under MAR, the distributions of observed and imputed values can be quite different. However, it is still worth plotting the imputed data as any to odd values may indicate that the imputation procedure is unsatisfactory.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, 
+      original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-6-1.png" width="95%"></p>
 </li>
 <li>
 <p><code><a href="../../reference/plot_box.html">plot_box()</a></code>: plot box plots with overlaying data points.</p>
 <p>Users can use <code><a href="../../reference/plot_box.html">plot_box()</a></code> to compare the median, lower and upper quantiles of imputed values with that of the observed ones. Also, we can see the difference between the number of missing values and observed values in the specified variable.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, 
+     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-7-1.png" width="95%"></p>
 </li>
 </ul>
@@ -177,10 +179,12 @@
 <p><code><a href="../../reference/plot_bar.html">plot_bar()</a></code>: plot bar plots</p>
 <p>The proportion of each level in a factor will be shown by <code><a href="../../reference/plot_bar.html">plot_bar()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSSEX"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSSEX"</span>, 
+     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-8-1.png" width="95%"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"DMARETHN"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"DMARETHN"</span>, 
+     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-8-2.png" width="95%"></p>
 </li>
 </ul>
@@ -195,13 +199,16 @@
 <li>
 <p><code><a href="../../reference/plot_bar.html">plot_bar()</a></code>: plot bar plot (treat an integer variable as a factor)</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSHSIZER"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSHSIZER"</span>, 
+      original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-9-1.png" width="95%"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSHSIZER"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSHSIZER"</span>, 
+     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-9-2.png" width="95%"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSHSIZER"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSHSIZER"</span>, 
+     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-9-3.png" width="95%"></p>
 </li>
 </ul>
@@ -212,13 +219,16 @@
 <p>The function <code><a href="../../reference/Mixgb.html">mixgb()</a></code> will convert any ordinal factor to integers by default. This will speed up the imputation process, but users need to decide whether to transform them back. In this case, we can just plot the imputed values as integers (see Section 2.1.3).</p>
 <p>If users set <code>ordinalAsInteger = FALSE</code> in <code><a href="../../reference/Mixgb.html">mixgb()</a></code>, then we can plot ordinal factors as factors. (see Section 2.1.2).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HYD1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HYD1"</span>, 
+         original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-10-1.png" width="95%"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HYD1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HYD1"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-10-2.png" width="95%"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HYD1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HYD1"</span>, 
+         original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-10-3.png" width="95%"></p>
 </div>
 </div>
@@ -230,9 +240,10 @@
 <h4 id="two-numeric-variables">2.2.1 Two numeric variables<a class="anchor" aria-label="anchor" href="#two-numeric-variables"></a>
 </h4>
 <p>We can plot scatter plots of two numeric variables using <code><a href="../../reference/plot_2num.html">plot_2num()</a></code>. We can specify the name of a numeric variable on the x-axis in <code>var.x</code> , and another numeric variable on the y-axis in <code>var.y</code>.</p>
-<p>Users can choose to plot the shapes of different types of missing values by setting <code>shape.off = FALSE</code>. We only recommend plotting the shapes when the dataset is small. By default, <code>shape.off = TRUE</code> to speed up the plotting process.</p>
+<p>Users can choose to plot the shapes of different types of missing values by setting <code>shape = TRUE</code>. We only recommend plotting the shapes when the dataset is small. By default, <code>shape = FALSE</code> to speed up the plotting process.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape.off <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-11-1.png" width="95%"></p>
 <p><strong>NA.condition</strong> represents the following types of missing values.</p>
 <ol style="list-style-type: lower-roman">
@@ -248,7 +259,8 @@
 <p>We can plot a numeric variable versus a factor using <code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code>. The output is a box plot with overlaying points. Users need to specify a numeric variable in <code>var.num</code> and a factor in <code>var.fac</code>.</p>
 <p><strong>NA.condition</strong> is similar to the definition in Section 2.2.1.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.fac <span class="op">=</span> <span class="st">"HSSEX"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.fac <span class="op">=</span> <span class="st">"HSSEX"</span>, 
+              original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-12-1.png" width="95%"></p>
 </div>
 <div class="section level4">
@@ -256,7 +268,8 @@
 </h4>
 <p>We can plot bar plots to show the relationship between two factors using <code><a href="../../reference/plot_2fac.html">plot_2fac()</a></code>. Note that this function requires at least one of the variables to be incomplete in the original dataset.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2fac.html">plot_2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac1 <span class="op">=</span> <span class="st">"HYD1"</span>, var.fac2 <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2fac.html">plot_2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac1 <span class="op">=</span> <span class="st">"HYD1"</span>, var.fac2 <span class="op">=</span> <span class="st">"HFF1"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-13-1.png" width="95%"></p>
 </div>
 <div class="section level4">
@@ -264,14 +277,17 @@
 </h4>
 <p>We can use <code><a href="../../reference/plot_2num.html">plot_2num()</a></code> to plot a numeric variable versus an integer variable. Note that the plots would look different if we swap the variables <code>var.x</code> and <code>var.y</code>.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"HSAGEIR"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape.off <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"HSAGEIR"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-14-1.png" width="95%"></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSAGEIR"</span>, var.y <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape.off <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSAGEIR"</span>, var.y <span class="op">=</span> <span class="st">"BMPHEAD"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-14-2.png" width="95%"></p>
 <p>If we treat an integer variable as factor, we can use <code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code> .</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.fac <span class="op">=</span> <span class="st">"HSAGEIR"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape.off <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.fac <span class="op">=</span> <span class="st">"HSAGEIR"</span>, 
+              original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-15-1.png" width="95%"></p>
 </div>
 <div class="section level4">
@@ -279,13 +295,16 @@
 </h4>
 <p>We can plot two variables of integer type using either <code><a href="../../reference/plot_2num.html">plot_2num()</a></code> ,<code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code> or <code><a href="../../reference/plot_2fac.html">plot_2fac()</a></code>. Users should choose the plotting functions based on the nature of the variable. For example, if an integer variable <code>age</code> has data ranging from 0 to 110, it may be easier to treat <code>age</code> as numeric rather than a factor. On the other hand, if we have an integer variable which only has several distinct values (e.g. 1,2,3), it may be better to treat them as factor for plotting. In this dataset, we only have two variables of integer type-<code>HSHSIZER</code>(household size) and <code>HSAGEIR</code>(baby’s age ranging from 2 to 11 months). We would not expect any obvious relation between these two, but we plot them anyway.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSHSIZER"</span>, var.y <span class="op">=</span> <span class="st">"HSAGEIR"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape.off <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSHSIZER"</span>, var.y <span class="op">=</span> <span class="st">"HSAGEIR"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-16-1.png" width="95%"></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"HSHSIZER"</span>, var.fac <span class="op">=</span> <span class="st">"HSAGEIR"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape.off <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"HSHSIZER"</span>, var.fac <span class="op">=</span> <span class="st">"HSAGEIR"</span>,
+              original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-16-2.png" width="95%"></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2fac.html">plot_2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac1 <span class="op">=</span> <span class="st">"HSHSIZER"</span>, var.fac2 <span class="op">=</span> <span class="st">"HSAGEIR"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2fac.html">plot_2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac1 <span class="op">=</span> <span class="st">"HSHSIZER"</span>, var.fac2 <span class="op">=</span> <span class="st">"HSAGEIR"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-16-3.png" width="95%"></p>
 </div>
 </div>
@@ -298,12 +317,10 @@
 </h4>
 <p>We can generate a conditional scatter plots for two numeric variables using <code><a href="../../reference/plot_2num1fac.html">plot_2num1fac()</a></code> . The variable on the x-axis should be specified in <code>var.x</code>, while the y-axis one should be in <code>var.y</code> . The factor we want to be conditional on is <code>con.fac</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>
-  imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,
-  con.fac <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,
+  con.fac <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-17-1.png" width="95%"></p>
-<p>When we have three variables, there are <span class="math inline">\(2^3\)</span> different types of missing patterns, consisting of all possible combinations of zero to three variables missing. However, it would be hard to differentiate all 8 types of missingness in the same plots, especially in the case when the dataset is not small. Therefore, we only choose to show the following three types in <strong>NA.condition</strong> in the plot when <code>shape.off = FALSE</code>.</p>
+<p>When we have three variables, there are <span class="math inline">\(2^3\)</span> different types of missing patterns, consisting of all possible combinations of zero to three variables missing. However, it would be hard to differentiate all 8 types of missingness in the same plots, especially in the case when the dataset is not small. Therefore, we only choose to show the following three types in <strong>NA.condition</strong> in the plot when <code>shape = TRUE</code>.</p>
 <p><strong>NA.condition</strong> represents the following types of missing values.</p>
 <ol style="list-style-type: lower-roman">
 <li><p><code>all.observed</code>: Observations where all three variables are observed. This only appears in the first panel - <code>Observed</code> .</p></li>
@@ -314,17 +331,13 @@
 <li><p><code>con.fac.missing</code>: imputed values where <code>con.fac</code> is originally missing. (These points can be originally observed, or missing in either <code>var.x</code> or <code>var.y</code> or both)</p></li>
 </ol>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>
-  imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,
-  con.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape.off <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,
+              con.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-18-1.png" width="95%"></p>
 <p>If we want to treat integer variables as numeric, we can put them in either <code>var.x</code> or <code>var.y</code>. Here is an example, where <code>HSAGEIR</code> is an integer variable with values ranging from 2 to 11.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>
-  imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSAGEIR"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,
-  con.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSAGEIR"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,
+              con.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-19-1.png" width="95%"></p>
 </div>
 <div class="section level4">
@@ -332,7 +345,8 @@
 </h4>
 <p><code><a href="../../reference/plot_1num2fac.html">plot_1num2fac()</a></code> will generate boxplots with overlaying data points of one numeric variable vs a factor, conditional on another factor.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num2fac.html">plot_1num2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, var.num <span class="op">=</span> <span class="st">"BMPRECUM"</span>, con.fac <span class="op">=</span> <span class="st">"HSSEX"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num2fac.html">plot_1num2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, var.num <span class="op">=</span> <span class="st">"BMPRECUM"</span>, 
+              con.fac <span class="op">=</span> <span class="st">"HSSEX"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-20-1.png" width="95%"></p>
 </div>
 </div>
@@ -342,7 +356,8 @@
 </h2>
 <p>By default, the observed panel is gray and the other <code>m</code> panels use <code>ggplot2</code>’s default color scheme.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, color.pal <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span>, color.pal <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-21-1.png" width="95%"></p>
 <p>We can change the colors by providing a vector of color hex codes in the argument <code>color.pal</code>. For example, we can use one of the colorblind-friendly palette <code>Set2</code> from the R package <code>RColorBrewer</code>. Note that if we have <code>m</code> imputed datasets, we need <code>m+1</code> hex codes because we also have to display the <code>Observed</code> panel.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
@@ -351,13 +366,15 @@
 <span class="va">color.codes</span>
 <span class="co">#&gt; [1] "#66C2A5" "#FC8D62" "#8DA0CB" "#E78AC3" "#A6D854" "#FFD92F"</span>
 
-<span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, color.pal <span class="op">=</span> <span class="va">color.codes</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span>, color.pal <span class="op">=</span> <span class="va">color.codes</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-22-1.png" width="95%"></p>
 <p>Otherwise, we can provide a vector of R’s built-in color names.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">color.names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gray50"</span>, <span class="st">"coral2"</span>, <span class="st">"goldenrod3"</span>, <span class="st">"darkolivegreen4"</span>, <span class="st">"slateblue1"</span>, <span class="st">"plum3"</span><span class="op">)</span>
 
-<span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, color.pal <span class="op">=</span> <span class="va">color.names</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, 
+          original.data <span class="op">=</span> <span class="va">withNA.df</span>, color.pal <span class="op">=</span> <span class="va">color.names</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-23-1.png" width="95%"></p>
 <p>Here is a very useful R colors names cheat-sheet created by Dr Ying Wei.</p>
 <p><a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf" class="external-link uri">http://www.stat.columbia.edu/\~tzheng/files/Rcolor.pdf</a></p>
@@ -387,28 +404,20 @@
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.name <span class="op">=</span> <span class="st">"hyp"</span>, original.data <span class="op">=</span> <span class="va">nhanes2</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-25-3.png" width="95%"></p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>
-  imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.x <span class="op">=</span> <span class="st">"bmi"</span>, var.y <span class="op">=</span> <span class="st">"chl"</span>,
-  original.data <span class="op">=</span> <span class="va">nhanes2</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.x <span class="op">=</span> <span class="st">"bmi"</span>, var.y <span class="op">=</span> <span class="st">"chl"</span>,
+  original.data <span class="op">=</span> <span class="va">nhanes2</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-25-4.png" width="95%"></p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>
-  imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.num <span class="op">=</span> <span class="st">"chl"</span>, var.fac <span class="op">=</span> <span class="st">"hyp"</span>,
-  original.data <span class="op">=</span> <span class="va">nhanes2</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.num <span class="op">=</span> <span class="st">"chl"</span>, var.fac <span class="op">=</span> <span class="st">"hyp"</span>,
+  original.data <span class="op">=</span> <span class="va">nhanes2</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-25-5.png" width="95%"></p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>
-  imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.x <span class="op">=</span> <span class="st">"chl"</span>, var.y <span class="op">=</span> <span class="st">"bmi"</span>,
-  con.fac <span class="op">=</span> <span class="st">"age"</span>, original.data <span class="op">=</span> <span class="va">nhanes2</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.x <span class="op">=</span> <span class="st">"chl"</span>, var.y <span class="op">=</span> <span class="st">"bmi"</span>,
+  con.fac <span class="op">=</span> <span class="st">"age"</span>, original.data <span class="op">=</span> <span class="va">nhanes2</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-25-6.png" width="95%"></p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>
-  imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.x <span class="op">=</span> <span class="st">"chl"</span>, var.y <span class="op">=</span> <span class="st">"bmi"</span>,
-  con.fac <span class="op">=</span> <span class="st">"hyp"</span>, original.data <span class="op">=</span> <span class="va">nhanes2</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mice.data</span>, var.x <span class="op">=</span> <span class="st">"chl"</span>, var.y <span class="op">=</span> <span class="st">"bmi"</span>,
+  con.fac <span class="op">=</span> <span class="st">"hyp"</span>, original.data <span class="op">=</span> <span class="va">nhanes2</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-25-7.png" width="95%"></p>
 </div>
 <div class="section level2">
@@ -428,13 +437,16 @@
 <span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
 <p>Now since we know the true data, we can specify it in the plotting functions. It will generate an extra panel called <code>MaskedTrue</code>, which shows values that are originally observed but intentionally made missing.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mixgb.data</span>, var.name <span class="op">=</span> <span class="st">"norm1"</span>, original.data <span class="op">=</span> <span class="va">MCAR.df</span>, true.data <span class="op">=</span> <span class="va">full.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mixgb.data</span>, var.name <span class="op">=</span> <span class="st">"norm1"</span>, 
+          original.data <span class="op">=</span> <span class="va">MCAR.df</span>, true.data <span class="op">=</span> <span class="va">full.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-27-1.png" width="95%"></p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mixgb.data</span>, var.name <span class="op">=</span> <span class="st">"norm2"</span>, original.data <span class="op">=</span> <span class="va">MCAR.df</span>, true.data <span class="op">=</span> <span class="va">full.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mixgb.data</span>, var.name <span class="op">=</span> <span class="st">"norm2"</span>, 
+         original.data <span class="op">=</span> <span class="va">MCAR.df</span>, true.data <span class="op">=</span> <span class="va">full.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-27-2.png" width="95%"></p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mixgb.data</span>, var.x <span class="op">=</span> <span class="st">"norm1"</span>, var.y <span class="op">=</span> <span class="st">"y"</span>, original.data <span class="op">=</span> <span class="va">MCAR.df</span>, true.data <span class="op">=</span> <span class="va">full.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mixgb.data</span>, var.x <span class="op">=</span> <span class="st">"norm1"</span>, var.y <span class="op">=</span> <span class="st">"y"</span>, 
+          original.data <span class="op">=</span> <span class="va">MCAR.df</span>, true.data <span class="op">=</span> <span class="va">full.df</span><span class="op">)</span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-27-3.png" width="95%"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
