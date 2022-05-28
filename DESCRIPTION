@@ -35,8 +35,8 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    RColorBrewer,
-    testthat (>= 2.1.0)
+    RColorBrewer
 Depends: R (>= 3.5.0)
 VignetteBuilder: knitr
 RoxygenNote: 7.2.0
+Config/testthat/edition: 3

@@ -11,7 +11,7 @@ plot_1num1fac(
   original.data,
   true.data = NULL,
   color.pal = NULL,
-  shape.off = TRUE
+  shape = FALSE
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ plot_1num1fac(
 
 \item{color.pal}{A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length \code{m+1}. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)}
 
-\item{shape.off}{Whether to turn off the shape symbols for plotting. By default, this is set to TRUE to speed up plotting. We only recommend using `shape.off = FALSE` for small datasets.}
+\item{shape}{Whether to plot shapes for different types of missing values. By default, this is set to FALSE to speed up plotting. We only recommend using `shape = TRUE` for small datasets.}
 }
 \value{
 Box plot with jittered data points for a numeric/integer variable; Bar plot for a categorical variable.
@@ -38,11 +38,13 @@ Plot observed values versus m sets of imputed values for one numeric variable vs
 \examples{
 \donttest{
 
-#obtain m multiply datasets
+# obtain m multiply datasets
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 
-#plot the multiply imputed values for variables "BMPHEAD" versus "HFF1"
-plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HFF1",
-  original.data = nhanes3_newborn)
+# plot the multiply imputed values for variables "BMPHEAD" versus "HFF1"
+plot_1num1fac(
+  imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HFF1",
+  original.data = nhanes3_newborn
+)
 }
 }

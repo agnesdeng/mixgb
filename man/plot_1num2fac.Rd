@@ -12,7 +12,7 @@ plot_1num2fac(
   original.data,
   true.data = NULL,
   color.pal = NULL,
-  shape.off = TRUE
+  shape = FALSE
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ plot_1num2fac(
 
 \item{color.pal}{A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length \code{m+1}. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)}
 
-\item{shape.off}{Whether to turn off the shape symbols for plotting. By default, this is set to TRUE to speed up plotting. We only recommend using `shape.off = FALSE` for small datasets.}
+\item{shape}{Whether to plot shapes for different types of missing values. By default, this is set to FALSE to speed up plotting. We only recommend using `shape = TRUE` for small datasets.}
 }
 \value{
 Boxplots with overlaying data points
@@ -41,12 +41,13 @@ Plot observed values versus m sets of imputed values for one specified numeric v
 \examples{
 \donttest{
 
-#obtain m multiply datasets
+# obtain m multiply datasets
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 
-#plot the multiply imputed values for variables "BMPRECUM" versus "HFF1" conditional on "HSSEX"
+# plot the multiply imputed values for variables "BMPRECUM" versus "HFF1" conditional on "HSSEX"
 plot_1num2fac(
   imputation.list = imputed.data, var.fac = "HFF1", var.num = "BMPRECUM",
-  con.fac = "HSSEX", original.data = nhanes3_newborn)
+  con.fac = "HSSEX", original.data = nhanes3_newborn
+)
 }
 }

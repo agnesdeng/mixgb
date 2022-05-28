@@ -6,7 +6,7 @@
 #' @param original.data The original data with missing data
 #' @param true.data The true data without missing values. In general, this is unknown. Only use for simulation studies.
 #' @param color.pal A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length \code{m+1}. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)
-#' @param shape.off Whether to turn off the shape symbols for plotting. By default, this is set to TRUE to speed up plotting. We only recommend using `shape.off = FALSE` for small datasets.
+#' @param shape Whether to plot shapes for different types of missing values. By default, this is set to FALSE to speed up plotting. We only recommend using `shape = TRUE` for small datasets.
 #' @importFrom scales hue_pal
 #' @importFrom tidyr pivot_longer
 #' @importFrom rlang .data
@@ -16,15 +16,16 @@
 #' @examples
 #' \donttest{
 #'
-#' #obtain m multiply datasets
+#' # obtain m multiply datasets
 #' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
-#' #plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM"
-#' plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
-#'   original.data = nhanes3_newborn)
+#' # plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM"
+#' plot_2num(
+#'   imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
+#'   original.data = nhanes3_newborn
+#' )
 #' }
-plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = NULL, color.pal = NULL, shape.off = TRUE) {
-
+plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = NULL, color.pal = NULL, shape = FALSE) {
   Types <- feature_type(imputation.list[[1]])
 
   if (Types[var.x] != "numeric" & Types[var.x] != "integer") {
@@ -36,31 +37,31 @@ plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = 
     stop(paste("The variable", var.y, "is a factor. Please use plot_1num1fac() or plot_2fac()."))
   }
 
-  imp.sum<-summary2var(imputation.list = imputation.list, var.x = var.x, var.y = var.y, original.data = original.data, true.data = true.data, color.pal = color.pal,shape.off = shape.off)
-  all.dt<-imp.sum$all.dt
-  color.pal<-imp.sum$color.pal
+  imp.sum <- summary2var(imputation.list = imputation.list, var.x = var.x, var.y = var.y, original.data = original.data, true.data = true.data, color.pal = color.pal, shape = shape)
+  all.dt <- imp.sum$all.dt
+  color.pal <- imp.sum$color.pal
 
-  if(shape.off){
-    gp<- ggplot(all.dt, aes(x = .data[[var.x]], y = .data[[var.y]])) +
-      geom_point(alpha = 0.6, aes(shape = NULL, color = m.set, fill = m.set))+
+  if (!shape) {
+    gp <- ggplot(all.dt, aes(x = .data[[var.x]], y = .data[[var.y]])) +
+      geom_point(alpha = 0.6, aes(shape = NULL, color = m.set, fill = m.set)) +
       facet_grid(cols = vars(m.set)) +
       labs(title = "Scatter plots of two numeric variables", subtitle = paste("Imputed sets: ", var.y, "vs", var.x))
-  }else{
-    if(is.null(true.data)){
+  } else {
+    if (is.null(true.data)) {
       # X:88, Y:89
       shapes <- c(23, 21, 88, 89)
-    }else{
-      #T: 84
+    } else {
+      # T: 84
       shapes <- c(23, 84, 21, 88, 89)
     }
-    gp<-ggplot(all.dt, aes(x = .data[[var.x]], y = .data[[var.y]])) +
-      geom_point(alpha = 0.6, aes(shape = NA.condition, color = m.set, fill = m.set))+
+    gp <- ggplot(all.dt, aes(x = .data[[var.x]], y = .data[[var.y]])) +
+      geom_point(alpha = 0.6, aes(shape = NA.condition, color = m.set, fill = m.set)) +
       facet_grid(cols = vars(m.set)) +
-      labs(title = "Scatter plots of two numeric variables", subtitle = paste( "Imputed sets: ", var.y, "vs", var.x)) +
+      labs(title = "Scatter plots of two numeric variables", subtitle = paste("Imputed sets: ", var.y, "vs", var.x)) +
       scale_shape_manual(values = shapes, drop = FALSE)
   }
 
-  gp+
+  gp +
     scale_color_manual(values = color.pal) +
     scale_fill_manual(values = color.pal) +
     guides(fill = "none", color = "none", shape = guide_legend(override.aes = list(size = 3))) +
@@ -72,7 +73,6 @@ plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = 
       legend.title = element_text(color = "black", size = 12, face = "bold"),
       legend.text = element_text(color = "black", size = 10)
     )
-
 }
 
 
@@ -85,7 +85,7 @@ plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = 
 #' @param original.data The original data with missing data
 #' @param true.data The true data without missing values. In general, this is unknown. Only use for simulation studies.
 #' @param color.pal A vector of hex color codes for the observed and m sets of imputed values panels. The vector should be of length \code{m+1}. Default: NULL (use "gray40" for the observed panel, use ggplot2 default colors for other panels.)
-#' @param shape.off Whether to turn off the shape symbols for plotting. By default, this is set to TRUE to speed up plotting. We only recommend using `shape.off = FALSE` for small datasets.
+#' @param shape Whether to plot shapes for different types of missing values. By default, this is set to FALSE to speed up plotting. We only recommend using `shape = TRUE` for small datasets.
 #' @importFrom scales hue_pal
 #' @importFrom tidyr pivot_longer
 #' @importFrom rlang .data
@@ -95,16 +95,16 @@ plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = 
 #' @examples
 #' \donttest{
 #'
-#' #obtain m multiply datasets
+#' # obtain m multiply datasets
 #' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
-#' #plot the multiply imputed values for variables "BMPHEAD" versus "HFF1"
-#' plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HFF1",
-#'   original.data = nhanes3_newborn)
+#' # plot the multiply imputed values for variables "BMPHEAD" versus "HFF1"
+#' plot_1num1fac(
+#'   imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HFF1",
+#'   original.data = nhanes3_newborn
+#' )
 #' }
-plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true.data = NULL, color.pal = NULL, shape.off = TRUE) {
-
-
+plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true.data = NULL, color.pal = NULL, shape = FALSE) {
   Types <- feature_type(imputation.list[[1]])
 
   if (Types[var.num] != "numeric" & Types[var.num] != "integer") {
@@ -115,11 +115,11 @@ plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true
     stop("Variable ", var.fac, " is not a factor or integer variable")
   }
 
-  imp.sum<-summary2var(imputation.list = imputation.list, var.x = var.num, var.y = var.fac, original.data = original.data, true.data = true.data, color.pal = color.pal,shape.off = shape.off)
-  all.dt<-imp.sum$all.dt
-  color.pal<-imp.sum$color.pal
+  imp.sum <- summary2var(imputation.list = imputation.list, var.x = var.num, var.y = var.fac, original.data = original.data, true.data = true.data, color.pal = color.pal, shape = shape)
+  all.dt <- imp.sum$all.dt
+  color.pal <- imp.sum$color.pal
 
-  if(shape.off){
+  if (!shape) {
     if (Types[var.num] == "integer") {
       gp <- ggplot(all.dt, aes(x = .data[[var.fac]], y = .data[[var.num]])) +
         geom_point(alpha = 0.6, aes(color = m.set, fill = m.set))
@@ -127,17 +127,17 @@ plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true
       gp <- ggplot(all.dt, aes(x = .data[[var.fac]], y = .data[[var.num]])) +
         geom_jitter(alpha = 0.6, position = position_jitter(), aes(color = m.set, fill = m.set))
     }
-    gp<-gp +
+    gp <- gp +
       geom_boxplot(alpha = 0.5, aes(fill = m.set), outlier.shape = NA) +
       facet_grid(cols = vars(m.set)) +
       labs(title = "Boxplot with points for a numeric variable vs a factor", subtitle = paste("Imputed sets: ", var.num, "vs", var.fac))
-  }else{
-    #plot NA.condition with shapes
-    if(is.null(true.data)){
+  } else {
+    # plot NA.condition with shapes
+    if (is.null(true.data)) {
       # "N":78  "F":70
       shapes <- c(23, 21, 78, 70)
-    }else{
-      #T: 84
+    } else {
+      # T: 84
       shapes <- c(23, 84, 21, 78, 70)
     }
 
@@ -148,13 +148,13 @@ plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true
       gp <- ggplot(all.dt, aes(x = .data[[var.fac]], y = .data[[var.num]])) +
         geom_jitter(alpha = 0.6, position = position_jitter(), aes(color = m.set, fill = m.set, shape = NA.condition))
     }
-    gp<-gp +
+    gp <- gp +
       geom_boxplot(alpha = 0.5, aes(fill = m.set), outlier.shape = NA) +
       facet_grid(cols = vars(m.set)) +
       labs(title = "Boxplot with points for a numeric variable vs a factor", subtitle = paste("Imputed sets: ", var.num, "vs", var.fac)) +
       scale_shape_manual(values = shapes, drop = FALSE)
   }
-  gp+scale_color_manual(values = color.pal) +
+  gp + scale_color_manual(values = color.pal) +
     scale_fill_manual(values = color.pal) +
     guides(fill = "none", color = "none", shape = guide_legend(override.aes = list(size = 3))) +
     theme(
@@ -165,9 +165,6 @@ plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true
       legend.title = element_text(color = "black", size = 12, face = "bold"),
       legend.text = element_text(color = "black", size = 10)
     )
-
-
-
 }
 
 
@@ -187,15 +184,16 @@ plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true
 #' @examples
 #' \donttest{
 #'
-#' #obtain m multiply datasets
+#' # obtain m multiply datasets
 #' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 #'
-#' #plot the multiply imputed values for variables "HFF1" versus "DMARETHN"
-#' plot_2fac(imputation.list = imputed.data, var.fac1 = "HFF1", var.fac2 = "DMARETHN",
-#'   original.data = nhanes3_newborn)
+#' # plot the multiply imputed values for variables "HFF1" versus "DMARETHN"
+#' plot_2fac(
+#'   imputation.list = imputed.data, var.fac1 = "HFF1", var.fac2 = "DMARETHN",
+#'   original.data = nhanes3_newborn
+#' )
 #' }
 plot_2fac <- function(imputation.list, var.fac1, var.fac2, original.data, true.data = NULL, color.pal = NULL) {
-
   Types <- feature_type(imputation.list[[1]])
 
   if (Types[var.fac1] == "numeric") {
@@ -207,9 +205,9 @@ plot_2fac <- function(imputation.list, var.fac1, var.fac2, original.data, true.d
     stop("Variable ", var.fac2, " is not a factor or an integer variable")
   }
 
-  imp.sum<-summary2var(imputation.list = imputation.list, var.x = var.fac1, var.y = var.fac2, original.data = original.data, true.data = true.data, color.pal = color.pal,shape.off = TRUE)
-  all.dt<-imp.sum$all.dt
-  color.pal<-imp.sum$color.pal
+  imp.sum <- summary2var(imputation.list = imputation.list, var.x = var.fac1, var.y = var.fac2, original.data = original.data, true.data = true.data, color.pal = color.pal, shape = FALSE)
+  all.dt <- imp.sum$all.dt
+  color.pal <- imp.sum$color.pal
 
 
 
@@ -232,9 +230,9 @@ plot_2fac <- function(imputation.list, var.fac1, var.fac2, original.data, true.d
 }
 
 
-#extract results for plotting two variables
-summary2var<-function(imputation.list, var.x, var.y, original.data, true.data, color.pal,shape.off){
-  if(!identical(dim(imputation.list[[1]]),dim(original.data))){
+# extract results for plotting two variables
+summary2var <- function(imputation.list, var.x, var.y, original.data, true.data, color.pal, shape) {
+  if (!identical(dim(imputation.list[[1]]), dim(original.data))) {
     stop("The dimension of the imputed dataset needs to be the same as the dimension of the data specified in `original.data`.")
   }
   Names <- colnames(original.data)
@@ -250,6 +248,16 @@ summary2var<-function(imputation.list, var.x, var.y, original.data, true.data, c
   missing.vars <- Names[colSums(is.na(original.data)) != 0]
   if (!any(missing.vars == var.x) & !any(missing.vars == var.y)) {
     stop("There is no missing value in both `var.x` and `var.y`.")
+  }
+
+  if (!is.null(true.data)){
+    if(any(is.na(true.data[[var.x]]))){
+      stop(paste("The variable ", var.x, " in `true.data` contains missing values."))
+    }
+
+    if(any(is.na(true.data[[var.y]]))){
+      stop(paste("The variable ", var.y, " in `true.data` contains missing values."))
+    }
   }
 
 
@@ -271,12 +279,12 @@ summary2var<-function(imputation.list, var.x, var.y, original.data, true.data, c
   N.imp <- length(imp.l)
   M <- paste("m", 1:N.imp, sep = "")
 
-  imp.dt<-rbindlist(imp.l)
+  imp.dt <- rbindlist(imp.l)
 
 
-  if(is.data.table(original.data)){
+  if (is.data.table(original.data)) {
     observed <- original.data[-na.union, c(var.x, var.y), with = FALSE]
-  }else{
+  } else {
     observed <- original.data[-na.union, c(var.x, var.y)]
   }
 
@@ -292,40 +300,37 @@ summary2var<-function(imputation.list, var.x, var.y, original.data, true.data, c
   }
 
 
-  if(!is.null(true.data)){
-    #with true.data
-    if(is.data.table(true.data)){
+  if (!is.null(true.data)) {
+    # with true.data
+    if (is.data.table(true.data)) {
       true <- true.data[na.union, c(var.x, var.y), with = FALSE]
-    }else{
+    } else {
       true <- true.data[na.union, c(var.x, var.y)]
     }
 
-    all.dt<-rbindlist(list(observed,true,imp.dt))
-    all.dt[,m.set:=factor(c(rep("Observed",N.obs),rep("MaskedTrue", N.mis),rep(M,each=N.mis)),levels = c("Observed","MaskedTrue",M))]
+    all.dt <- rbindlist(list(observed, true, imp.dt))
+    all.dt[, m.set := factor(c(rep("Observed", N.obs), rep("MaskedTrue", N.mis), rep(M, each = N.mis)), levels = c("Observed", "MaskedTrue", M))]
     if (is.null(color.pal)) {
-      color.pal <- c("gray40","gray20", scales::hue_pal()(N.imp))
+      color.pal <- c("gray40", "gray20", scales::hue_pal()(N.imp))
     }
 
-    #imp.df$NA.condition <- c(rep(NA.condition[na.union], N.imp), NA.condition[-na.union], rep("masked.observed",N.mis))
-    #imp.df$NA.condition <- factor(imp.df$NA.condition, levels = c("both.observed", "masked.observed", "both.missing", X, Y))
-
-
-  }else{
-    #without true.data
-    all.dt<-rbindlist(list(observed,imp.dt))
-    all.dt[,m.set:=factor(c(rep("Observed",N.obs),rep(M,each=N.mis)),levels = c("Observed",M))]
+    # imp.df$NA.condition <- c(rep(NA.condition[na.union], N.imp), NA.condition[-na.union], rep("masked.observed",N.mis))
+    # imp.df$NA.condition <- factor(imp.df$NA.condition, levels = c("both.observed", "masked.observed", "both.missing", X, Y))
+  } else {
+    # without true.data
+    all.dt <- rbindlist(list(observed, imp.dt))
+    all.dt[, m.set := factor(c(rep("Observed", N.obs), rep(M, each = N.mis)), levels = c("Observed", M))]
     if (is.null(color.pal)) {
       color.pal <- c("gray40", scales::hue_pal()(N.imp))
     }
 
-    #imp.df$NA.condition <- factor(imp.df$NA.condition, levels = c("both.observed", "both.missing", X, Y))
-
+    # imp.df$NA.condition <- factor(imp.df$NA.condition, levels = c("both.observed", "both.missing", X, Y))
   }
 
 
 
-  if(!shape.off){
-    #use shapes
+  if (shape) {
+    # use shapes
     # both missing
     na.both <- intersect(na.x, na.y)
     # missing in x but not y
@@ -342,20 +347,17 @@ summary2var<-function(imputation.list, var.x, var.y, original.data, true.data, c
     # only var.y missing
     Y <- paste(var.y, "missing", sep = ".")
     NA.condition[na.onlyy] <- Y
-    if(!is.null(true.data)){
-      na.condition<-factor(c(NA.condition[-na.union],rep("masked.observed",N.mis),rep(NA.condition[na.union], N.imp)),
-                           levels = c("both.observed","masked.observed","both.missing", X, Y))
-    }else{
-      na.condition<-factor(c(NA.condition[-na.union],rep(NA.condition[na.union], N.imp)),
-                           levels = c("both.observed", "both.missing", X, Y))
+    if (!is.null(true.data)) {
+      na.condition <- factor(c(NA.condition[-na.union], rep("masked.observed", N.mis), rep(NA.condition[na.union], N.imp)),
+        levels = c("both.observed", "masked.observed", "both.missing", X, Y)
+      )
+    } else {
+      na.condition <- factor(c(NA.condition[-na.union], rep(NA.condition[na.union], N.imp)),
+        levels = c("both.observed", "both.missing", X, Y)
+      )
     }
-    all.dt[,NA.condition:=na.condition]
+    all.dt[, NA.condition := na.condition]
   }
 
-  return(list("all.dt"=all.dt,"color.pal"=color.pal))
-
-
-
-
+  return(list("all.dt" = all.dt, "color.pal" = color.pal))
 }
-

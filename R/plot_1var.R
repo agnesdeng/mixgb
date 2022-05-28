@@ -186,6 +186,11 @@ summary1var<-function(imputation.list, var.name, original.data, true.data, color
     stop(paste("The variable ", var.name, " has no missing value."))
   }
 
+  if (!is.null(true.data)){
+    if(any(is.na(true.data[[var.name]]))){
+      stop(paste("The variable ", var.name, " in `true.data` contains missing values."))
+    }
+  }
 
   na.idx <- which(is.na(original.data[[var.name]]))
   imp.l <- lapply(imputation.list, function(dt) dt[[var.name]][na.idx])
