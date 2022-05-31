@@ -62,7 +62,7 @@
   nrounds <span class="op">=</span> <span class="fl">100</span>,
   early_stopping_rounds <span class="op">=</span> <span class="fl">10</span>,
   response <span class="op">=</span> <span class="cn">NULL</span>,
-  select_covariates <span class="op">=</span> <span class="cn">NULL</span>,
+  select_features <span class="op">=</span> <span class="cn">NULL</span>,
   stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>
@@ -81,8 +81,8 @@
 <dd><p>An integer value <code>k</code>. Training will stop if the validation performance hasn't improved for <code>k</code> rounds.</p></dd>
 <dt>response</dt>
 <dd><p>The name or column index of a response variable. Default: <code>NULL</code> (Randomly select an incomplete variable).</p></dd>
-<dt>select_covariates</dt>
-<dd><p>The names or indices of selected covariates. Default: <code>NULL</code> (Select all other variables in the dataset).</p></dd>
+<dt>select_features</dt>
+<dd><p>The names or indices of selected features. Default: <code>NULL</code> (Select all other variables in the dataset).</p></dd>
 <dt>stringsAsFactors</dt>
 <dd><p>A logical value indicating whether character vectors should be converted to factors.</p></dd>
 <dt>verbose</dt>
