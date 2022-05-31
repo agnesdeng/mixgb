@@ -201,27 +201,26 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 cv.results$response
-#> [1] "BMPWT"
+#> [1] "BMPSB2"
 cv.results$best.nrounds
-#> [1] 17
+#> [1] 15
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
 the response and build an XGBoost model with other variables using the
 complete cases of the dataset. Therefore, each run of `mixgb_cv()` is
 likely to return different results. Users can also specify the response
-and covariates in the argument `response` and `select_covariates`,
+and covariates in the argument `response` and `select_features`,
 respectively.
 
 ``` r
 cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
-    early_stopping_rounds = 1, response = "BMPHEAD", select_covariates = c("HSHSIZER",
-        "HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1",
-        "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT", "DMPPIR", "HFF1",
-        "HYD1"), verbose = FALSE)
+    early_stopping_rounds = 1, response = "BMPHEAD", select_features = c("HSAGEIR",
+        "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2",
+        "BMPTR1", "BMPTR2", "BMPWT"), verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 22
+#> [1] 19
 ```
 
 Since using `mixgb_cv()` with this dataset mostly returns a number less

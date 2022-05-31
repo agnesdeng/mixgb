@@ -10,7 +10,7 @@ mixgb_cv(
   nrounds = 100,
   early_stopping_rounds = 10,
   response = NULL,
-  select_covariates = NULL,
+  select_features = NULL,
   stringsAsFactors = FALSE,
   verbose = TRUE,
   ...
@@ -27,7 +27,7 @@ mixgb_cv(
 
 \item{response}{The name or column index of a response variable. Default: \code{NULL} (Randomly select an incomplete variable).}
 
-\item{select_covariates}{The names or indices of selected covariates. Default: \code{NULL} (Select all other variables in the dataset).}
+\item{select_features}{The names or indices of selected features. Default: \code{NULL} (Select all other variables in the dataset).}
 
 \item{stringsAsFactors}{A logical value indicating whether character vectors should be converted to factors.}
 

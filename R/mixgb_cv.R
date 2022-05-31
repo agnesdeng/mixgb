@@ -5,7 +5,7 @@
 #' @param nrounds The max number of iterations in XGBoost training. Default: 100
 #' @param early_stopping_rounds An integer value \code{k}. Training will stop if the validation performance hasn't improved for \code{k} rounds.
 #' @param response The name or column index of a response variable. Default: \code{NULL} (Randomly select an incomplete variable).
-#' @param select_covariates The names or indices of selected covariates. Default: \code{NULL} (Select all other variables in the dataset).
+#' @param select_features The names or indices of selected features. Default: \code{NULL} (Select all other variables in the dataset).
 #' @param stringsAsFactors A logical value indicating whether character vectors should be converted to factors.
 #' @param verbose A logical value. Whether to print out cross-validation results during the process.
 #' @param ... Extra arguments to pass to XGBoost.
@@ -20,7 +20,7 @@
 #' imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
 #'
 #' }
-mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_covariates = NULL, stringsAsFactors = FALSE, verbose = TRUE, ...) {
+mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL, stringsAsFactors = FALSE, verbose = TRUE, ...) {
   num.cc <- sum(complete.cases(data))
 
 
@@ -60,17 +60,17 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
   }
 
 
-  if (is.null(select_covariates)) {
-    select_covariates <- setdiff(Names, response)
-  } else if (!is.character(select_covariates)) {
-    select_covariates <- Names[select_covariates]
+  if (is.null(select_features)) {
+    select_features <- setdiff(Names, response)
+  } else if (!is.character(select_features)) {
+    select_features <- Names[select_features]
   }
 
-  p <- length(select_covariates) + 1
+  p <- length(select_features) + 1
   if (p == 2) {
-    obs.data <- sparse.model.matrix(reformulate(select_covariates, response), data = cc.data)
+    obs.data <- sparse.model.matrix(reformulate(select_features, response), data = cc.data)
   } else {
-    obs.data <- sparse.model.matrix(reformulate(select_covariates, response), data = cc.data)[, -1]
+    obs.data <- sparse.model.matrix(reformulate(select_features, response), data = cc.data)[, -1]
   }
 
   if (Types[response] == "numeric" | Types[response] == "integer") {
