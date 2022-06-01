@@ -20,7 +20,7 @@ mixgb(
   save.vars = NULL,
   xgb.params = list(max_depth = 6, gamma = 0, eta = 0.3, min_child_weight = 1,
     subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
-    nthread = 4, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+    tree_method = "auto", gpu_id = 0, predictor = "auto"),
   nrounds = 50,
   early_stopping_rounds = 1,
   print_every_n = 10L,
@@ -81,7 +81,7 @@ mixgb(
 
 \item{save.vars}{Response models for variables specified in \code{save.vars} will be saved for imputing new data. Can be a vector of names or indices. By default, \code{save.vars = NULL}, response models for variables with missing values will be saved. To save all models, please specify \code{save.vars = colnames(data)}.}
 
-\item{xgb.params}{A list of XGBoost hyperparameters.}
+\item{xgb.params}{A list of XGBoost parameters. For more details, please check \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.}
 
 \item{nrounds}{The maximum number of boosting iterations for XGBoost. Default: 50}
 
