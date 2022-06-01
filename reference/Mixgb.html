@@ -72,7 +72,7 @@
   save.vars <span class="op">=</span> <span class="cn">NULL</span>,
   xgb.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, gamma <span class="op">=</span> <span class="fl">0</span>, eta <span class="op">=</span> <span class="fl">0.3</span>, min_child_weight <span class="op">=</span> <span class="fl">1</span>,
     subsample <span class="op">=</span> <span class="fl">1</span>, colsample_bytree <span class="op">=</span> <span class="fl">1</span>, colsample_bylevel <span class="op">=</span> <span class="fl">1</span>, colsample_bynode <span class="op">=</span> <span class="fl">1</span>,
-    nthread <span class="op">=</span> <span class="fl">4</span>, tree_method <span class="op">=</span> <span class="st">"auto"</span>, gpu_id <span class="op">=</span> <span class="fl">0</span>, predictor <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,
+    tree_method <span class="op">=</span> <span class="st">"auto"</span>, gpu_id <span class="op">=</span> <span class="fl">0</span>, predictor <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,
   nrounds <span class="op">=</span> <span class="fl">50</span>,
   early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>,
   print_every_n <span class="op">=</span> <span class="fl">10L</span>,
@@ -126,7 +126,7 @@
 <dt>save.vars</dt>
 <dd><p>Response models for variables specified in <code>save.vars</code> will be saved for imputing new data. Can be a vector of names or indices. By default, <code>save.vars = NULL</code>, response models for variables with missing values will be saved. To save all models, please specify <code>save.vars = colnames(data)</code>.</p></dd>
 <dt>xgb.params</dt>
-<dd><p>A list of XGBoost hyperparameters.</p></dd>
+<dd><p>A list of XGBoost parameters. For more details, please check <a href="https://xgboost.readthedocs.io/en/stable/parameter.html" class="external-link">XGBoost documentation on parameters</a>.</p></dd>
 <dt>nrounds</dt>
 <dd><p>The maximum number of boosting iterations for XGBoost. Default: 50</p></dd>
 <dt>early_stopping_rounds</dt>
