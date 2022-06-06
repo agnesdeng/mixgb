@@ -72,7 +72,7 @@
       <img src="" class="logo" alt=""><h1>Visual diagnostics for multiply imputed values</h1>
                         <h4 data-toc-skip class="author">Yongshi Deng</h4>
             
-            <h4 data-toc-skip class="date">2022-06-01</h4>
+            <h4 data-toc-skip class="date">2022-06-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/web/Visual-diagnostics.Rmd" class="external-link"><code>vignettes/web/Visual-diagnostics.Rmd</code></a></small>
       <div class="d-none name"><code>Visual-diagnostics.Rmd</code></div>
@@ -90,7 +90,6 @@
 <p>We will demonstrate these functions using the <code>nhanes3_newborn</code> dataset. In the original data, almost all missing values occurred in numeric variables. Only seven observations are missing in the binary factor variable <code>HFF1</code> .</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"nhanes3_newborn"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM </span>
 <span class="co">#&gt;        0        0        0        0        0        0      124      114 </span>
@@ -106,32 +105,31 @@
 <span class="co">#&gt;      161      169      124      167      117      192        7      211</span></code></pre></div>
 <p>We then impute this dataset using <code>mixgb</code> with default settings. A list of five imputed datasets are assigned to <code>imputed.data</code>. The dimension of each imputed dataset will be the same as the original data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
+<code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <p>We can check the actual imputed values of a single variable using the function <code>show_var().</code> It will return a data.table of <code>m</code> columns, each column contains one set of imputed values for the specified variable. Only the imputed values of missing entries will be shown.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/show_var.html">show_var</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span>
 <span class="co">#&gt;        m1   m2   m3   m4   m5</span>
-<span class="co">#&gt;   1: 43.8 43.0 44.5 44.2 46.1</span>
-<span class="co">#&gt;   2: 43.3 47.6 42.0 44.5 41.1</span>
-<span class="co">#&gt;   3: 44.3 43.0 44.4 42.7 42.9</span>
-<span class="co">#&gt;   4: 45.8 44.4 43.0 42.1 44.9</span>
-<span class="co">#&gt;   5: 43.7 44.9 44.2 42.2 45.8</span>
+<span class="co">#&gt;   1: 41.9 42.2 45.0 43.1 44.2</span>
+<span class="co">#&gt;   2: 41.5 40.1 40.2 42.1 41.5</span>
+<span class="co">#&gt;   3: 43.8 43.9 43.7 43.7 42.4</span>
+<span class="co">#&gt;   4: 44.0 43.2 42.0 45.4 44.2</span>
+<span class="co">#&gt;   5: 44.2 42.0 46.7 44.4 44.8</span>
 <span class="co">#&gt;  ---                         </span>
-<span class="co">#&gt; 120: 44.9 44.7 47.2 46.3 45.9</span>
-<span class="co">#&gt; 121: 43.8 44.5 43.8 44.7 43.0</span>
-<span class="co">#&gt; 122: 42.2 41.4 42.4 41.7 41.6</span>
-<span class="co">#&gt; 123: 40.8 43.1 46.4 45.3 42.3</span>
-<span class="co">#&gt; 124: 41.2 41.2 42.6 41.6 43.0</span>
+<span class="co">#&gt; 120: 44.7 46.7 45.6 43.9 45.9</span>
+<span class="co">#&gt; 121: 42.8 42.8 44.3 45.3 43.2</span>
+<span class="co">#&gt; 122: 42.2 41.1 42.0 42.8 44.2</span>
+<span class="co">#&gt; 123: 43.6 44.7 42.9 41.4 42.8</span>
+<span class="co">#&gt; 124: 46.2 45.0 46.0 46.2 43.7</span>
 <span class="fu"><a href="../../reference/show_var.html">show_var</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span>
 <span class="co">#&gt;    m1 m2 m3 m4 m5</span>
-<span class="co">#&gt; 1:  2  2  2  1  1</span>
-<span class="co">#&gt; 2:  2  1  2  2  2</span>
-<span class="co">#&gt; 3:  2  2  2  2  2</span>
+<span class="co">#&gt; 1:  2  2  2  1  2</span>
+<span class="co">#&gt; 2:  1  1  1  2  1</span>
+<span class="co">#&gt; 3:  2  1  2  2  2</span>
 <span class="co">#&gt; 4:  2  2  2  2  1</span>
-<span class="co">#&gt; 5:  2  2  2  1  1</span>
-<span class="co">#&gt; 6:  2  2  2  2  2</span>
-<span class="co">#&gt; 7:  2  1  2  2  2</span></code></pre></div>
+<span class="co">#&gt; 5:  2  2  2  1  2</span>
+<span class="co">#&gt; 6:  2  1  1  2  1</span>
+<span class="co">#&gt; 7:  2  2  2  2  1</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -433,8 +431,7 @@
 <span class="va">full.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, norm1 <span class="op">=</span> <span class="va">norm1</span>, norm2 <span class="op">=</span> <span class="va">norm2</span><span class="op">)</span>
 <span class="va">MCAR.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/createNA.html">createNA</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">full.df</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"norm1"</span>, <span class="st">"norm2"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MCAR.df</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt; mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
+<span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MCAR.df</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p>Now since we know the true data, we can specify it in the plotting functions. It will generate an extra panel called <code>MaskedTrue</code>, which shows values that are originally observed but intentionally made missing.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mixgb.data</span>, var.name <span class="op">=</span> <span class="st">"norm1"</span>, 

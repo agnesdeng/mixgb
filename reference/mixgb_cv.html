@@ -97,14 +97,44 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu">mixgb_cv</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu">mixgb_cv</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:48.032154+0.065481	test-rmse:48.024610+0.348786 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Multiple eval metrics are present. Will use test_rmse for early stopping.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Will train until test_rmse hasn't improved in 10 rounds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:33.790001+0.049311	test-rmse:33.783965+0.271289 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:23.812440+0.039502	test-rmse:23.818585+0.269661 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:16.831491+0.033991	test-rmse:16.831069+0.296191 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:11.968465+0.036795	test-rmse:12.003287+0.311224 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:8.594116+0.039124	test-rmse:8.618390+0.328951 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:6.273129+0.046426	test-rmse:6.350111+0.363095 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:4.693668+0.052808	test-rmse:4.817113+0.415167 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:3.631729+0.059718	test-rmse:3.864391+0.442059 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:2.907722+0.067101	test-rmse:3.263851+0.472811 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11]	train-rmse:2.408447+0.061674	test-rmse:2.940981+0.493163 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12]	train-rmse:2.059928+0.051017	test-rmse:2.764488+0.498942 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13]	train-rmse:1.819514+0.055339	test-rmse:2.649808+0.512437 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14]	train-rmse:1.647332+0.060825	test-rmse:2.593148+0.511188 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15]	train-rmse:1.503421+0.059729	test-rmse:2.573046+0.507528 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16]	train-rmse:1.408121+0.068181	test-rmse:2.555075+0.501642 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:1.339889+0.093060	test-rmse:2.534960+0.489555 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18]	train-rmse:1.263155+0.100203	test-rmse:2.543698+0.478786 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19]	train-rmse:1.202372+0.114912	test-rmse:2.552326+0.476774 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20]	train-rmse:1.156967+0.102025	test-rmse:2.579694+0.465164 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21]	train-rmse:1.112169+0.108890	test-rmse:2.598613+0.455289 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22]	train-rmse:1.063977+0.110443	test-rmse:2.624825+0.436167 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23]	train-rmse:1.007901+0.107868	test-rmse:2.650872+0.424665 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24]	train-rmse:0.959353+0.093207	test-rmse:2.656349+0.419718 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25]	train-rmse:0.917001+0.097512	test-rmse:2.666824+0.424529 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26]	train-rmse:0.877916+0.088775	test-rmse:2.679210+0.417533 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27]	train-rmse:0.858636+0.085610	test-rmse:2.683602+0.409816 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Stopping. Best iteration:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:1.339889+0.093060	test-rmse:2.534960+0.489555</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 17</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span><span class="op">)</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

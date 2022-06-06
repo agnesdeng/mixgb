@@ -72,7 +72,7 @@
       <img src="" class="logo" alt=""><h1>Imputing newdata with a saved mixgb imputer</h1>
                         <h4 data-toc-skip class="author">Yongshi Deng</h4>
             
-            <h4 data-toc-skip class="date">2022-06-01</h4>
+            <h4 data-toc-skip class="date">2022-06-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/Imputing-newdata.Rmd" class="external-link"><code>vignettes/Imputing-newdata.Rmd</code></a></small>
       <div class="d-none name"><code>Imputing-newdata.Rmd</code></div>
@@ -86,7 +86,6 @@
 <p>First we can split the <code>nhanes3_newborn</code> dataset into training data and test data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"nhanes3_newborn"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span>
 <span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.7</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -95,8 +94,7 @@
 <p>We can use the training data to obtain <code>m</code> imputed datasets and save their imputation models. To achieve this, users need to set <code>save.models = TRUE</code>. By default <code>save.vars = NULL</code>, imputation models for variables with missing data in the training data will be saved. However, the unseen data may also have missing values in other variables. Users can be comprehensive by saving models for all variables by setting <code>save.vars = colnames(train.data)</code>. Note that this would take much longer as we need to train and save a model for each variable. If users are confident that only certain variables will have missing values in the new data, we recommend specifying the names or indices of these variables in <code>save.vars</code> instead of saving models for all variables.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># obtain m imputed datasets for train.data and save imputation models</span>
-<span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.vars <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="co">#&gt; mixgb with bootstrap: saving models and imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
+<span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.vars <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <p>When <code>save.models = TRUE</code>, <code><a href="../reference/Mixgb.html">mixgb()</a></code> will return an object containing the following:</p>
 <ul>
 <li><p><code>imputed.data</code>: a list of <code>m</code> imputed dataset for training data</p></li>
@@ -124,13 +122,11 @@
 <span class="co">#&gt; 6:    5.4    9.2    9.4  9.00  2.173    2    2</span></code></pre></div>
 <p>To impute new data with this saved imputer object, we use the <code><a href="../reference/impute_new.html">impute_new()</a></code> function. User can also specify whether to use new data for initial imputation. By default, <code>initial.newdata = FALSE</code>, we will use the information of training data to initially impute the new data. New data will be imputed with the saved models. This process will be considerably faster as we don’t need to build the imputation models again.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span>
-<span class="co">#&gt; Imputing new data with mixgb:  set -- 1 -- 2 -- 3 -- 4 -- 5</span></code></pre></div>
+<code class="sourceCode R"><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></code></pre></div>
 <p>If PMM is used when we call <code><a href="../reference/Mixgb.html">mixgb()</a></code>, predicted values of missing entries in the new dataset are matched with donors from training data. Users can also set the number of donors for PMM when imputing new data. By default, <code>pmm.k = NULL</code> , which means the same setting as the training object will be used.</p>
 <p>Similarly, users can set the number of imputed datasets <code>m</code>. Note that this value has to be smaller than or equal to the <code>m</code> in <code><a href="../reference/Mixgb.html">mixgb()</a></code>. If it is not specified, it will use the same <code>m</code> value as the saved object.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span>, initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
-<span class="co">#&gt; Imputing new data with mixgb:  set -- 1 -- 2 -- 3 -- 4</span></code></pre></div>
+<code class="sourceCode R"><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span>, initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

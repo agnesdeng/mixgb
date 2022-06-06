@@ -91,19 +91,15 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># obtain m multiply datasets</span></span>
+<span class="r-in"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, m <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># obtain m multiply datasets</span></span>
-<span class="r-in"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM"</span></span>
+<span class="r-in"><span class="co"># plot the multiply imputed values for variables "BMPRECUM" versus "BMPHEAD"</span></span>
 <span class="r-in"><span class="fu">plot_2num</span><span class="op">(</span></span>
 <span class="r-in">  imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,</span>
-<span class="r-in">  original.data <span class="op">=</span> <span class="va">nhanes3_newborn</span></span>
+<span class="r-in">  original.data <span class="op">=</span> <span class="va">nhanes3</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-plt img"><img src="plot_2num-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

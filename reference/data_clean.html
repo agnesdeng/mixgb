@@ -71,6 +71,21 @@
     <p>A preliminary cleaned dataset</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">rawdata</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">rawdata</span><span class="op">[</span><span class="fl">4</span>, <span class="fl">4</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NaN</span></span>
+<span class="r-in"><span class="va">rawdata</span><span class="op">[</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">Inf</span></span>
+<span class="r-in"><span class="va">rawdata</span><span class="op">[</span><span class="fl">6</span>, <span class="fl">6</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="cn">Inf</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">cleandata</span> <span class="op">&lt;-</span> <span class="fu">data_clean</span><span class="op">(</span>rawdata <span class="op">=</span> <span class="va">rawdata</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There exists at least one entry coded as NaN in the following numeric variable(s): BMPHEAD.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> It is now coverted to NA instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There exists at least one entry coded as Inf or -Inf in the following variable(s): BMPRECUM;BMPWT.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> It is now coverted to NA instead.</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
