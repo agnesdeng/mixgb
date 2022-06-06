@@ -40,14 +40,15 @@ Plot observed values versus m sets of imputed values for one specified numeric v
 }
 \examples{
 \donttest{
-
+# create some extra missing values in factor variables "HSSEX" and "DMARETHN"
+nhanes3_NA <- createNA(nhanes3, var.names = c("HSSEX", "DMARETHN"), p = 0.1)
 # obtain m multiply datasets
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+imputed.data <- mixgb(data = nhanes3_NA, m = 5)
 
-# plot the multiply imputed values for variables "BMPRECUM" versus "HFF1" conditional on "HSSEX"
+# plot the multiply imputed values for variables "BMPRECUM" versus "HSSEX" conditional on "DMARETHN"
 plot_1num2fac(
-  imputation.list = imputed.data, var.fac = "HFF1", var.num = "BMPRECUM",
-  con.fac = "HSSEX", original.data = nhanes3_newborn
+  imputation.list = imputed.data, var.fac = "HSSEX", var.num = "BMPRECUM",
+  con.fac = "DMARETHN", original.data = nhanes3_NA
 )
 }
 }

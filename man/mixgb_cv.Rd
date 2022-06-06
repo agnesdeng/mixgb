@@ -42,12 +42,8 @@ A list of the optimal \code{nrounds}, \code{evaluation.log} and the chosen \code
 Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to find the optimal \code{nrounds}.
 }
 \examples{
-\dontrun{
-
-cv.results <- mixgb_cv(data = nhanes3_newborn)
+cv.results <- mixgb_cv(data = nhanes3)
 cv.results$best.nrounds
 
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
-
-}
+imputed.data <- mixgb(data = nhanes3, m = 5, nrounds = cv.results$best.nrounds)
 }

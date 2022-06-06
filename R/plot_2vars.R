@@ -14,17 +14,14 @@
 #' @return Scatter plots for two numeric/integer variable
 #' @export
 #' @examples
-#' \donttest{
-#'
 #' # obtain m multiply datasets
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3, m = 2)
 #'
-#' # plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM"
+#' # plot the multiply imputed values for variables "BMPRECUM" versus "BMPHEAD"
 #' plot_2num(
 #'   imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
-#'   original.data = nhanes3_newborn
+#'   original.data = nhanes3
 #' )
-#' }
 plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = NULL, color.pal = NULL, shape = FALSE) {
   Types <- feature_type(imputation.list[[1]])
 
@@ -93,17 +90,14 @@ plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = 
 #' @return Box plot with jittered data points for a numeric/integer variable; Bar plot for a categorical variable.
 #' @export
 #' @examples
-#' \donttest{
-#'
 #' # obtain m multiply datasets
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3, m = 2)
 #'
-#' # plot the multiply imputed values for variables "BMPHEAD" versus "HFF1"
+#' # plot the multiply imputed values for variables "BMPHEAD" versus "HSSEX"
 #' plot_1num1fac(
-#'   imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HFF1",
-#'   original.data = nhanes3_newborn
+#'   imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HSSEX",
+#'   original.data = nhanes3
 #' )
-#' }
 plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true.data = NULL, color.pal = NULL, shape = FALSE) {
   Types <- feature_type(imputation.list[[1]])
 
@@ -183,14 +177,16 @@ plot_1num1fac <- function(imputation.list, var.num, var.fac, original.data, true
 #' @export
 #' @examples
 #' \donttest{
+#' #create some extra missing values in factor variables "HSSEX" and "DMARETHN"
+#' nhanes3_NA<-createNA(nhanes3, var.names = c("HSSEX","DMARETHN"), p = 0.1)
 #'
 #' # obtain m multiply datasets
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3_NA, m = 2)
 #'
-#' # plot the multiply imputed values for variables "HFF1" versus "DMARETHN"
+#' # plot the multiply imputed values for variables "HSSEX" versus "DMARETHN"
 #' plot_2fac(
-#'   imputation.list = imputed.data, var.fac1 = "HFF1", var.fac2 = "DMARETHN",
-#'   original.data = nhanes3_newborn
+#'   imputation.list = imputed.data, var.fac1 = "DMARETHN", var.fac2 = "HSSEX",
+#'   original.data = nhanes3_NA
 #' )
 #' }
 plot_2fac <- function(imputation.list, var.fac1, var.fac2, original.data, true.data = NULL, color.pal = NULL) {

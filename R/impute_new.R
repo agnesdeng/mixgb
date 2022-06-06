@@ -4,27 +4,25 @@
 #' @param  initial.newdata Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{MIXGB$new()} will be used for initial imputation.
 #' @param  pmm.k The number of donors for predictive mean matching. If \code{NULL} (the default), the \code{pmm.k} value in the saved imputer object will be used.
 #' @param  m The number of imputed datasets. If \code{NULL} (the default), the \code{m} value in the saved imputer object will be used.
-#' @return A list of `m` imputed datasets for new data.
+#' @param  verbose Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.
+#' @return A list of \code{m} imputed datasets for new data.
 #' @export
 #' @examples
-#' \donttest{
 #' set.seed(2022)
-#' n <- nrow(nhanes3_newborn)
+#' n <- nrow(nhanes3)
 #' idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
-#' train.data <- nhanes3_newborn[idx, ]
-#' test.data <- nhanes3_newborn[-idx, ]
+#' train.data <- nhanes3[idx, ]
+#' test.data <- nhanes3[-idx, ]
 #'
 #' mixgb.obj <- mixgb(data = train.data, m = 2, save.models = TRUE)
+#'
 #' #obtain m imputed datasets for train.data
 #' train.imputed <- mixgb.obj$imputed.data
 #' train.imputed
 #'
 #' #use the saved imputer to impute new data
 #' test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
-#'
-#'}
-impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL) {
-
+impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL, verbose = FALSE) {
 
 
   # extract params from the training object
@@ -83,8 +81,9 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   ordinalAsInteger <- params$ordinalAsInteger
   if (ordinalAsInteger == TRUE) {
     ord.fac <- names(Filter(is.ordered, newdata))
-    # ord.fac<- colnames(data)[sapply(data,is.ordered)]
-    newdata[, c(ord.fac) := lapply(.SD, as.integer), .SDcols = ord.fac]
+    if(length(ord.fac)>0){
+      newdata[, c(ord.fac) := lapply(.SD, fac2int), .SDcols = ord.fac]
+    }
   }
 
 
@@ -157,10 +156,16 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   sorted.dt <- initial.obj$sorted.dt
 
   imputed.data <- vector("list", m)
-  cat("Imputing new data with mixgb: ", "set")
+
+  if(verbose){
+    cat("Imputing new data with mixgb: ", "set")
+  }
+
 
   for (i in seq_len(m)) {
-    cat(" --", i)
+    if(verbose){
+      cat(" --", i)
+    }
     # feed in the initial imputed dataset
     sorted.dt <- initial.obj$sorted.dt
     sorted.dt <- mixgb_use(
@@ -173,7 +178,9 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
 
 
   # ...............................................................
-  cat("\n")
+  if(verbose){
+    cat("\n")
+  }
 
   return(imputed.data)
 }

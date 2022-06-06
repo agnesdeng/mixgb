@@ -1,7 +1,6 @@
 #' NHANES III (1988-1994) newborn data
 #'
-#' This dataset is extracted from the NHANES III (1988-1994) for the age class \code{Newborn (under 1 year)}. Please note that this example dataset only contains selected variables and is only used for demonstrating how to use the R package \pkg{mixgb}.
-#' More information on NHANES III data can be found on \url{https://wwwn.cdc.gov/Nchs/Data/Nhanes3/7a/doc/mimodels.pdf}
+#' This dataset is extracted from the NHANES III (1988-1994) for the age class \code{Newborn (under 1 year)}. Please note that this example dataset only contains selected variables and is for demonstration purposes only.
 #' @docType  data
 #' @usage data(nhanes3_newborn)
 #' @format A data frame of 2107 rows and 16 variables. Nine variables have missing values.

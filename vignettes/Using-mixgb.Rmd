@@ -4,14 +4,20 @@ author: "Yongshi Deng"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
+  %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{mixgb: Multiple Imputation Through XGBoost}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
-
 ## Introduction
 
-Mixgb offers a scalable solution for imputing large datasets using XGBoost, bootstrapping and predictive mean matching. Mixgb is built under Fully Conditional Specification (FCS), where XGBoost imputation models are built for each incomplete variable. Mixgb can automatically handle different types of variables and users do not need to encode categorical variables themselves. Users can also choose different settings regarding bootstrapping and the types predictive mean matching to enhance imputation performance.
+Mixgb offers a scalable solution for imputing large datasets using
+XGBoost, bootstrapping and predictive mean matching. Mixgb is built
+under Fully Conditional Specification (FCS), where XGBoost imputation
+models are built for each incomplete variable. Mixgb can automatically
+handle different types of variables and users do not need to encode
+categorical variables themselves. Users can also choose different
+settings regarding bootstrapping and the types predictive mean matching
+to enhance imputation performance.
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -22,17 +28,22 @@ knitr::opts_chunk$set(
 
 ## Impute missing values with `mixgb`
 
-We first load the `mixgb` package and the `nhanes3_newborn` dataset, which contains 16 variables of various types (integer/numeric/factor/ordinal factor). There are 9 variables with missing values.
+We first load the `mixgb` package and the `nhanes3_newborn` dataset,
+which contains 16 variables of various types
+(integer/numeric/factor/ordinal factor). There are 9 variables with
+missing values.
 
 ```{r}
-# devtools::load_all()
 library(mixgb)
-data(nhanes3_newborn)
 str(nhanes3_newborn)
 colSums(is.na(nhanes3_newborn))
 ```
 
-To impute this dataset, we can use the default settings. The default number of imputed datasets `m = 5`. Note that we do not need to convert our data into dgCMatrix or one-hot coding format. Our package will convert it automatically. Variables should be of the following types: numeric, integer, factor or ordinal factor. 
+To impute this dataset, we can use the default settings. The default
+number of imputed datasets `m = 5`. Note that we do not need to convert
+our data into dgCMatrix or one-hot coding format. Our package will
+convert it automatically. Variables should be of the following types:
+numeric, integer, factor or ordinal factor.
 
 ```{r, eval = FALSE}
 # use mixgb with default settings
@@ -43,30 +54,26 @@ imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 
 We can also customise imputation settings:
 
--   The number of imputed datasets
-    `m`
-    
--   The number of imputation iterations
-    `maxit`
-    
--   Whether to convert ordinal factors to integer (imputation process will be faster)
-    `ordinalAsInteger`
+-   The number of imputed datasets `m`
 
--   Whether to use bootstrapping 
-    `bootstrap`
+-   The number of imputation iterations `maxit`
 
--   Predictive mean matching settings
-    `pmm.type`, `pmm.k` and `pmm.link`.
+-   Whether to convert ordinal factors to integer (imputation process
+    will be faster) `ordinalAsInteger`
+
+-   Whether to use bootstrapping `bootstrap`
+
+-   Predictive mean matching settings `pmm.type`, `pmm.k` and
+    `pmm.link`.
 
 -   Initial imputation methods for different types of variables
     `initial.num`, `initial.int` and `initial.fac`.
 
--   Whether to save models for imputing newdata
-    `save.models` and `save.vars`.
-    
--   XGBoost hyperparameters and verbose settings.
-    `xgb.params`, `nrounds`, `early_stopping_rounds`, `print_every_n` and `verbose`.
+-   Whether to save models for imputing newdata `save.models` and
+    `save.vars`.
 
+-   XGBoost hyperparameters and verbose settings. `xgb.params`,
+    `nrounds`, `early_stopping_rounds`, `print_every_n` and `verbose`.
 
 ```{r, eval = FALSE}
 # Use mixgb with chosen settings
@@ -97,7 +104,13 @@ imputed.data <- mixgb(
 
 ### Tune hyperparameters
 
-Imputation performance can be affected by the hyperparameter settings. It may seem daunting to tune a large set of hyperparameters, but often we can narrow down the search as many hyperparameters are correlated. In our package, we have a function `mixgb_cv()` to tune `nrounds`. There is no default `nrounds` value in `XGBoost,` so we need to specify it. The default `nrounds` in `mixgb` is 50. However, we recommend using `mixgb_cv()` to find the optimal `nrounds` first.
+Imputation performance can be affected by the hyperparameter settings.
+It may seem daunting to tune a large set of hyperparameters, but often
+we can narrow down the search as many hyperparameters are correlated. In
+our package, we have a function `mixgb_cv()` to tune `nrounds`. There is
+no default `nrounds` value in `XGBoost,` so we need to specify it. The
+default `nrounds` in `mixgb` is 50. However, we recommend using
+`mixgb_cv()` to find the optimal `nrounds` first.
 
 ```{r}
 cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
@@ -106,7 +119,12 @@ cv.results$response
 cv.results$best.nrounds
 ```
 
-By default, `mixgb_cv()` will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of `mixgb_cv()` is likely to return different results. Users can also specify the response and covariates in the argument `response` and `select_features`, respectively.
+By default, `mixgb_cv()` will randomly choose an incomplete variable as
+the response and build an XGBoost model with other variables using the
+complete cases of the dataset. Therefore, each run of `mixgb_cv()` is
+likely to return different results. Users can also specify the response
+and covariates in the argument `response` and `select_features`,
+respectively.
 
 ```{r}
 cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1, 
@@ -115,17 +133,30 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_
 cv.results$best.nrounds
 ```
 
-Since using `mixgb_cv()` with this dataset mostly returns a number less than `20`, I'll set `nrounds = 20` in `mixgb()` to obtain `m` imputed datasets. 
+Since using `mixgb_cv()` with this dataset mostly returns a number less
+than `20`, I'll set `nrounds = 20` in `mixgb()` to obtain `m` imputed
+datasets.
 
 ```{r, eval = FALSE}
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = 20)
 ```
 
-
-
 #### Convert ordinal factors to integers
 
-If our dataset has ordinal factors, then the imputation process will be sped up by converting them to integers. In `nhanes3_newborn` data, there is only one ordinal factor, but we can still see that the imputation time is smaller with `ordinalAsInteger = TRUE`. If `m` and `maxit` are larger, the difference will be even more obvious. Note that when `ordinalAsInteger = TRUE` , the class of these ordinal factors in the imputed datasets will also be integer. We recommend to use the default PMM setting `pmm.type = "auto"`, which will impute numeric and integer variables with PMM (type 2) and impute categorical variables without PMM. If we don't apply PMM to integer variables, the missing values may be imputed as numeric. Sometimes this can be problematic, especially when the integers are actually converted from ordinal factors. Therefore, `pmm.type = NULL` is disabled when `ordinalAsInteger = TRUE` .
+If our dataset has ordinal factors, then the imputation process will be
+sped up by converting them to integers. In `nhanes3_newborn` data, there
+is only one ordinal factor, but we can still see that the imputation
+time is smaller with `ordinalAsInteger = TRUE`. If `m` and `maxit` are
+larger, the difference will be even more obvious. Note that when
+`ordinalAsInteger = TRUE` , the class of these ordinal factors in the
+imputed datasets will also be integer. We recommend to use the default
+PMM setting `pmm.type = "auto"`, which will impute numeric and integer
+variables with PMM (type 2) and impute categorical variables without
+PMM. If we don't apply PMM to integer variables, the missing values may
+be imputed as numeric. Sometimes this can be problematic, especially
+when the integers are actually converted from ordinal factors.
+Therefore, `pmm.type = NULL` is disabled when `ordinalAsInteger = TRUE`
+.
 
 ```{r}
 system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordinalAsInteger = FALSE))
@@ -143,8 +174,9 @@ The `mixgb` package provides the following visual diagnostics functions:
 
 (iii) Three variables: `plot_2num1fac()`, `plot_1num2fac()`.
 
-Each function will return `m+1` panels to compare the observed data with `m` sets of actual imputed values.
+Each function will return `m+1` panels to compare the observed data with
+`m` sets of actual imputed values.
 
-For more details, please check the vignette on github[Visual diagnostics for multiply imputed values][Visual-diagnostics].
-
-[Visual-diagnostics]:https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html
+For more details, please check the vignette on github[Visual diagnostics
+for multiply imputed
+values](https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html).

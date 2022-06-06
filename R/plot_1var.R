@@ -13,15 +13,12 @@
 #' @return Histogram with density plots
 #' @export
 #' @examples
-#' \donttest{
-#'
 #' #obtain m multiply datasets
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3, m = 3)
 #'
 #' #plot the multiply imputed values for variable "BMPHEAD"
 #' plot_hist(imputation.list = imputed.data, var.name = "BMPHEAD",
-#'   original.data = nhanes3_newborn)
-#' }
+#'   original.data = nhanes3)
 plot_hist <- function(imputation.list, var.name, original.data, true.data = NULL, color.pal = NULL) {
 
   Types <- feature_type(imputation.list[[1]])
@@ -70,15 +67,12 @@ plot_hist <- function(imputation.list, var.name, original.data, true.data = NULL
 #' @return Boxplots with data points for a numeric variable
 #' @export
 #' @examples
-#' \donttest{
-#'
 #' #obtain m multiply datasets
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3, m = 3)
 #'
 #' #plot the multiply imputed values for variable "BMPHEAD"
 #' plot_box(imputation.list = imputed.data, var.name = "BMPHEAD",
-#'   original.data = nhanes3_newborn)
-#' }
+#'   original.data = nhanes3)
 plot_box <- function(imputation.list, var.name, original.data, true.data = NULL, color.pal = NULL) {
 
   Types <- feature_type(imputation.list[[1]])
@@ -129,16 +123,15 @@ plot_box <- function(imputation.list, var.name, original.data, true.data = NULL,
 #' @return Bar plots for a factor variable
 #' @export
 #' @examples
-#' \donttest{
+#' #create some extra missing values in a factor variable "HSSEX" (originally fully observed)
+#' nhanes3_NA<-createNA(nhanes3,var.names="HSSEX",p=0.1)
 #'
 #' #obtain m multiply datasets
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3_NA, m = 3)
 #'
-#' #plot the multiply imputed values for variable "HFF1"
-#' plot_bar(imputation.list = imputed.data, var.name = "HFF1",
-#'   original.data = nhanes3_newborn)
-#' }
-#'
+#' #plot the multiply imputed values for variable "HSSEX"
+#' plot_bar(imputation.list = imputed.data, var.name = "HSSEX",
+#'   original.data = nhanes3_NA)
 plot_bar <- function(imputation.list, var.name, original.data, true.data = NULL, color.pal = NULL) {
 
   Types <- feature_type(imputation.list[[1]])

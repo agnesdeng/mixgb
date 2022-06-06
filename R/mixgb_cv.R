@@ -12,14 +12,10 @@
 #' @return A list of the optimal \code{nrounds}, \code{evaluation.log} and the chosen \code{response}.
 #' @export
 #' @examples
-#' \dontrun{
-#'
-#' cv.results <- mixgb_cv(data = nhanes3_newborn)
+#' cv.results <- mixgb_cv(data = nhanes3)
 #' cv.results$best.nrounds
 #'
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
-#'
-#' }
+#' imputed.data <- mixgb(data = nhanes3, m = 5, nrounds = cv.results$best.nrounds)
 mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL, stringsAsFactors = FALSE, verbose = TRUE, ...) {
   num.cc <- sum(complete.cases(data))
 
@@ -90,8 +86,6 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     N.class <- length(levels(cc.data[[response]]))
     cv.train <- xgb.cv(data = obs.data, label = obs.y, num_class = N.class, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   }
-
-
 
   evaluation.log <- cv.train$evaluation_log
   best.nrounds <- cv.train$best_iteration

@@ -4,6 +4,14 @@
 #' @param  levels.tol Tolerant proportion of the number of levels to the number of observations in a multiclass variable. Default: 0.2
 #' @return A preliminary cleaned dataset
 #' @export
+#' @examples
+#' rawdata <- nhanes3
+#'
+#' rawdata[4, 4] <- NaN
+#' rawdata[5, 5] <- Inf
+#' rawdata[6, 6] <- -Inf
+#'
+#' cleandata <- data_clean(rawdata = rawdata)
 data_clean <- function(rawdata, levels.tol = 0.2) {
   names <- colnames(rawdata)
 

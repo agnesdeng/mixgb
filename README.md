@@ -36,7 +36,7 @@ expected. Revised paper and adapted code will be updated soon.)
 -   Bootstrap data to make `m` imputations is optional. User can set
     `bootstrap = FALSE` to disable bootstrap. Users can also set
     sampling related hyperparameters of XGBoost (subsample,
-    colsample\_bytree, colsample\_bylevel, colsample\_bynode) to be less
+    colsample_bytree, colsample_bylevel, colsample_bynode) to be less
     than 1 to achieve similar effect.
 -   Add predicted mean matching type 0. Now the options for `pmm.type`
     are `NULL`,`0`,`1`,`2` or `"auto"` (type 2 for numeric/integer
@@ -101,7 +101,6 @@ which contains 16 variables of various types
 missing values.
 
 ``` r
-data(nhanes3_newborn)
 str(nhanes3_newborn)
 #> tibble [2,107 × 16] (S3: tbl_df/tbl/data.frame)
 #>  $ HSHSIZER: int [1:2107] 4 3 5 4 4 3 5 3 3 3 ...
@@ -144,7 +143,6 @@ numeric, integer, factor or ordinal factor.
 ``` r
 # use mixgb with default settings
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
-#> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
 ### 2.1 Customise imputation settings
@@ -185,7 +183,6 @@ imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1,
     initial.fac = "mode", save.models = FALSE, save.vars = NULL,
     xgb.params = params, nrounds = 50, early_stopping_rounds = 10,
     print_every_n = 10L, verbose = 0)
-#> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
 ### 2.2 Tune hyperparameters
@@ -201,9 +198,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 cv.results$response
-#> [1] "BMPSB2"
+#> [1] "BMPWT"
 cv.results$best.nrounds
-#> [1] 15
+#> [1] 18
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -220,7 +217,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 19
+#> [1] 18
 ```
 
 Since using `mixgb_cv()` with this dataset mostly returns a number less
@@ -262,16 +259,15 @@ dimension of each imputed dataset will be the same as the original data.
 
 ``` r
 imputed.data <- mixgb(data = withNA.df, m = 5)
-#> mixgb with bootstrap: imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
 The `mixgb` package provides the following visual diagnostics functions:
 
-1.  Single variable: `plot_hist()`, `plot_box()`, `plot_bar()` ;
+1)  Single variable: `plot_hist()`, `plot_box()`, `plot_bar()` ;
 
-2.  Two variables: `plot_2num()`, `plot_2fac()`, `plot_1num1fac()` ;
+2)  Two variables: `plot_2num()`, `plot_2fac()`, `plot_1num1fac()` ;
 
-3.  Three variables: `plot_2num1fac()`, `plot_1num2fac()`.
+3)  Three variables: `plot_2num1fac()`, `plot_1num2fac()`.
 
 Each function will return `m+1` panels to compare the observed data with
 `m` sets of actual imputed values.
@@ -340,7 +336,6 @@ variables in `save.vars` instead of saving models for all variables.
 # imputation models
 mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE,
     save.vars = NULL)
-#> mixgb with bootstrap: saving models and imputing set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
 When `save.models = TRUE`, `mixgb()` will return an object containing
@@ -387,7 +382,6 @@ again.
 
 ``` r
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
-#> Imputing new data with mixgb:  set -- 1 -- 2 -- 3 -- 4 -- 5
 ```
 
 If PMM is used when we call `mixgb()`, predicted values of missing
@@ -403,7 +397,6 @@ it is not specified, it will use the same `m` value as the saved object.
 ``` r
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data,
     initial.newdata = FALSE, pmm.k = 3, m = 4)
-#> Imputing new data with mixgb:  set -- 1 -- 2 -- 3 -- 4
 ```
 
 ## 5. Install `mixgb` with GPU support
@@ -412,8 +405,8 @@ Multiple imputation can be run with GPU support for machines with NVIDIA
 GPUs. Note that users have to install the R package `xgboost` with GPU
 support first.
 
-The xgboost R package pre-built binary on Linux x86\_64 with GPU
-supportcan be downloaded from the release page
+The `xgboost` R package pre-built binary on Linux x86_64 with GPU
+support can be downloaded from the release page
 <https://github.com/dmlc/xgboost/releases/tag/v1.4.0>
 
 The package can then be installed by running the following commands:

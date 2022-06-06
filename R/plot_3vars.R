@@ -15,17 +15,14 @@
 #' @return Scatter plots
 #' @export
 #' @examples
-#' \donttest{
-#'
 #' # obtain m multiply datasets
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3, m = 2)
 #'
-#' # plot the multiply imputed values for variables "BMPHEAD" versus "BMPRECUM" conditional on "HFF1"
+#' # plot the multiply imputed values for variables "BMPRECUM" versus "BMPHEAD" conditional on "HSSEX"
 #' plot_2num1fac(
 #'   imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
-#'   con.fac = "HFF1", original.data = nhanes3_newborn
+#'   con.fac = "HSSEX", original.data = nhanes3
 #' )
-#' }
 plot_2num1fac <- function(imputation.list, var.x, var.y, con.fac, original.data, true.data = NULL, color.pal = NULL, shape = FALSE) {
   Types <- feature_type(imputation.list[[1]])
 
@@ -98,14 +95,15 @@ plot_2num1fac <- function(imputation.list, var.x, var.y, con.fac, original.data,
 #' @export
 #' @examples
 #' \donttest{
-#'
+#' # create some extra missing values in factor variables "HSSEX" and "DMARETHN"
+#' nhanes3_NA <- createNA(nhanes3, var.names = c("HSSEX", "DMARETHN"), p = 0.1)
 #' # obtain m multiply datasets
-#' imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' imputed.data <- mixgb(data = nhanes3_NA, m = 5)
 #'
-#' # plot the multiply imputed values for variables "BMPRECUM" versus "HFF1" conditional on "HSSEX"
+#' # plot the multiply imputed values for variables "BMPRECUM" versus "HSSEX" conditional on "DMARETHN"
 #' plot_1num2fac(
-#'   imputation.list = imputed.data, var.fac = "HFF1", var.num = "BMPRECUM",
-#'   con.fac = "HSSEX", original.data = nhanes3_newborn
+#'   imputation.list = imputed.data, var.fac = "HSSEX", var.num = "BMPRECUM",
+#'   con.fac = "DMARETHN", original.data = nhanes3_NA
 #' )
 #' }
 plot_1num2fac <- function(imputation.list, var.fac, var.num, con.fac, original.data, true.data = NULL, color.pal = NULL, shape = FALSE) {
@@ -208,16 +206,16 @@ summary3var <- function(imputation.list, var.x, var.y, con.fac, original.data, t
     stop("There is no missing value in both `var.name1` and `var.name2`.")
   }
 
-  if (!is.null(true.data)){
-    if(any(is.na(true.data[[var.x]]))){
+  if (!is.null(true.data)) {
+    if (any(is.na(true.data[[var.x]]))) {
       stop(paste("The variable ", var.x, " in `true.data` contains missing values."))
     }
 
-    if(any(is.na(true.data[[var.y]]))){
+    if (any(is.na(true.data[[var.y]]))) {
       stop(paste("The variable ", var.y, " in `true.data` contains missing values."))
     }
 
-    if(any(is.na(true.data[[con.fac]]))){
+    if (any(is.na(true.data[[con.fac]]))) {
       stop(paste("The variable ", con.fac, " in `true.data` contains missing values."))
     }
   }

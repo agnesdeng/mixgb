@@ -1,6 +1,6 @@
 # Convert a factor to an integer variable.
 fac2int <- function(vec) {
-  suppressWarnings(int.levels <- as.integer(levels(vec)), classes = "warning")
+  suppressWarnings(int.levels <- as.integer(levels(vec)))
   if (any(is.na(int.levels))) {
     as.integer(vec)
   } else {

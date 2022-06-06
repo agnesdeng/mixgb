@@ -39,29 +39,27 @@
 #' }
 #' @param save.models Whether to save models for imputing new data later on. Default: \code{FALSE}
 #' @param save.vars Response models for variables specified in \code{save.vars} will be saved for imputing new data. Can be a vector of names or indices. By default, \code{save.vars = NULL}, response models for variables with missing values will be saved. To save all models, please specify \code{save.vars = colnames(data)}.
+#' @param verbose Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.
 #' @param xgb.params A list of XGBoost parameters. For more details, please check \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
 #' @param nrounds The maximum number of boosting iterations for XGBoost. Default: 50
 #' @param early_stopping_rounds An integer value \code{k}. XGBoost training will stop if the validation performance hasn't improved for \code{k} rounds. Default: 10.
-#' @param print_every_n Print XGBoost evaluation information at every nth iteration if \code{verbose > 0}.
-#' @param verbose Verbose setting for XGBoost training: 0 (silent), 1 (print information) and 2 (print additional information). Default: 0
+#' @param print_every_n Print XGBoost evaluation information at every nth iteration if \code{xgboost_verbose > 0}.
+#' @param xgboost_verbose Verbose setting for XGBoost training: 0 (silent), 1 (print information) and 2 (print additional information). Default: 0
 #' @param ... Extra arguments to pass to XGBoost
 #' @return If \code{save.models = FALSE}, will return a list of \code{m} imputed datasets. If \code{save.models = TRUE}, will return an object with imputed datasets, saved models and parameters.
 #' @export
 #' @examples
-#' \donttest{
-#'
 #' # obtain m multiply datasets without saving models
-#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 2)
+#' mixgb.data <- mixgb(data = nhanes3, m = 2)
 #'
 #' # obtain m multiply imputed datasets and save models for imputing new data later on
-#' mixgb.obj <- mixgb(data = nhanes3_newborn, m = 2, save.models = TRUE)
-#' }
+#' mixgb.obj <- mixgb(data = nhanes3, m = 2, save.models = TRUE)
 mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = TRUE,
                   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
                   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
-                  save.models = FALSE, save.vars = NULL,
+                  save.models = FALSE, save.vars = NULL, verbose = F,
                   xgb.params = list(max_depth = 6, gamma = 0, eta = 0.3, min_child_weight = 1, subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, tree_method = "auto", gpu_id = 0, predictor = "auto"),
-                  nrounds = 50, early_stopping_rounds = 1, print_every_n = 10L, verbose = 0, ...) {
+                  nrounds = 50, early_stopping_rounds = 1, print_every_n = 10L, xgboost_verbose = 0, ...) {
   if (!(is.data.frame(data) || is.matrix(data))) {
     stop("Data need to be a data frame or a matrix.")
   }
@@ -151,7 +149,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
     yhatobs.list <- save_yhatobs(
       yobs.list = yobs.list, maxit = maxit, pmm.link = pmm.link, sorted.dt = initial.obj$sorted.dt, missing.vars = missing.vars, extra.vars = extra.vars, extra.types = extra.types, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
       xgb.params = xgb.params,
-      nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+      nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
     )
   }
 
@@ -161,9 +159,14 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
 
     if (bootstrap == FALSE) {
       # bootstrap=FALSE--------------------------------------------------------------
-      cat("mixgb without bootstrap:", "imputing set")
+      if(verbose){
+        cat("mixgb without bootstrap:", "imputing set")
+      }
+
       for (i in seq_len(m)) {
-        cat(" --", i)
+        if(verbose){
+          cat(" --", i)
+        }
         # feed in the initial imputed dataset
         sorted.dt <- initial.obj$sorted.dt
         for (j in seq_len(maxit)) {
@@ -172,16 +175,21 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
             sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
             xgb.params = xgb.params,
-            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
           )
         }
         imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
       }
     } else {
       # bootstrap=TRUE--------------------------------------------------------------
-      cat("mixgb with bootstrap:", "imputing set")
+      if(verbose){
+        cat("mixgb with bootstrap:", "imputing set")
+      }
+
       for (i in seq_len(m)) {
-        cat(" --", i)
+        if(verbose){
+          cat(" --", i)
+        }
         # feed in the initial imputed dataset
         sorted.dt <- initial.obj$sorted.dt
         boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
@@ -191,14 +199,17 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
             yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
             sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
             xgb.params = xgb.params,
-            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
           )
         }
         imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
       }
     } # end of if(bootstrap)
 
-    cat("\n")
+    if(verbose){
+      cat("\n")
+    }
+
     return(imputed.data)
     # mixgb.obj <- list("imputed.data" = imputed.data, "XGB.models" =NULL, "params" = NULL)
     # class(mixgb.obj)<-"mixgbObj"
@@ -235,9 +246,14 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
     #--------------------------------------------------------
     if (bootstrap == FALSE) {
       # bootstrap=FALSE--------------------------------------------------------------
-      cat("mixgb without bootstrap:", "saving models and imputing set")
+      if(verbose){
+        cat("mixgb without bootstrap:", "saving models and imputing set")
+      }
+
       for (i in seq_len(m)) {
-        cat(" --", i)
+        if(verbose){
+          cat(" --", i)
+        }
         # feed in the initial imputed dataset
         sorted.dt <- initial.obj$sorted.dt
         if (maxit > 1) {
@@ -247,7 +263,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
               pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
               sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
               xgb.params = xgb.params,
-              nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+              nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
             )
           }
         }
@@ -257,7 +273,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
           yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
           Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
           xgb.params = xgb.params,
-          nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+          nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
         )
         # if pmm.type=NULL
         imputed.data[[i]] <- saved.obj$sorted.dt[, origin.names, with = FALSE]
@@ -270,9 +286,14 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
       }
     } else {
       # bootstrap=TRUE--------------------------------------------------------------
-      cat("mixgb with bootstrap:", "saving models and imputing set")
+      if(verbose){
+        cat("mixgb with bootstrap:", "saving models and imputing set")
+      }
+
       for (i in seq_len(m)) {
-        cat(" --", i)
+        if(verbose){
+          cat(" --", i)
+        }
         # feed in the initial imputed dataset
         sorted.dt <- initial.obj$sorted.dt
         boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
@@ -283,7 +304,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
               yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
               sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
               xgb.params = xgb.params,
-              nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+              nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
             )
           }
         }
@@ -292,7 +313,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
           yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
           Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
           xgb.params = xgb.params,
-          nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose, ...
+          nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
         )
 
         # if pmm.type=NULL
@@ -317,7 +338,9 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = T
     params$yhatobs.list <- yhatobs.list
     params$yobs.list <- yobs.list
 
-    cat("\n")
+    if(verbose){
+      cat("\n")
+    }
     mixgb.obj <- list("imputed.data" = imputed.data, "XGB.models" = XGB.models, "params" = params)
     class(mixgb.obj) <- "mixgbObj"
     return(mixgb.obj)

@@ -31,7 +31,6 @@ We will demonstrate these functions using the `nhanes3_newborn` dataset. In the 
 
 ```{r}
 library(mixgb)
-data("nhanes3_newborn")
 colSums(is.na(nhanes3_newborn))
 ```
 

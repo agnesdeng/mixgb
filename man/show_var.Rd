@@ -22,13 +22,9 @@ A data.table with \code{m} columns, each column represents the imputed values of
 Show m sets of imputed values for a specified variable.
 }
 \examples{
-\donttest{
 #obtain m multiply datasets
-mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+mixgb.data <- mixgb(data = nhanes3, m = 3)
 
 imputed.BMPHEAD <- show_var(imputation.list = mixgb.data, var.name = "BMPHEAD",
-  original.data = nhanes3_newborn)
-imputed.BMPHEAD
-}
-
+  original.data = nhanes3)
 }

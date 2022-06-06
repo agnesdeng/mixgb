@@ -7,15 +7,11 @@
 #' @return A data.table with \code{m} columns, each column represents the imputed values of all missing entries in the specified variable. If \code{true.values} is provided, the last column will be the true values of the missing values.
 #' @export
 #' @examples
-#' \donttest{
 #' #obtain m multiply datasets
-#' mixgb.data <- mixgb(data = nhanes3_newborn, m = 5)
+#' mixgb.data <- mixgb(data = nhanes3, m = 3)
 #'
 #' imputed.BMPHEAD <- show_var(imputation.list = mixgb.data, var.name = "BMPHEAD",
-#'   original.data = nhanes3_newborn)
-#' imputed.BMPHEAD
-#' }
-#'
+#'   original.data = nhanes3)
 show_var <- function(imputation.list, var.name, original.data, true.values = NULL) {
   na.idx <- which(is.na(original.data[[var.name]]))
   result.l <- lapply(imputation.list, function(dt) dt[[var.name]][na.idx])

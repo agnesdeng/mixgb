@@ -68,24 +68,3 @@ createNA <- function(data, var.names = NULL, p = 0.3) {
   return(data)
 }
 
-
-#create missing data under MAR
-marNA<-function(data,missing.var,depend.var,cutoff.probs=c(0,1/3,2/3,1),missing.probs=c(0.2,0.8,0.2)){
-  cutoff.values<-quantile(data[[depend.var]],probs=cutoff.probs,na.rm=T)
-  depend.groups<-findInterval(data[[depend.var]],vec=cutoff.values,all.inside = TRUE)
-  p<-missing.probs[depend.groups]
-  miss<-rbinom(n=nrow(data),size = 1,p)
-  data[[missing.var]][miss==1]<-NA
-  data
-}
-
-#plot masked missing data
-plot_mar<-function(NAdata, missing.var, depend.var, original.data){
-  idx<-which(is.na(NAdata[[missing.var]]))
-  original.data$missing<-rep("observed",nrow(original.data))
-  original.data$missing[idx]<-"missing"
-  ggplot(data=original.data,aes(y=.data[[missing.var]],x=.data[[depend.var]],color=missing))+
-    geom_point()+
-    facet_grid(~missing)
-}
-

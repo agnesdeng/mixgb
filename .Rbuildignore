@@ -1,11 +1,12 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README\.Rmd$
+^LICENSE\.md$
 ^doc$
 ^Meta$
-^LICENSE\.md$
+^pkgdown$
 ^_pkgdown\.yml$
 ^docs$
-^pkgdown$
 ^\.github$
-^README\.Rmd$
 ^vignettes\web$
+^cran-comments\.md$

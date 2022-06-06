@@ -4,7 +4,14 @@
 \alias{impute_new}
 \title{Impute new data with a saved \code{mixgb} imputer object}
 \usage{
-impute_new(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL)
+impute_new(
+  object,
+  newdata,
+  initial.newdata = FALSE,
+  pmm.k = NULL,
+  m = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{object}{A saved imputer object created by \code{mixgb(..., save.models = TRUE)}}
@@ -16,28 +23,28 @@ impute_new(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL)
 \item{pmm.k}{The number of donors for predictive mean matching. If \code{NULL} (the default), the \code{pmm.k} value in the saved imputer object will be used.}
 
 \item{m}{The number of imputed datasets. If \code{NULL} (the default), the \code{m} value in the saved imputer object will be used.}
+
+\item{verbose}{Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.}
 }
 \value{
-A list of `m` imputed datasets for new data.
+A list of \code{m} imputed datasets for new data.
 }
 \description{
 Impute new data with a saved \code{mixgb} imputer object
 }
 \examples{
-\donttest{
 set.seed(2022)
-n <- nrow(nhanes3_newborn)
+n <- nrow(nhanes3)
 idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
-train.data <- nhanes3_newborn[idx, ]
-test.data <- nhanes3_newborn[-idx, ]
+train.data <- nhanes3[idx, ]
+test.data <- nhanes3[-idx, ]
 
 mixgb.obj <- mixgb(data = train.data, m = 2, save.models = TRUE)
+
 #obtain m imputed datasets for train.data
 train.imputed <- mixgb.obj$imputed.data
 train.imputed
 
 #use the saved imputer to impute new data
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
-
-}
 }

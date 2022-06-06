@@ -30,14 +30,13 @@ Bar plots for a factor variable
 Plot bar plots of observed values versus m sets of imputed values for a specified factor variable using \pkg{ggplot2}.
 }
 \examples{
-\donttest{
+#create some extra missing values in a factor variable "HSSEX" (originally fully observed)
+nhanes3_NA<-createNA(nhanes3,var.names="HSSEX",p=0.1)
 
 #obtain m multiply datasets
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+imputed.data <- mixgb(data = nhanes3_NA, m = 3)
 
-#plot the multiply imputed values for variable "HFF1"
-plot_bar(imputation.list = imputed.data, var.name = "HFF1",
-  original.data = nhanes3_newborn)
-}
-
+#plot the multiply imputed values for variable "HSSEX"
+plot_bar(imputation.list = imputed.data, var.name = "HSSEX",
+  original.data = nhanes3_NA)
 }

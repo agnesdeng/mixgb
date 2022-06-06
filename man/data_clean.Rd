@@ -17,3 +17,12 @@ A preliminary cleaned dataset
 \description{
 Check some common errors of a raw dataset and return a suitable dataset to be fed into the imputer. Note that this function is just a preliminary check. It will not guarantee the output dataset is fully cleaned.
 }
+\examples{
+rawdata <- nhanes3
+
+rawdata[4, 4] <- NaN
+rawdata[5, 5] <- Inf
+rawdata[6, 6] <- -Inf
+
+cleandata <- data_clean(rawdata = rawdata)
+}

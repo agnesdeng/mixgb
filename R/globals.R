@@ -5,3 +5,4 @@
 #'@importFrom utils globalVariables
 #'@keywords internal
 utils::globalVariables(c("..density..", "..prop..", "Freq", "Var1", "Var3", "m.set", "obs", "NA.condition"))
+
