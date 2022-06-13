@@ -10,3 +10,5 @@
 ^\.github$
 ^vignettes\web$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
+^notes$

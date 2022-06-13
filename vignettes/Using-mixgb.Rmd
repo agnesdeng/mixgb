@@ -177,6 +177,6 @@ The `mixgb` package provides the following visual diagnostics functions:
 Each function will return `m+1` panels to compare the observed data with
 `m` sets of actual imputed values.
 
-For more details, please check the vignette on github[Visual diagnostics
+For more details, please check the vignette on github [Visual diagnostics
 for multiply imputed
 values](https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html).
