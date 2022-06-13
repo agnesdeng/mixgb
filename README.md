@@ -6,8 +6,9 @@
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
-[![](https://img.shields.io/badge/Version-0.1.0-brightgreen)](https://github.com/agnesdeng/mixgb)
-[![](https://img.shields.io/badge/Lifecycle-Experimental-ff69b4)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/CRAN-0.1.0-9cf)](https://github.com/agnesdeng/mixgb)
+[![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
+[![](https://img.shields.io/badge/github%20version-0.1.0-brightgreen)](https://github.com/agnesdeng/mixgb)
 <!-- badges: end -->
 
 `mixgb` is a scalable multiple imputation framework based on XGBoost,
@@ -198,9 +199,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 cv.results$response
-#> [1] "BMPWT"
+#> [1] "BMPSB2"
 cv.results$best.nrounds
-#> [1] 18
+#> [1] 15
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -217,7 +218,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 18
+#> [1] 19
 ```
 
 Since using `mixgb_cv()` with this dataset mostly returns a number less
