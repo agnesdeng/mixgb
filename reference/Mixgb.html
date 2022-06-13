@@ -29,6 +29,9 @@
     <a class="dropdown-item" href="../articles/web/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>
   </div>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -86,14 +89,24 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
 <dd><p>A data.frame or data.table with missing values</p></dd>
+
+
 <dt>m</dt>
 <dd><p>The number of imputed datasets. Default: 5</p></dd>
+
+
 <dt>maxit</dt>
 <dd><p>The number of imputation iterations. Default: 1</p></dd>
+
+
 <dt>ordinalAsInteger</dt>
 <dd><p>Whether to convert ordinal factors to integers. The default setting <code>ordinalAsInteger = TRUE</code> can speed up the imputation process.</p></dd>
+
+
 <dt>bootstrap</dt>
 <dd><p>Whether to use bootstrapping for multiple imputation. By default, <code>bootstrap = TRUE</code>. If <code>FALSE</code>, users are recommended to specify sampling-related hyperparameters of XGBoost to obtain imputations with adequate variability.</p></dd>
+
+
 <dt>pmm.type</dt>
 <dd><p>The types of predictive mean matching (PMM). Possible values:</p><ul><li><p><code>NULL</code>: Imputations without PMM;</p></li>
 <li><p><code>0</code>: Imputations with PMM type 0;</p></li>
@@ -101,12 +114,18 @@
 <li><p><code>2</code>: Imputations with PMM type 2;</p></li>
 <li><p><code>"auto"</code> (Default): Imputations with PMM type 2 for numeric/integer variables; imputations without PMM for categorical variables.</p></li>
 </ul></dd>
+
+
 <dt>pmm.k</dt>
 <dd><p>The number of donors for predictive mean matching. Default: 5</p></dd>
+
+
 <dt>pmm.link</dt>
 <dd><p>The link for predictive mean matching binary variables</p><ul><li><p><code>"prob"</code> (Default): use probabilities;</p></li>
 <li><p><code>"logit"</code>: use logit values.</p></li>
 </ul></dd>
+
+
 <dt>initial.num</dt>
 <dd><p>Initial imputation method for numeric type data:</p><ul><li><p><code>"normal"</code> (Default);</p></li>
 <li><p><code>"mean"</code>;</p></li>
@@ -114,36 +133,61 @@
 <li><p><code>"mode"</code>;</p></li>
 <li><p><code>"sample"</code>.</p></li>
 </ul></dd>
+
+
 <dt>initial.int</dt>
 <dd><p>Initial imputation method for integer type data:</p><ul><li><p><code>"mode"</code> (Default);</p></li>
 <li><p><code>"sample"</code>.</p></li>
 </ul></dd>
+
+
 <dt>initial.fac</dt>
 <dd><p>Initial imputation method for factor type data:</p><ul><li><p><code>"mode"</code> (Default);</p></li>
 <li><p><code>"sample"</code>.</p></li>
 </ul></dd>
+
+
 <dt>save.models</dt>
 <dd><p>Whether to save models for imputing new data later on. Default: <code>FALSE</code></p></dd>
+
+
 <dt>save.vars</dt>
 <dd><p>Response models for variables specified in <code>save.vars</code> will be saved for imputing new data. Can be a vector of names or indices. By default, <code>save.vars = NULL</code>, response models for variables with missing values will be saved. To save all models, please specify <code>save.vars = colnames(data)</code>.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Verbose setting for mixgb. If <code>TRUE</code>, will print out the progress of imputation. Default: <code>FALSE</code>.</p></dd>
+
+
 <dt>xgb.params</dt>
 <dd><p>A list of XGBoost parameters. For more details, please check <a href="https://xgboost.readthedocs.io/en/stable/parameter.html" class="external-link">XGBoost documentation on parameters</a>.</p></dd>
+
+
 <dt>nrounds</dt>
 <dd><p>The maximum number of boosting iterations for XGBoost. Default: 50</p></dd>
+
+
 <dt>early_stopping_rounds</dt>
 <dd><p>An integer value <code>k</code>. XGBoost training will stop if the validation performance hasn't improved for <code>k</code> rounds. Default: 10.</p></dd>
+
+
 <dt>print_every_n</dt>
 <dd><p>Print XGBoost evaluation information at every nth iteration if <code>xgboost_verbose &gt; 0</code>.</p></dd>
+
+
 <dt>xgboost_verbose</dt>
 <dd><p>Verbose setting for XGBoost training: 0 (silent), 1 (print information) and 2 (print additional information). Default: 0</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Extra arguments to pass to XGBoost</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>If <code>save.models = FALSE</code>, will return a list of <code>m</code> imputed datasets. If <code>save.models = TRUE</code>, will return an object with imputed datasets, saved models and parameters.</p>
+    
+
+<p>If <code>save.models = FALSE</code>, will return a list of <code>m</code> imputed datasets. If <code>save.models = TRUE</code>, will return an object with imputed datasets, saved models and parameters.</p>
     </div>
 
     <div class="section level2">
@@ -164,7 +208,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>
