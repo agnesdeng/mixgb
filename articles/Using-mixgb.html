@@ -75,7 +75,7 @@
       <img src="" class="logo" alt=""><h1>mixgb: Multiple Imputation Through XGBoost</h1>
                         <h4 data-toc-skip class="author">Yongshi Deng</h4>
             
-            <h4 data-toc-skip class="date">2022-06-13</h4>
+            <h4 data-toc-skip class="date">2022-06-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/Using-mixgb.Rmd" class="external-link"><code>vignettes/Using-mixgb.Rmd</code></a></small>
       <div class="d-none name"><code>Using-mixgb.Rmd</code></div>
@@ -177,50 +177,46 @@
 <code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">cv.results</span><span class="op">$</span><span class="va">evaluation.log</span>
 <span class="co">#&gt;     iter train_logloss_mean train_logloss_std test_logloss_mean</span>
-<span class="co">#&gt;  1:    1          0.6206387       0.002729267         0.6570685</span>
-<span class="co">#&gt;  2:    2          0.5727657       0.004128932         0.6393279</span>
-<span class="co">#&gt;  3:    3          0.5409033       0.004880934         0.6304976</span>
-<span class="co">#&gt;  4:    4          0.5147282       0.004767733         0.6287962</span>
-<span class="co">#&gt;  5:    5          0.4946000       0.006152323         0.6274660</span>
-<span class="co">#&gt;  6:    6          0.4759338       0.008227337         0.6258456</span>
-<span class="co">#&gt;  7:    7          0.4579560       0.007635245         0.6286668</span>
-<span class="co">#&gt;  8:    8          0.4424127       0.006567238         0.6310017</span>
-<span class="co">#&gt;  9:    9          0.4271528       0.004994998         0.6337823</span>
-<span class="co">#&gt; 10:   10          0.4158374       0.005516748         0.6354192</span>
-<span class="co">#&gt; 11:   11          0.4048963       0.005237584         0.6388691</span>
-<span class="co">#&gt; 12:   12          0.3947364       0.007923523         0.6423345</span>
-<span class="co">#&gt; 13:   13          0.3829672       0.007465601         0.6449460</span>
-<span class="co">#&gt; 14:   14          0.3745954       0.009401177         0.6460455</span>
-<span class="co">#&gt; 15:   15          0.3623450       0.007477408         0.6496004</span>
-<span class="co">#&gt; 16:   16          0.3520139       0.007730566         0.6522730</span>
+<span class="co">#&gt;  1:    1          0.6212373       0.003087148         0.6544741</span>
+<span class="co">#&gt;  2:    2          0.5761076       0.004481774         0.6400033</span>
+<span class="co">#&gt;  3:    3          0.5418532       0.004653500         0.6327963</span>
+<span class="co">#&gt;  4:    4          0.5171194       0.003208377         0.6291934</span>
+<span class="co">#&gt;  5:    5          0.4935356       0.004328236         0.6298326</span>
+<span class="co">#&gt;  6:    6          0.4764609       0.005864608         0.6308498</span>
+<span class="co">#&gt;  7:    7          0.4590362       0.006415388         0.6312819</span>
+<span class="co">#&gt;  8:    8          0.4422859       0.006273271         0.6319554</span>
+<span class="co">#&gt;  9:    9          0.4317392       0.006539232         0.6322793</span>
+<span class="co">#&gt; 10:   10          0.4195118       0.009329865         0.6344269</span>
+<span class="co">#&gt; 11:   11          0.4084496       0.012192216         0.6375104</span>
+<span class="co">#&gt; 12:   12          0.3994073       0.014490718         0.6389952</span>
+<span class="co">#&gt; 13:   13          0.3845769       0.012026833         0.6414825</span>
+<span class="co">#&gt; 14:   14          0.3778067       0.011103745         0.6427866</span>
 <span class="co">#&gt;     test_logloss_std</span>
-<span class="co">#&gt;  1:      0.007740297</span>
-<span class="co">#&gt;  2:      0.010973505</span>
-<span class="co">#&gt;  3:      0.013096382</span>
-<span class="co">#&gt;  4:      0.014290197</span>
-<span class="co">#&gt;  5:      0.018278011</span>
-<span class="co">#&gt;  6:      0.022913792</span>
-<span class="co">#&gt;  7:      0.022067159</span>
-<span class="co">#&gt;  8:      0.025665028</span>
-<span class="co">#&gt;  9:      0.025113395</span>
-<span class="co">#&gt; 10:      0.023399588</span>
-<span class="co">#&gt; 11:      0.023815469</span>
-<span class="co">#&gt; 12:      0.023785127</span>
-<span class="co">#&gt; 13:      0.025103387</span>
-<span class="co">#&gt; 14:      0.024699735</span>
-<span class="co">#&gt; 15:      0.024383703</span>
-<span class="co">#&gt; 16:      0.025955437</span>
+<span class="co">#&gt;  1:      0.006251109</span>
+<span class="co">#&gt;  2:      0.009186692</span>
+<span class="co">#&gt;  3:      0.012334947</span>
+<span class="co">#&gt;  4:      0.016384662</span>
+<span class="co">#&gt;  5:      0.017224571</span>
+<span class="co">#&gt;  6:      0.018426714</span>
+<span class="co">#&gt;  7:      0.017717139</span>
+<span class="co">#&gt;  8:      0.017078119</span>
+<span class="co">#&gt;  9:      0.015731057</span>
+<span class="co">#&gt; 10:      0.015823653</span>
+<span class="co">#&gt; 11:      0.014086029</span>
+<span class="co">#&gt; 12:      0.015461390</span>
+<span class="co">#&gt; 13:      0.016173236</span>
+<span class="co">#&gt; 14:      0.016093928</span>
 <span class="va">cv.results</span><span class="op">$</span><span class="va">response</span>
 <span class="co">#&gt; [1] "HFF1"</span>
 <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 6</span></code></pre></div>
+<span class="co">#&gt; [1] 4</span></code></pre></div>
 <p>By default, <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_features</code>, respectively.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>, 
                        response <span class="op">=</span> <span class="st">"BMPHEAD"</span>, select_features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSAGEIR"</span>, <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>, <span class="st">"BMPRECUM"</span>,                           <span class="st">"BMPSB1"</span>, <span class="st">"BMPSB2"</span>, <span class="st">"BMPTR1"</span>, <span class="st">"BMPTR2"</span>, <span class="st">"BMPWT"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 19</span></code></pre></div>
+<span class="co">#&gt; [1] 18</span></code></pre></div>
 <p>Since using <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> with this dataset mostly returns a number less than <code>20</code>, I’ll set <code>nrounds = 20</code> in <code><a href="../reference/Mixgb.html">mixgb()</a></code> to obtain <code>m</code> imputed datasets.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
@@ -231,11 +227,11 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>, ordinalAsInteger <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;  16.978   0.236  10.825</span>
+<span class="co">#&gt;  14.734   0.235   9.161</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>, ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;  15.428   0.209   9.713</span></code></pre></div>
+<span class="co">#&gt;  13.567   0.208   8.268</span></code></pre></div>
 </div>
 </div>
 </div>
