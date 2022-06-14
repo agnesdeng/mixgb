@@ -226,9 +226,9 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">cv.results</span><span class="op">$</span><span class="va">response</span>
-<span class="co">#&gt; [1] "BMPWT"</span>
+<span class="co">#&gt; [1] "BMPSB2"</span>
 <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 18</span></code></pre></div>
+<span class="co">#&gt; [1] 15</span></code></pre></div>
 <p>By default, <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_features</code>, respectively.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>,
@@ -237,7 +237,7 @@
         <span class="st">"BMPTR1"</span>, <span class="st">"BMPTR2"</span>, <span class="st">"BMPWT"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 18</span></code></pre></div>
+<span class="co">#&gt; [1] 19</span></code></pre></div>
 <p>Since using <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> with this dataset mostly returns a number less than <code>20</code>, I’ll set <code>nrounds = 20</code> in <code><a href="reference/Mixgb.html">mixgb()</a></code> to obtain <code>m</code> imputed datasets.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
@@ -399,8 +399,9 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/agnesdeng/mixgb" class="external-link"><img src="https://img.shields.io/badge/Made%20With-R-9cf"></a></li>
-<li><a href="https://github.com/agnesdeng/mixgb" class="external-link"><img src="https://img.shields.io/badge/Version-0.1.0-brightgreen"></a></li>
-<li><a href="https://github.com/agnesdeng/mixgb" class="external-link"><img src="https://img.shields.io/badge/Lifecycle-Experimental-ff69b4"></a></li>
+<li><a href="https://github.com/agnesdeng/mixgb" class="external-link"><img src="https://img.shields.io/badge/CRAN-0.1.0-9cf"></a></li>
+<li><a href="https://cran.r-project.org/package=mixgb" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/mixgb"></a></li>
+<li><a href="https://github.com/agnesdeng/mixgb" class="external-link"><img src="https://img.shields.io/badge/github%20version-0.1.0-brightgreen"></a></li>
 </ul>
 </div>
 
