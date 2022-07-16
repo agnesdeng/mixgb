@@ -126,16 +126,19 @@ plot_bar(imputation.list = imputed.data, var.name = "HSHSIZER",
 
 ### 2.1.4 Ordinal factor
 
-The function `mixgb()` will convert any ordinal factor to integers by default. This will speed up the imputation process, but users need to decide whether to transform them back. In this case, we can just plot the imputed values as integers (see Section 2.1.3).
+The function `mixgb()` will not convert any ordinal factor to integers by default. So we can just plot ordinal factors as factors. (see Section 2.1.2).
 
-If users set `ordinalAsInteger = FALSE` in `mixgb()`, then we can plot ordinal factors as factors. (see Section 2.1.2).
+However, setting `ordinalAsInteger = TRUE` in `mixgb()` may speed up the imputation process, but users need to decide whether to transform them back. In this case, we can just plot the imputed values as integers (see Section 2.1.3).
+
 
 ```{r}
-plot_bar(imputation.list = imputed.data, var.name = "HYD1", 
+imputed.data2 <- mixgb(data = withNA.df, m = 5, ordinalAsInteger = TRUE)
+
+plot_bar(imputation.list = imputed.data2, var.name = "HYD1", 
          original.data = withNA.df)
-plot_hist(imputation.list = imputed.data, var.name = "HYD1", 
+plot_hist(imputation.list = imputed.data2, var.name = "HYD1", 
           original.data = withNA.df)
-plot_box(imputation.list = imputed.data, var.name = "HYD1", 
+plot_box(imputation.list = imputed.data2, var.name = "HYD1", 
          original.data = withNA.df)
 ```
 
