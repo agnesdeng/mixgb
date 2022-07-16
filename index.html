@@ -125,11 +125,11 @@
 </h2>
 <p>You can install the development version of mixgb from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"agnesdeng/mixgb"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"agnesdeng/mixgb"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># load mixgb</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># load mixgb</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="11-data-cleaning-before-imputation">1.1 Data cleaning before imputation<a class="anchor" aria-label="anchor" href="#11-data-cleaning-before-imputation"></a>
 </h3>
@@ -147,7 +147,7 @@
 </ul>
 <p>The function <code><a href="reference/data_clean.html">data_clean()</a></code> can do a preliminary check and fix some obvious problems. However, it would not fix all issues related to data quality.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cleanWithNA.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/data_clean.html">data_clean</a></span><span class="op">(</span><span class="va">rawdata</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cleanWithNA.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/data_clean.html">data_clean</a></span><span class="op">(</span><span class="va">rawdata</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -156,41 +156,41 @@
 </h2>
 <p>We first load the <code>mixgb</code> package and the <code>nhanes3_newborn</code> dataset, which contains 16 variables of various types (integer/numeric/factor/ordinal factor). There are 9 variables with missing values.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span>
-<span class="co">#&gt; tibble [2,107 × 16] (S3: tbl_df/tbl/data.frame)</span>
-<span class="co">#&gt;  $ HSHSIZER: int [1:2107] 4 3 5 4 4 3 5 3 3 3 ...</span>
-<span class="co">#&gt;  $ HSAGEIR : int [1:2107] 2 5 10 10 8 3 10 7 2 7 ...</span>
-<span class="co">#&gt;  $ HSSEX   : Factor w/ 2 levels "1","2": 2 1 2 2 1 1 2 2 2 1 ...</span>
-<span class="co">#&gt;  $ DMARACER: Factor w/ 3 levels "1","2","3": 1 1 2 1 1 1 2 1 2 2 ...</span>
-<span class="co">#&gt;  $ DMAETHNR: Factor w/ 3 levels "1","2","3": 3 1 3 3 3 3 3 3 3 3 ...</span>
-<span class="co">#&gt;  $ DMARETHN: Factor w/ 4 levels "1","2","3","4": 1 3 2 1 1 1 2 1 2 2 ...</span>
-<span class="co">#&gt;  $ BMPHEAD : num [1:2107] 39.3 45.4 43.9 45.8 44.9 42.2 45.8 NA 40.2 44.5 ...</span>
-<span class="co">#&gt;   ..- attr(*, "label")= chr "Head circumference (cm)"</span>
-<span class="co">#&gt;  $ BMPRECUM: num [1:2107] 59.5 69.2 69.8 73.8 69 61.7 74.8 NA 64.5 70.2 ...</span>
-<span class="co">#&gt;   ..- attr(*, "label")= chr "Recumbent length (cm)"</span>
-<span class="co">#&gt;  $ BMPSB1  : num [1:2107] 8.2 13 6 8 8.2 9.4 5.2 NA 7 5.9 ...</span>
-<span class="co">#&gt;   ..- attr(*, "label")= chr "First subscapular skinfold (mm)"</span>
-<span class="co">#&gt;  $ BMPSB2  : num [1:2107] 8 13 5.6 10 7.8 8.4 5.2 NA 7 5.4 ...</span>
-<span class="co">#&gt;   ..- attr(*, "label")= chr "Second subscapular skinfold (mm)"</span>
-<span class="co">#&gt;  $ BMPTR1  : num [1:2107] 9 15.6 7 16.4 9.8 9.6 5.8 NA 11 6.8 ...</span>
-<span class="co">#&gt;   ..- attr(*, "label")= chr "First triceps skinfold (mm)"</span>
-<span class="co">#&gt;  $ BMPTR2  : num [1:2107] 9.4 14 8.2 12 8.8 8.2 6.6 NA 10.9 7.6 ...</span>
-<span class="co">#&gt;   ..- attr(*, "label")= chr "Second triceps skinfold (mm)"</span>
-<span class="co">#&gt;  $ BMPWT   : num [1:2107] 6.35 9.45 7.15 10.7 9.35 7.15 8.35 NA 7.35 8.65 ...</span>
-<span class="co">#&gt;   ..- attr(*, "label")= chr "Weight (kg)"</span>
-<span class="co">#&gt;  $ DMPPIR  : num [1:2107] 3.186 1.269 0.416 2.063 1.464 ...</span>
-<span class="co">#&gt;   ..- attr(*, "label")= chr "Poverty income ratio"</span>
-<span class="co">#&gt;  $ HFF1    : Factor w/ 2 levels "1","2": 2 2 1 1 1 2 2 1 2 1 ...</span>
-<span class="co">#&gt;  $ HYD1    : Ord.factor w/ 5 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 1 3 1 1 1 1 1 1 2 1 ...</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM </span>
-<span class="co">#&gt;        0        0        0        0        0        0      124      114 </span>
-<span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span>
-<span class="co">#&gt;      161      169      124      167      117      192        7        0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span></span>
+<span><span class="co">#&gt; tibble [2,107 × 16] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  $ HSHSIZER: int [1:2107] 4 3 5 4 4 3 5 3 3 3 ...</span></span>
+<span><span class="co">#&gt;  $ HSAGEIR : int [1:2107] 2 5 10 10 8 3 10 7 2 7 ...</span></span>
+<span><span class="co">#&gt;  $ HSSEX   : Factor w/ 2 levels "1","2": 2 1 2 2 1 1 2 2 2 1 ...</span></span>
+<span><span class="co">#&gt;  $ DMARACER: Factor w/ 3 levels "1","2","3": 1 1 2 1 1 1 2 1 2 2 ...</span></span>
+<span><span class="co">#&gt;  $ DMAETHNR: Factor w/ 3 levels "1","2","3": 3 1 3 3 3 3 3 3 3 3 ...</span></span>
+<span><span class="co">#&gt;  $ DMARETHN: Factor w/ 4 levels "1","2","3","4": 1 3 2 1 1 1 2 1 2 2 ...</span></span>
+<span><span class="co">#&gt;  $ BMPHEAD : num [1:2107] 39.3 45.4 43.9 45.8 44.9 42.2 45.8 NA 40.2 44.5 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "label")= chr "Head circumference (cm)"</span></span>
+<span><span class="co">#&gt;  $ BMPRECUM: num [1:2107] 59.5 69.2 69.8 73.8 69 61.7 74.8 NA 64.5 70.2 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "label")= chr "Recumbent length (cm)"</span></span>
+<span><span class="co">#&gt;  $ BMPSB1  : num [1:2107] 8.2 13 6 8 8.2 9.4 5.2 NA 7 5.9 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "label")= chr "First subscapular skinfold (mm)"</span></span>
+<span><span class="co">#&gt;  $ BMPSB2  : num [1:2107] 8 13 5.6 10 7.8 8.4 5.2 NA 7 5.4 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "label")= chr "Second subscapular skinfold (mm)"</span></span>
+<span><span class="co">#&gt;  $ BMPTR1  : num [1:2107] 9 15.6 7 16.4 9.8 9.6 5.8 NA 11 6.8 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "label")= chr "First triceps skinfold (mm)"</span></span>
+<span><span class="co">#&gt;  $ BMPTR2  : num [1:2107] 9.4 14 8.2 12 8.8 8.2 6.6 NA 10.9 7.6 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "label")= chr "Second triceps skinfold (mm)"</span></span>
+<span><span class="co">#&gt;  $ BMPWT   : num [1:2107] 6.35 9.45 7.15 10.7 9.35 7.15 8.35 NA 7.35 8.65 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "label")= chr "Weight (kg)"</span></span>
+<span><span class="co">#&gt;  $ DMPPIR  : num [1:2107] 3.186 1.269 0.416 2.063 1.464 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "label")= chr "Poverty income ratio"</span></span>
+<span><span class="co">#&gt;  $ HFF1    : Factor w/ 2 levels "1","2": 2 2 1 1 1 2 2 1 2 1 ...</span></span>
+<span><span class="co">#&gt;  $ HYD1    : Ord.factor w/ 5 levels "1"&lt;"2"&lt;"3"&lt;"4"&lt;..: 1 3 1 1 1 1 1 1 2 1 ...</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM </span></span>
+<span><span class="co">#&gt;        0        0        0        0        0        0      124      114 </span></span>
+<span><span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span></span>
+<span><span class="co">#&gt;      161      169      124      167      117      192        7        0</span></span></code></pre></div>
 <p>To impute this dataset, we can use the default settings. The default number of imputed datasets <code>m = 5</code>. Note that we do not need to convert our data into dgCMatrix or one-hot coding format. Our package will convert it automatically. Variables should be of the following types: numeric, integer, factor or ordinal factor.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># use mixgb with default settings</span>
-<span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># use mixgb with default settings</span></span>
+<span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="21-customise-imputation-settings">2.1 Customise imputation settings<a class="anchor" aria-label="anchor" href="#21-customise-imputation-settings"></a>
 </h3>
@@ -206,41 +206,41 @@
 <li><p>XGBoost hyperparameters and verbose settings. <code>xgb.params</code>, <code>nrounds</code>, <code>early_stopping_rounds</code>, <code>print_every_n</code> and <code>verbose</code>.</p></li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Use mixgb with chosen settings</span>
-<span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, gamma <span class="op">=</span> <span class="fl">0.1</span>, eta <span class="op">=</span> <span class="fl">0.3</span>, min_child_weight <span class="op">=</span> <span class="fl">1</span>,
-    subsample <span class="op">=</span> <span class="fl">1</span>, colsample_bytree <span class="op">=</span> <span class="fl">1</span>, colsample_bylevel <span class="op">=</span> <span class="fl">1</span>,
-    colsample_bynode <span class="op">=</span> <span class="fl">1</span>, nthread <span class="op">=</span> <span class="fl">4</span>, tree_method <span class="op">=</span> <span class="st">"auto"</span>,
-    gpu_id <span class="op">=</span> <span class="fl">0</span>, predictor <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>
-
-<span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>,
-    ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span>, bootstrap <span class="op">=</span> <span class="cn">TRUE</span>, pmm.type <span class="op">=</span> <span class="st">"auto"</span>,
-    pmm.k <span class="op">=</span> <span class="fl">5</span>, pmm.link <span class="op">=</span> <span class="st">"prob"</span>, initial.num <span class="op">=</span> <span class="st">"normal"</span>, initial.int <span class="op">=</span> <span class="st">"mode"</span>,
-    initial.fac <span class="op">=</span> <span class="st">"mode"</span>, save.models <span class="op">=</span> <span class="cn">FALSE</span>, save.vars <span class="op">=</span> <span class="cn">NULL</span>,
-    xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="fl">50</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">10</span>,
-    print_every_n <span class="op">=</span> <span class="fl">10L</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Use mixgb with chosen settings</span></span>
+<span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, gamma <span class="op">=</span> <span class="fl">0.1</span>, eta <span class="op">=</span> <span class="fl">0.3</span>, min_child_weight <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    subsample <span class="op">=</span> <span class="fl">1</span>, colsample_bytree <span class="op">=</span> <span class="fl">1</span>, colsample_bylevel <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    colsample_bynode <span class="op">=</span> <span class="fl">1</span>, nthread <span class="op">=</span> <span class="fl">4</span>, tree_method <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>    gpu_id <span class="op">=</span> <span class="fl">0</span>, predictor <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, maxit <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span>, bootstrap <span class="op">=</span> <span class="cn">TRUE</span>, pmm.type <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>    pmm.k <span class="op">=</span> <span class="fl">5</span>, pmm.link <span class="op">=</span> <span class="st">"prob"</span>, initial.num <span class="op">=</span> <span class="st">"normal"</span>, initial.int <span class="op">=</span> <span class="st">"mode"</span>,</span>
+<span>    initial.fac <span class="op">=</span> <span class="st">"mode"</span>, save.models <span class="op">=</span> <span class="cn">FALSE</span>, save.vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="fl">50</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    print_every_n <span class="op">=</span> <span class="fl">10L</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="22-tune-hyperparameters">2.2 Tune hyperparameters<a class="anchor" aria-label="anchor" href="#22-tune-hyperparameters"></a>
 </h3>
 <p>Imputation performance can be affected by the hyperparameter settings. It may seem daunting to tune a large set of hyperparameters, but often we can narrow down the search as many hyperparameters are correlated. In our package, we have a function <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> to tune <code>nrounds</code>. There is no default <code>nrounds</code> value in <code>XGBoost,</code> so we need to specify it. The default <code>nrounds</code> in <code>mixgb</code> is 50. However, we recommend using <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> to find the optimal <code>nrounds</code> first.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">cv.results</span><span class="op">$</span><span class="va">response</span>
-<span class="co">#&gt; [1] "BMPSB2"</span>
-<span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 15</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">cv.results</span><span class="op">$</span><span class="va">response</span></span>
+<span><span class="co">#&gt; [1] "BMPSB2"</span></span>
+<span><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span>
+<span><span class="co">#&gt; [1] 15</span></span></code></pre></div>
 <p>By default, <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_features</code>, respectively.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>,
-    early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>, response <span class="op">=</span> <span class="st">"BMPHEAD"</span>, select_features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSAGEIR"</span>,
-        <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>, <span class="st">"BMPRECUM"</span>, <span class="st">"BMPSB1"</span>, <span class="st">"BMPSB2"</span>,
-        <span class="st">"BMPTR1"</span>, <span class="st">"BMPTR2"</span>, <span class="st">"BMPWT"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span>
-<span class="co">#&gt; [1] 19</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>    early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>, response <span class="op">=</span> <span class="st">"BMPHEAD"</span>, select_features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSAGEIR"</span>,</span>
+<span>        <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>, <span class="st">"BMPRECUM"</span>, <span class="st">"BMPSB1"</span>, <span class="st">"BMPSB2"</span>,</span>
+<span>        <span class="st">"BMPTR1"</span>, <span class="st">"BMPTR2"</span>, <span class="st">"BMPWT"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span>
+<span><span class="co">#&gt; [1] 19</span></span></code></pre></div>
 <p>Since using <code><a href="reference/mixgb_cv.html">mixgb_cv()</a></code> with this dataset mostly returns a number less than <code>20</code>, I’ll set <code>nrounds = 20</code> in <code><a href="reference/Mixgb.html">mixgb()</a></code> to obtain <code>m</code> imputed datasets.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -249,16 +249,16 @@
 <p>It is important to assess the plausibility of imputations before doing analysis. The <code>mixgb</code> package provides several visual diagnostic functions using <code>ggplot2</code> to compare multiply imputed values versus observed data.</p>
 <p>We will demonstrate these functions using the <code>nhanes3_newborn</code> dataset. In the original data, almost all missing values occurred in numeric variables. Only seven observations are missing in the binary factor variable <code>HFF1</code> . In order to visualize some imputed values for other types of variables, we create some extra missing values in <code>HSHSIZER</code> (integer), <code>HSAGEIR</code> (integer), <code>HSSEX</code> (binary factor), <code>DMARETHN</code> (multiclass factor) and <code>HYD1</code> (Ordinal factor) under MCAR.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/createNA.html">createNA</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSHSIZER"</span>,
-    <span class="st">"HSAGEIR"</span>, <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>, <span class="st">"HYD1"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">withNA.df</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM </span>
-<span class="co">#&gt;      211      211      211        0        0      211      124      114 </span>
-<span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span>
-<span class="co">#&gt;      161      169      124      167      117      192        7      211</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/createNA.html">createNA</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSHSIZER"</span>,</span>
+<span>    <span class="st">"HSAGEIR"</span>, <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>, <span class="st">"HYD1"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">withNA.df</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM </span></span>
+<span><span class="co">#&gt;      211      211      211        0        0      211      124      114 </span></span>
+<span><span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span></span>
+<span><span class="co">#&gt;      161      169      124      167      117      192        7      211</span></span></code></pre></div>
 <p>We then impute this dataset using <code><a href="reference/Mixgb.html">mixgb()</a></code> with default settings. A list of five imputed datasets are assigned to <code>imputed.data</code>. The dimension of each imputed dataset will be the same as the original data.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>mixgb</code> package provides the following visual diagnostics functions:</p>
 <ol style="list-style-type: decimal">
 <li><p>Single variable: <code><a href="reference/plot_hist.html">plot_hist()</a></code>, <code><a href="reference/plot_box.html">plot_box()</a></code>, <code><a href="reference/plot_bar.html">plot_bar()</a></code> ;</p></li>
@@ -268,20 +268,20 @@
 <p>Each function will return <code>m+1</code> panels to compare the observed data with <code>m</code> sets of actual imputed values.</p>
 <p>Here are some examples. For more details, please check the vignette <a href="https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html">Visual diagnostics for multiply imputed values</a>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>,
-    original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>,</span>
+<span>    original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-12-1.png" width="95%"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>,
-    var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>,</span>
+<span>    var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-12-2.png" width="95%"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSAGEIR"</span>,
-    var.y <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSAGEIR"</span>,</span>
+<span>    var.y <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-12-3.png" width="95%"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>,
-    var.fac <span class="op">=</span> <span class="st">"HSSEX"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>,</span>
+<span>    var.fac <span class="op">=</span> <span class="st">"HSSEX"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-12-4.png" width="95%"></p>
 </div>
 <div class="section level2">
@@ -289,19 +289,19 @@
 </h2>
 <p>First we can split the <code>nhanes3_newborn</code> dataset into training data and test data.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"nhanes3_newborn"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span>
-<span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.7</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span>
-<span class="va">test.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"nhanes3_newborn"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span></span>
+<span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.7</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
+<span><span class="va">test.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span></code></pre></div>
 <p>We can use the training data to obtain <code>m</code> imputed datasets and save their imputation models. To achieve this, users need to set <code>save.models = TRUE</code>. By default <code>save.vars = NULL</code>, imputation models for variables with missing data in the training data will be saved. However, the unseen data may also have missing values in other variables. Users can be comprehensive by saving models for all variables by setting <code>save.vars = colnames(train.data)</code>. Note that this would take much longer as we need to train and save a model for each variable. If users are confident that only certain variables will have missing values in the new data, we recommend specifying the names or indices of these variables in <code>save.vars</code> instead of saving models for all variables.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># obtain m imputed datasets for train.data and save</span>
-<span class="co"># imputation models</span>
-<span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>,
-    save.vars <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># obtain m imputed datasets for train.data and save</span></span>
+<span><span class="co"># imputation models</span></span>
+<span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    save.vars <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <p>When <code>save.models = TRUE</code>, <code><a href="reference/Mixgb.html">mixgb()</a></code> will return an object containing the following:</p>
 <ul>
 <li><p><code>imputed.data</code>: a list of <code>m</code> imputed dataset for training data</p></li>
@@ -310,31 +310,31 @@
 </ul>
 <p>We can extract <code>m</code> imputed datasets from the saved imputer object by <code>$imputed.data</code>.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">train.imputed</span> <span class="op">&lt;-</span> <span class="va">mixgb.obj</span><span class="op">$</span><span class="va">imputed.data</span>
-<span class="co"># the 5th imputed dataset</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">train.imputed</span><span class="op">[[</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1</span>
-<span class="co">#&gt; 1:        7       2     1        1        1        3    43.0     67.1    9.2</span>
-<span class="co">#&gt; 2:        4       3     2        2        3        2    42.6     67.1    8.8</span>
-<span class="co">#&gt; 3:        3       9     2        2        3        2    46.5     64.3    8.6</span>
-<span class="co">#&gt; 4:        3       9     2        1        3        1    46.2     68.5   10.8</span>
-<span class="co">#&gt; 5:        5       4     1        1        3        1    44.7     63.0    6.0</span>
-<span class="co">#&gt; 6:        5      10     1        1        3        1    45.2     72.0    5.4</span>
-<span class="co">#&gt;    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1</span>
-<span class="co">#&gt; 1:    8.5    8.8    8.8  7.80  1.701    2    1</span>
-<span class="co">#&gt; 2:    8.8   13.3   12.2  8.70  0.102    2    1</span>
-<span class="co">#&gt; 3:    8.0   10.4    9.2  8.00  0.359    1    3</span>
-<span class="co">#&gt; 4:   10.0   16.6   16.0  8.98  0.561    1    3</span>
-<span class="co">#&gt; 5:    5.8    9.0    9.0  7.60  2.379    2    1</span>
-<span class="co">#&gt; 6:    5.4    9.2    9.4  9.00  2.173    2    2</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">train.imputed</span> <span class="op">&lt;-</span> <span class="va">mixgb.obj</span><span class="op">$</span><span class="va">imputed.data</span></span>
+<span><span class="co"># the 5th imputed dataset</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">train.imputed</span><span class="op">[[</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1</span></span>
+<span><span class="co">#&gt; 1:        7       2     1        1        1        3    43.0     67.1    9.2</span></span>
+<span><span class="co">#&gt; 2:        4       3     2        2        3        2    42.6     67.1    8.8</span></span>
+<span><span class="co">#&gt; 3:        3       9     2        2        3        2    46.5     64.3    8.6</span></span>
+<span><span class="co">#&gt; 4:        3       9     2        1        3        1    46.2     68.5   10.8</span></span>
+<span><span class="co">#&gt; 5:        5       4     1        1        3        1    44.7     63.0    6.0</span></span>
+<span><span class="co">#&gt; 6:        5      10     1        1        3        1    45.2     72.0    5.4</span></span>
+<span><span class="co">#&gt;    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1</span></span>
+<span><span class="co">#&gt; 1:    8.5    8.8    8.8  7.80  1.701    2    1</span></span>
+<span><span class="co">#&gt; 2:    8.8   13.3   12.2  8.70  0.102    2    1</span></span>
+<span><span class="co">#&gt; 3:    8.0   10.4    9.2  8.00  0.359    1    3</span></span>
+<span><span class="co">#&gt; 4:   10.0   16.6   16.0  8.98  0.561    1    3</span></span>
+<span><span class="co">#&gt; 5:    5.8    9.0    9.0  7.60  2.379    2    1</span></span>
+<span><span class="co">#&gt; 6:    5.4    9.2    9.4  9.00  2.173    2    2</span></span></code></pre></div>
 <p>To impute new data with this saved imputer object, we use the <code><a href="reference/impute_new.html">impute_new()</a></code> function. User can also specify whether to use new data for initial imputation. By default, <code>initial.newdata = FALSE</code>, we will use the information of training data to initially impute the new data. New data will be imputed with the saved models. This process will be considerably faster as we don’t need to build the imputation models again.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span></code></pre></div>
 <p>If PMM is used when we call <code><a href="reference/Mixgb.html">mixgb()</a></code>, predicted values of missing entries in the new dataset are matched with donors from training data. Users can also set the number of donors for PMM when imputing new data. By default, <code>pmm.k = NULL</code> , which means the same setting as the training object will be used.</p>
 <p>Similarly, users can set the number of imputed datasets <code>m</code>. Note that this value has to be smaller than or equal to the <code>m</code> in <code><a href="reference/Mixgb.html">mixgb()</a></code>. If it is not specified, it will use the same <code>m</code> value as the saved object.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span>,
-    initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span>,</span>
+<span>    initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="5-install-mixgb-with-gpu-support">5. Install <code>mixgb</code> with GPU support<a class="anchor" aria-label="anchor" href="#5-install-mixgb-with-gpu-support"></a>
@@ -349,17 +349,17 @@
 <span id="cb21-5"><a href="#cb21-5"></a><span class="op">$</span><span class="st"> </span>R CMD INSTALL .<span class="op">/</span>xgboost_r_gpu_linux.tar.gz</span></code></pre></div>
 <p>Then users can install package <code>mixgb</code> in R.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"agnesdeng/mixgb"</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"agnesdeng/mixgb"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></span></code></pre></div>
 <p>Users just need to specify <code>tree_method = "gpu_list"</code> in the params list which will then be passed to <code>xgb.params</code> in <code><a href="reference/Mixgb.html">mixgb()</a></code>. Other GPU-realted arguments include <code>gpu_id</code> and <code>predictor</code>. By default, <code>gpu_id = 0</code> and <code>predictor = "auto"</code>.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, gamma <span class="op">=</span> <span class="fl">0.1</span>, eta <span class="op">=</span> <span class="fl">0.3</span>, min_child_weight <span class="op">=</span> <span class="fl">1</span>,
-    subsample <span class="op">=</span> <span class="fl">1</span>, colsample_bytree <span class="op">=</span> <span class="fl">1</span>, colsample_bylevel <span class="op">=</span> <span class="fl">1</span>,
-    colsample_bynode <span class="op">=</span> <span class="fl">1</span>, nthread <span class="op">=</span> <span class="fl">4</span>, tree_method <span class="op">=</span> <span class="st">"gpu_list"</span>,
-    gpu_id <span class="op">=</span> <span class="fl">0</span>, predictor <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>
-
-
-<span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span>, xgb.params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">6</span>, gamma <span class="op">=</span> <span class="fl">0.1</span>, eta <span class="op">=</span> <span class="fl">0.3</span>, min_child_weight <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    subsample <span class="op">=</span> <span class="fl">1</span>, colsample_bytree <span class="op">=</span> <span class="fl">1</span>, colsample_bylevel <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    colsample_bynode <span class="op">=</span> <span class="fl">1</span>, nthread <span class="op">=</span> <span class="fl">4</span>, tree_method <span class="op">=</span> <span class="st">"gpu_list"</span>,</span>
+<span>    gpu_id <span class="op">=</span> <span class="fl">0</span>, predictor <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span>, xgb.params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -416,7 +416,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

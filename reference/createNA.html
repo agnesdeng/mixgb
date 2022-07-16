@@ -59,7 +59,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">createNA</span><span class="op">(</span><span class="va">data</span>, var.names <span class="op">=</span> <span class="cn">NULL</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createNA</span><span class="op">(</span><span class="va">data</span>, var.names <span class="op">=</span> <span class="cn">NULL</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -85,17 +85,17 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Create 30% MCAR data across all variables in a dataset</span></span>
-<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create 30% MCAR data in a specified variable in a dataset</span></span>
-<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create MCAR data in several specified variables in a dataset</span></span>
-<span class="r-in"><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>,</span>
-<span class="r-in">  var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Petal.Width"</span>, <span class="st">"Species"</span><span class="op">)</span>,</span>
-<span class="r-in">  p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create 30% MCAR data across all variables in a dataset</span></span></span>
+<span class="r-in"><span><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create 30% MCAR data in a specified variable in a dataset</span></span></span>
+<span class="r-in"><span><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create MCAR data in several specified variables in a dataset</span></span></span>
+<span class="r-in"><span><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu">createNA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>,</span></span>
+<span class="r-in"><span>  var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Petal.Width"</span>, <span class="st">"Species"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -107,7 +107,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>
