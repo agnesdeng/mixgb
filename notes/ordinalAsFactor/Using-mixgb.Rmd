@@ -141,6 +141,28 @@ datasets.
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = 20)
 ```
 
+#### Convert ordinal factors to integers
+
+If our dataset has ordinal factors, then the imputation process will be
+sped up by converting them to integers. In `nhanes3_newborn` data, there
+is only one ordinal factor, but we can still see that the imputation
+time is smaller with `ordinalAsInteger = TRUE`. If `m` and `maxit` are
+larger, the difference will be even more obvious. Note that when
+`ordinalAsInteger = TRUE` , the class of these ordinal factors in the
+imputed datasets will also be integer. We recommend to use the default
+PMM setting `pmm.type = "auto"`, which will impute numeric and integer
+variables with PMM (type 2) and impute categorical variables without
+PMM. If we don't apply PMM to integer variables, the missing values may
+be imputed as numeric. Sometimes this can be problematic, especially
+when the integers are actually converted from ordinal factors.
+Therefore, `pmm.type = NULL` is disabled when `ordinalAsInteger = TRUE`
+.
+
+```{r}
+system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordinalAsInteger = FALSE))
+
+system.time(imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1, ordinalAsInteger = TRUE))
+```
 
 ## Inspect multiply imputed values
 

@@ -37,7 +37,9 @@ createNA <- function(data, var.names = NULL, p = 0.3) {
       NAloc[sample(total, floor(total * p))] <- TRUE
       data[matrix(NAloc, nrow = Nrow, ncol = Ncol)] <- NA
     } else if (N.p == Ncol) {
-      warning("There are missing values in the original dataset. The proportion of missing values in the output data may be larger than the value specified in `p`.\n")
+      if (any(N.colNA != 0)) {
+        warning("There are missing values in the original dataset. The proportion of missing values in the output data may be larger than the value specified in `p`.\n")
+      }
       for (i in 1:Ncol) {
         data[sample(Nrow, round(p[i] * Nrow)), i] <- NA
       }

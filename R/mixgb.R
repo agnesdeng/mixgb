@@ -3,7 +3,7 @@
 #' @param data A data.frame or data.table with missing values
 #' @param m The number of imputed datasets. Default: 5
 #' @param maxit The number of imputation iterations. Default: 1
-#' @param ordinalAsInteger Whether to convert ordinal factors to integers. The default setting \code{ordinalAsInteger = TRUE} can speed up the imputation process.
+#' @param ordinalAsInteger Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.
 #' @param bootstrap Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = TRUE}. If \code{FALSE}, users are recommended to specify sampling-related hyperparameters of XGBoost to obtain imputations with adequate variability.
 #' @param pmm.type The types of predictive mean matching (PMM). Possible values:
 #' \itemize{
@@ -41,7 +41,7 @@
 #' @param save.vars Response models for variables specified in \code{save.vars} will be saved for imputing new data. Can be a vector of names or indices. By default, \code{save.vars = NULL}, response models for variables with missing values will be saved. To save all models, please specify \code{save.vars = colnames(data)}.
 #' @param verbose Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.
 #' @param xgb.params A list of XGBoost parameters. For more details, please check \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
-#' @param nrounds The maximum number of boosting iterations for XGBoost. Default: 50
+#' @param nrounds The maximum number of boosting iterations for XGBoost. Default: 100
 #' @param early_stopping_rounds An integer value \code{k}. XGBoost training will stop if the validation performance hasn't improved for \code{k} rounds. Default: 10.
 #' @param print_every_n Print XGBoost evaluation information at every nth iteration if \code{xgboost_verbose > 0}.
 #' @param xgboost_verbose Verbose setting for XGBoost training: 0 (silent), 1 (print information) and 2 (print additional information). Default: 0
@@ -54,12 +54,12 @@
 #'
 #' # obtain m multiply imputed datasets and save models for imputing new data later on
 #' mixgb.obj <- mixgb(data = nhanes3, m = 2, save.models = TRUE)
-mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = TRUE, bootstrap = TRUE,
+mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = TRUE,
                   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
                   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
                   save.models = FALSE, save.vars = NULL, verbose = F,
-                  xgb.params = list(max_depth = 6, gamma = 0, eta = 0.3, min_child_weight = 1, subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, tree_method = "auto", gpu_id = 0, predictor = "auto"),
-                  nrounds = 50, early_stopping_rounds = 1, print_every_n = 10L, xgboost_verbose = 0, ...) {
+                  xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1, subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+                  nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, xgboost_verbose = 0, ...) {
   if (!(is.data.frame(data) || is.matrix(data))) {
     stop("Data need to be a data frame or a matrix.")
   }
