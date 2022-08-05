@@ -38,6 +38,9 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
       mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])[, -1, drop = FALSE]
     }
 
+    #obs.data: observed data from the bootstrapped sample
+    #Obs.data: observed data from the whole sample
+    #mis.data: missing data from the whole sample
     # ................................................................
     if (missing.types[var] == "numeric" | missing.types[var] == "integer") {
       obj.type <- "reg:squarederror"

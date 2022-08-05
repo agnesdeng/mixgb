@@ -4,7 +4,7 @@
 #' @param m The number of imputed datasets. Default: 5
 #' @param maxit The number of imputation iterations. Default: 1
 #' @param ordinalAsInteger Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.
-#' @param bootstrap Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = TRUE}. If \code{FALSE}, users are recommended to specify sampling-related hyperparameters of XGBoost to obtain imputations with adequate variability.
+#' @param bootstrap Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = TRUE}. Setting \code{bootstrap = FALSE} would underestimate imputation variability if sampling-related hyperparameters of XGBoost are set to 1 (default).
 #' @param pmm.type The types of predictive mean matching (PMM). Possible values:
 #' \itemize{
 #'  \item \code{NULL}: Imputations without PMM;
