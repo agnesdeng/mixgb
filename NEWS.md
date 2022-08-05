@@ -1,3 +1,12 @@
+# mixgb 0.1.1
+* Minor bug fix for the function createNA()
+* Change of default settings for mixgb()
+  - ordinalAsInteger (from `TRUE` to `FALSE`)
+  - max_depth (from 6 to 3)
+  - nrounds (from 50 to 100)
+  - `bootstrap = TRUE` by default. (Edited description)
+
+
 # mixgb 0.1.0
 ## Main feature
 * First release on CRAN
