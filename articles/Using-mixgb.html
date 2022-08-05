@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,45 +176,42 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">evaluation.log</span></span>
-<span><span class="co">#&gt;     iter train_logloss_mean train_logloss_std test_logloss_mean</span></span>
-<span><span class="co">#&gt;  1:    1          0.6205970       0.001765781         0.6584332</span></span>
-<span><span class="co">#&gt;  2:    2          0.5745326       0.002678398         0.6411055</span></span>
-<span><span class="co">#&gt;  3:    3          0.5394930       0.004775349         0.6356262</span></span>
-<span><span class="co">#&gt;  4:    4          0.5151011       0.006638819         0.6376560</span></span>
-<span><span class="co">#&gt;  5:    5          0.4935156       0.007751808         0.6379620</span></span>
-<span><span class="co">#&gt;  6:    6          0.4737394       0.006994534         0.6387080</span></span>
-<span><span class="co">#&gt;  7:    7          0.4549040       0.007635002         0.6364133</span></span>
-<span><span class="co">#&gt;  8:    8          0.4430272       0.009602147         0.6358671</span></span>
-<span><span class="co">#&gt;  9:    9          0.4321366       0.008028772         0.6383937</span></span>
-<span><span class="co">#&gt; 10:   10          0.4183616       0.012021046         0.6408233</span></span>
-<span><span class="co">#&gt; 11:   11          0.4054848       0.011788000         0.6442200</span></span>
-<span><span class="co">#&gt; 12:   12          0.3953525       0.011920521         0.6469061</span></span>
-<span><span class="co">#&gt; 13:   13          0.3878387       0.012968737         0.6480803</span></span>
-<span><span class="co">#&gt;     test_logloss_std</span></span>
-<span><span class="co">#&gt;  1:      0.009057777</span></span>
-<span><span class="co">#&gt;  2:      0.008332518</span></span>
-<span><span class="co">#&gt;  3:      0.010493690</span></span>
-<span><span class="co">#&gt;  4:      0.011278018</span></span>
-<span><span class="co">#&gt;  5:      0.013234868</span></span>
-<span><span class="co">#&gt;  6:      0.016410107</span></span>
-<span><span class="co">#&gt;  7:      0.018727508</span></span>
-<span><span class="co">#&gt;  8:      0.020429273</span></span>
-<span><span class="co">#&gt;  9:      0.020650008</span></span>
-<span><span class="co">#&gt; 10:      0.020368818</span></span>
-<span><span class="co">#&gt; 11:      0.023952328</span></span>
-<span><span class="co">#&gt; 12:      0.024760207</span></span>
-<span><span class="co">#&gt; 13:      0.024886806</span></span>
+<span><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
+<span><span class="co">#&gt;  1:    1       6.9062671    0.014346568       6.909288    0.07183734</span></span>
+<span><span class="co">#&gt;  2:    2       4.9199337    0.010297395       4.927584    0.07063423</span></span>
+<span><span class="co">#&gt;  3:    3       3.5504625    0.008796665       3.584153    0.06964482</span></span>
+<span><span class="co">#&gt;  4:    4       2.6170764    0.007673190       2.670836    0.06487053</span></span>
+<span><span class="co">#&gt;  5:    5       1.9842940    0.006472870       2.089746    0.06415643</span></span>
+<span><span class="co">#&gt;  6:    6       1.5629126    0.006418297       1.733695    0.06450739</span></span>
+<span><span class="co">#&gt;  7:    7       1.2897814    0.010224185       1.516490    0.07145996</span></span>
+<span><span class="co">#&gt;  8:    8       1.1135295    0.013335525       1.396913    0.07337529</span></span>
+<span><span class="co">#&gt;  9:    9       1.0026891    0.016224962       1.326398    0.07728566</span></span>
+<span><span class="co">#&gt; 10:   10       0.9309600    0.018936765       1.293766    0.07697919</span></span>
+<span><span class="co">#&gt; 11:   11       0.8825267    0.023045617       1.281101    0.07851093</span></span>
+<span><span class="co">#&gt; 12:   12       0.8551286    0.025534983       1.273503    0.07818626</span></span>
+<span><span class="co">#&gt; 13:   13       0.8310516    0.021616697       1.267608    0.07786619</span></span>
+<span><span class="co">#&gt; 14:   14       0.8122150    0.025304827       1.268016    0.08065785</span></span>
+<span><span class="co">#&gt; 15:   15       0.7994597    0.026196892       1.268877    0.08238546</span></span>
+<span><span class="co">#&gt; 16:   16       0.7858847    0.026077593       1.270347    0.08137590</span></span>
+<span><span class="co">#&gt; 17:   17       0.7664054    0.025568913       1.272943    0.07990623</span></span>
+<span><span class="co">#&gt; 18:   18       0.7510005    0.023600940       1.277114    0.07808023</span></span>
+<span><span class="co">#&gt; 19:   19       0.7345331    0.026788728       1.279920    0.07716159</span></span>
+<span><span class="co">#&gt; 20:   20       0.7199042    0.032961561       1.280672    0.07703665</span></span>
+<span><span class="co">#&gt; 21:   21       0.7044459    0.038522421       1.284438    0.07842439</span></span>
+<span><span class="co">#&gt; 22:   22       0.6940099    0.035305262       1.285204    0.07888296</span></span>
+<span><span class="co">#&gt; 23:   23       0.6830217    0.034275430       1.288593    0.07815487</span></span>
+<span><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">response</span></span>
-<span><span class="co">#&gt; [1] "HFF1"</span></span>
+<span><span class="co">#&gt; [1] "BMPTR2"</span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span>
-<span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 13</span></span></code></pre></div>
 <p>By default, <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an incomplete variable as the response and build an XGBoost model with other variables using the complete cases of the dataset. Therefore, each run of <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> is likely to return different results. Users can also specify the response and covariates in the argument <code>response</code> and <code>select_features</code>, respectively.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nfold <span class="op">=</span> <span class="fl">10</span>, nrounds <span class="op">=</span> <span class="fl">100</span>, early_stopping_rounds <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>                       response <span class="op">=</span> <span class="st">"BMPHEAD"</span>, select_features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSAGEIR"</span>, <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>, <span class="st">"BMPRECUM"</span>,                           <span class="st">"BMPSB1"</span>, <span class="st">"BMPSB2"</span>, <span class="st">"BMPTR1"</span>, <span class="st">"BMPTR2"</span>, <span class="st">"BMPWT"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span>
-<span><span class="co">#&gt; [1] 17</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 20</span></span></code></pre></div>
 <p>Since using <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> with this dataset mostly returns a number less than <code>20</code>, I’ll set <code>nrounds = 20</code> in <code><a href="../reference/Mixgb.html">mixgb()</a></code> to obtain <code>m</code> imputed datasets.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
