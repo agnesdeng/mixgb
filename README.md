@@ -8,7 +8,7 @@
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/CRAN-0.1.0-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github%20version-0.1.0-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/github%20version-0.1.1-brightgreen)](https://github.com/agnesdeng/mixgb)
 <!-- badges: end -->
 
 `mixgb` is a scalable multiple imputation framework based on XGBoost,
@@ -439,3 +439,4 @@ params <- list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1,
 
 mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 ```
+
