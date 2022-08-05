@@ -8,7 +8,7 @@ mixgb(
   data,
   m = 5,
   maxit = 1,
-  ordinalAsInteger = TRUE,
+  ordinalAsInteger = FALSE,
   bootstrap = TRUE,
   pmm.type = "auto",
   pmm.k = 5,
@@ -19,11 +19,11 @@ mixgb(
   save.models = FALSE,
   save.vars = NULL,
   verbose = F,
-  xgb.params = list(max_depth = 6, gamma = 0, eta = 0.3, min_child_weight = 1,
+  xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1,
     subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
     tree_method = "auto", gpu_id = 0, predictor = "auto"),
-  nrounds = 50,
-  early_stopping_rounds = 1,
+  nrounds = 100,
+  early_stopping_rounds = 10,
   print_every_n = 10L,
   xgboost_verbose = 0,
   ...
@@ -36,9 +36,9 @@ mixgb(
 
 \item{maxit}{The number of imputation iterations. Default: 1}
 
-\item{ordinalAsInteger}{Whether to convert ordinal factors to integers. The default setting \code{ordinalAsInteger = TRUE} can speed up the imputation process.}
+\item{ordinalAsInteger}{Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.}
 
-\item{bootstrap}{Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = TRUE}. If \code{FALSE}, users are recommended to specify sampling-related hyperparameters of XGBoost to obtain imputations with adequate variability.}
+\item{bootstrap}{Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = TRUE}. Setting \code{bootstrap = FALSE} would underestimate imputation variability if sampling-related hyperparameters of XGBoost are set to 1 (default).}
 
 \item{pmm.type}{The types of predictive mean matching (PMM). Possible values:
 \itemize{
@@ -86,7 +86,7 @@ mixgb(
 
 \item{xgb.params}{A list of XGBoost parameters. For more details, please check \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.}
 
-\item{nrounds}{The maximum number of boosting iterations for XGBoost. Default: 50}
+\item{nrounds}{The maximum number of boosting iterations for XGBoost. Default: 100}
 
 \item{early_stopping_rounds}{An integer value \code{k}. XGBoost training will stop if the validation performance hasn't improved for \code{k} rounds. Default: 10.}
 

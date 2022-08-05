@@ -78,7 +78,7 @@ We can also customise imputation settings:
 ```{r, eval = FALSE}
 # Use mixgb with chosen settings
 params <- list(
-  max_depth = 6,
+  max_depth = 3,
   gamma = 0.1,
   eta = 0.3,
   min_child_weight = 1,
@@ -94,11 +94,11 @@ params <- list(
 
 imputed.data <- mixgb(
   data = nhanes3_newborn, m = 5, maxit = 1,
-  ordinalAsInteger = TRUE, bootstrap = TRUE,
+  ordinalAsInteger = FALSE, bootstrap = TRUE,
   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
   save.models = FALSE, save.vars = NULL,
-  xgb.params = params, nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
+  xgb.params = params, nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
 )
 ```
 
@@ -109,7 +109,7 @@ It may seem daunting to tune a large set of hyperparameters, but often
 we can narrow down the search as many hyperparameters are correlated. In
 our package, we have a function `mixgb_cv()` to tune `nrounds`. There is
 no default `nrounds` value in `XGBoost,` so we need to specify it. The
-default `nrounds` in `mixgb` is 50. However, we recommend using
+default `nrounds` in `mixgb` is 100. However, we recommend using
 `mixgb_cv()` to find the optimal `nrounds` first.
 
 ```{r}
@@ -133,8 +133,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_
 cv.results$best.nrounds
 ```
 
-Since using `mixgb_cv()` with this dataset mostly returns a number less
-than `20`, I'll set `nrounds = 20` in `mixgb()` to obtain `m` imputed
+Since using `mixgb_cv()` with this dataset mostly returns a number around `20`, I'll set `nrounds = 20` in `mixgb()` to obtain `m` imputed
 datasets.
 
 ```{r, eval = FALSE}
