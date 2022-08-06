@@ -8,7 +8,7 @@
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/CRAN-0.1.0-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github%20version-0.1.1-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/github%20version-0.1.0-brightgreen)](https://github.com/agnesdeng/mixgb)
 <!-- badges: end -->
 
 `mixgb` is a scalable multiple imputation framework based on XGBoost,
@@ -16,10 +16,7 @@ bootstrapping and predictive mean matching. The proposed framework is
 implemented in an R package `mixgb`. We have shown that our framework
 obtains less biased estimates and reflects appropriate imputation
 variability, while achieving high computational efficiency. For more
-details, please check our paper <https://arxiv.org/abs/2106.01574>. (Our
-package has been revised and updated since the preprint was posted.
-Simulation code in the original supplementary files may not run as
-expected. Revised paper and adapted code will be updated soon.)
+details, please check our paper <https://arxiv.org/abs/2106.01574>.
 
 ## New updates
 
@@ -59,12 +56,21 @@ expected. Revised paper and adapted code will be updated soon.)
 
 ## 1. Installation
 
-You can install the development version of mixgb from
+You can install the current development version of mixgb from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("agnesdeng/mixgb")
+```
+
+Simulations and computational time experiments in our paper
+[Preprint](https://arxiv.org/abs/2106.01574) use mixgb version 0.1.1. It
+can be installed with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("agnesdeng/mixgb@mixgb-paper")
 ```
 
 ``` r
@@ -199,9 +205,9 @@ default `nrounds` in `mixgb` is 50. However, we recommend using
 ``` r
 cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 cv.results$response
-#> [1] "BMPSB2"
+#> [1] "BMPTR1"
 cv.results$best.nrounds
-#> [1] 15
+#> [1] 13
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -218,7 +224,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 19
+#> [1] 16
 ```
 
 Since using `mixgb_cv()` with this dataset mostly returns a number less
@@ -358,14 +364,14 @@ train.imputed <- mixgb.obj$imputed.data
 # the 5th imputed dataset
 head(train.imputed[[5]])
 #>    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1
-#> 1:        7       2     1        1        1        3    43.0     67.1    9.2
+#> 1:        7       2     1        1        1        3    46.0     74.0    7.0
 #> 2:        4       3     2        2        3        2    42.6     67.1    8.8
 #> 3:        3       9     2        2        3        2    46.5     64.3    8.6
 #> 4:        3       9     2        1        3        1    46.2     68.5   10.8
 #> 5:        5       4     1        1        3        1    44.7     63.0    6.0
 #> 6:        5      10     1        1        3        1    45.2     72.0    5.4
 #>    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1
-#> 1:    8.5    8.8    8.8  7.80  1.701    2    1
+#> 1:    6.8    8.3    8.2 10.45  1.701    2    1
 #> 2:    8.8   13.3   12.2  8.70  0.102    2    1
 #> 3:    8.0   10.4    9.2  8.00  0.359    1    3
 #> 4:   10.0   16.6   16.0  8.98  0.561    1    3
@@ -439,4 +445,3 @@ params <- list(max_depth = 6, gamma = 0.1, eta = 0.3, min_child_weight = 1,
 
 mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 ```
-
