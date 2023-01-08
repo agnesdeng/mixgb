@@ -9,7 +9,7 @@ mixgb(
   m = 5,
   maxit = 1,
   ordinalAsInteger = FALSE,
-  bootstrap = TRUE,
+  bootstrap = FALSE,
   pmm.type = "auto",
   pmm.k = 5,
   pmm.link = "prob",
@@ -20,7 +20,7 @@ mixgb(
   save.vars = NULL,
   verbose = F,
   xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1,
-    subsample = 1, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
+    subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
     tree_method = "auto", gpu_id = 0, predictor = "auto"),
   nrounds = 100,
   early_stopping_rounds = 10,
@@ -38,7 +38,7 @@ mixgb(
 
 \item{ordinalAsInteger}{Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.}
 
-\item{bootstrap}{Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = TRUE}. Setting \code{bootstrap = FALSE} would underestimate imputation variability if sampling-related hyperparameters of XGBoost are set to 1 (default).}
+\item{bootstrap}{Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = FALSE}. Setting \code{bootstrap = TRUE} would improve imputation variability if sampling-related hyperparameters of XGBoost are set to 1 (default).}
 
 \item{pmm.type}{The types of predictive mean matching (PMM). Possible values:
 \itemize{
