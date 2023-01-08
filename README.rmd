@@ -23,12 +23,16 @@ knitr::opts_chunk$set(
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/CRAN-0.1.0-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github%20version-0.1.0-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/github-1.0.0-brightgreen)](https://github.com/agnesdeng/mixgb)
 <!-- badges: end -->
 
-`mixgb` is a scalable multiple imputation framework based on XGBoost, bootstrapping and predictive mean matching. The proposed framework is implemented in an R package `mixgb`. We have shown that our framework obtains less biased estimates and reflects appropriate imputation variability, while achieving high computational efficiency. For more details, please check our paper https://arxiv.org/abs/2106.01574. (Our package has been revised and updated since the preprint was posted. Simulation code in the original supplementary files may not run as expected. Revised paper and adapted code will be updated soon.)
+`mixgb` is a scalable multiple imputation framework based on XGBoost, subsampling and predictive mean matching. The proposed framework is implemented in an R package `mixgb`. We have shown that our framework obtains less biased estimates and reflects appropriate imputation variability, while achieving high computational efficiency. For more details, please check our paper https://arxiv.org/abs/2106.01574. (Our package has been revised and updated since the preprint was posted. Simulation code in the original supplementary files may not run as expected. Revised paper and adapted code will be updated soon.)
 
 ## New updates
+
+**January 2022**
+  * Major change of default settings for mixgb(). We use subsampling (`subsample = 0.7`) instead of bootstrapping `bootstrap = FALSE` by default. After more investigations, we found that even though bootstrapping perform well in general settings, it did add bias for under some scenarios. We now use subsampling instead of bootstrapping as our default setting.
+
 
 **May 2022**
   
@@ -39,19 +43,19 @@ knitr::opts_chunk$set(
 **April 2022**
   
   * User can now set different number of iterations `maxit`.
-* Both single and multiple imputation with XGBoost can do predictive mean matching
-* Bootstrap data to make `m` imputations is optional. User can set `bootstrap = FALSE` to disable bootstrap. Users can also set sampling related hyperparameters of XGBoost (subsample, colsample_bytree, colsample_bylevel, colsample_bynode) to be less than 1 to achieve similar effect.
-* Add predicted mean matching type 0. Now the options for `pmm.type` are `NULL`,`0`,`1`,`2` or `"auto"` (type 2 for numeric/integer variables, no PMM for categorical variables).
-* Added more validation checks
-* Compatible with `data.table`
-* Cross-validation to pre-tune `nrounds`
+  * Both single and multiple imputation with XGBoost can do predictive mean matching
+  * Bootstrap data to make `m` imputations is optional. User can set `bootstrap = FALSE` to disable bootstrap. Users can also set sampling related hyperparameters of XGBoost (subsample, colsample_bytree, colsample_bylevel, colsample_bynode) to be less than 1 to achieve similar effect.
+  * Add predicted mean matching type 0. Now the options for `pmm.type` are `NULL`,`0`,`1`,`2` or `"auto"` (type 2 for numeric/integer variables, no PMM for categorical variables).
+  * Added more validation checks
+  * Compatible with `data.table`
+  * Cross-validation to pre-tune `nrounds`
 
 ## Under development
-* make m imputation parallel 
-* pre-tune other hyperparameters 
+  * make m imputation parallel 
+  * pre-tune other hyperparameters 
 
 ## Notice
-* Currently users can set XGBoost parameter `nthread` for multithreading with OpenMP support. However, MacOS has disabled OpenMP support.
+  * Currently users can set XGBoost parameter `nthread` for multithreading with OpenMP support. However, MacOS has disabled OpenMP support.
 
 
 ## 1. Installation
@@ -134,10 +138,10 @@ We can also customise imputation settings:
 # Use mixgb with chosen settings
 params <- list(
   max_depth = 6,
-  gamma = 0.1,
+  gamma = 0,
   eta = 0.3,
   min_child_weight = 1,
-  subsample = 1,
+  subsample = 0.7,
   colsample_bytree = 1,
   colsample_bylevel = 1,
   colsample_bynode = 1,
@@ -149,11 +153,11 @@ params <- list(
 
 imputed.data <- mixgb(
   data = nhanes3_newborn, m = 5, maxit = 1,
-  ordinalAsInteger = TRUE, bootstrap = TRUE,
+  ordinalAsInteger = TRUE, bootstrap = FALSE,
   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
   save.models = FALSE, save.vars = NULL,
-  xgb.params = params, nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
+  xgb.params = params, nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
 )
 ```
 
@@ -177,10 +181,11 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_
 cv.results$best.nrounds
 ```
 
-Since using `mixgb_cv()` with this dataset mostly returns a number less than `20`, I'll set `nrounds = 20` in `mixgb()` to obtain `m` imputed datasets. 
+
+Let's just try setting `nrounds = cv.results$best.nrounds` in `mixgb()` to obtain `m` imputed datasets.
 
 ```{r, eval = FALSE}
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = 20)
+imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
 ```
 
 
