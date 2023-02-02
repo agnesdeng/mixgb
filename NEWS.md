@@ -1,5 +1,16 @@
+# mixgb 1.0.1
+  * Current default settings for mixgb().
+    -  Subsampling (`subsample = 0.7`) 
+    -  No bootstrapping (`bootstrap = FALSE`)
+  
 # mixgb 1.0.0.9000
-  - Major change of default settings for mixgb(). We use subsampling (`subsample = 0.7`) instead of bootstrapping `bootstrap = FALSE` by default. After more investigations, we found that even though bootstrapping perform well in general settings, it did add bias for under some scenarios. We now use subsampling instead of bootstrapping as our default setting.
+ * Major change of default settings for mixgb(). 
+  
+   Instead of using bootstrapping, we have changed to use subsampling with
+`subsample = 0.7` by default. After more investigations, we found that
+even though bootstrapping perform well in general settings, it did add
+bias for under some scenarios. We now use subsampling instead of
+bootstrapping as our default setting.
 
 # mixgb 0.1.1
 * Minor bug fix for the function createNA()

@@ -28,10 +28,8 @@ knitr::opts_chunk$set(
 
 ## Impute missing values with `mixgb`
 
-We first load the `mixgb` package and the `nhanes3_newborn` dataset,
-which contains 16 variables of various types
-(integer/numeric/factor/ordinal factor). There are 9 variables with
-missing values.
+We first load the `mixgb` package and the `nhanes3_newborn` dataset, which contains 16 variables of various types
+(integer/numeric/factor/ordinal factor). There are 9 variables with missing values.
 
 ```{r}
 library(mixgb)
@@ -54,26 +52,32 @@ imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 
 We can also customise imputation settings:
 
--   The number of imputed datasets `m`
+-   The number of imputed datasets
+    `m`
+    
+-   The number of imputation iterations
+    `maxit`
+    
+-   XGBoost hyperparameters and verbose settings.
+    `xgb.params`, `nrounds`, `early_stopping_rounds`, `print_every_n` and `verbose`.
 
--   The number of imputation iterations `maxit`
+-   Subsampling ratio. By default, `subsample = 0.7`. Users can change this value under the `xgb.params` argument.
 
--   Whether to convert ordinal factors to integer (imputation process
-    will be faster) `ordinalAsInteger`
+-   Predictive mean matching settings
+    `pmm.type`, `pmm.k` and `pmm.link`.
+   
+-   Whether to convert ordinal factors to integer (imputation process will be faster)
+    `ordinalAsInteger`
 
--   Whether to use bootstrapping `bootstrap`
-
--   Predictive mean matching settings `pmm.type`, `pmm.k` and
-    `pmm.link`.
+-   Whether to use bootstrapping 
+    `bootstrap`
 
 -   Initial imputation methods for different types of variables
     `initial.num`, `initial.int` and `initial.fac`.
 
--   Whether to save models for imputing newdata `save.models` and
-    `save.vars`.
-
--   XGBoost hyperparameters and verbose settings. `xgb.params`,
-    `nrounds`, `early_stopping_rounds`, `print_every_n` and `verbose`.
+-   Whether to save models for imputing newdata
+    `save.models` and `save.vars`.
+    
 
 ```{r, eval = FALSE}
 # Use mixgb with chosen settings
