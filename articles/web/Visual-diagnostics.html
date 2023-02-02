@@ -8,10 +8,10 @@
 <meta name="description" content="mixgb">
 <title>Visual diagnostics for multiply imputed values • mixgb</title>
 <script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
-<script src="../../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Visual diagnostics for multiply imputed values">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Visual diagnostics for multiply imputed values">
 <meta property="og:description" content="mixgb">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,12 +70,14 @@
 
 
 
-<script src="Visual-diagnostics_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Visual diagnostics for multiply imputed values</h1>
-                        <h4 data-toc-skip class="author">Yongshi Deng</h4>
+                        <h4 data-toc-skip class="author">Yongshi
+Deng</h4>
             
-            <h4 data-toc-skip class="date">2022-08-05</h4>
+            <h4 data-toc-skip class="date">2023-02-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/web/Visual-diagnostics.Rmd" class="external-link"><code>vignettes/web/Visual-diagnostics.Rmd</code></a></small>
       <div class="d-none name"><code>Visual-diagnostics.Rmd</code></div>
@@ -86,11 +88,17 @@
 <div class="section level2">
 <h2 id="introduction">1. Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>It is important to assess the plausibility of imputations before doing analysis. The <code>mixgb</code> package provides several visual diagnostic functions using <code>ggplot2</code> to compare multiply imputed values versus observed data.</p>
+<p>It is important to assess the plausibility of imputations before
+doing analysis. The <code>mixgb</code> package provides several visual
+diagnostic functions using <code>ggplot2</code> to compare multiply
+imputed values versus observed data.</p>
 <div class="section level3">
 <h3 id="inspecting-imputed-values">1.1 Inspecting imputed values<a class="anchor" aria-label="anchor" href="#inspecting-imputed-values"></a>
 </h3>
-<p>We will demonstrate these functions using the <code>nhanes3_newborn</code> dataset. In the original data, almost all missing values occurred in numeric variables. Only seven observations are missing in the binary factor variable <code>HFF1</code> .</p>
+<p>We will demonstrate these functions using the
+<code>nhanes3_newborn</code> dataset. In the original data, almost all
+missing values occurred in numeric variables. Only seven observations
+are missing in the binary factor variable <code>HFF1</code> .</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span><span class="op">)</span></span>
@@ -98,7 +106,11 @@
 <span><span class="co">#&gt;        0        0        0        0        0        0      124      114 </span></span>
 <span><span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span></span>
 <span><span class="co">#&gt;      161      169      124      167      117      192        7        0</span></span></code></pre></div>
-<p>In order to visualize some imputed values for other types of variables, we create some extra missing values in <code>HSHSIZER</code> (integer), <code>HSAGEIR</code> (integer), <code>HSSEX</code> (binary factor), <code>DMARETHN</code> (multiclass factor) and <code>HYD1</code> (Ordinal factor) under MCAR.</p>
+<p>In order to visualize some imputed values for other types of
+variables, we create some extra missing values in <code>HSHSIZER</code>
+(integer), <code>HSAGEIR</code> (integer), <code>HSSEX</code> (binary
+factor), <code>DMARETHN</code> (multiclass factor) and <code>HYD1</code>
+(Ordinal factor) under MCAR.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">withNA.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/createNA.html">createNA</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSHSIZER"</span>, <span class="st">"HSAGEIR"</span>, <span class="st">"HSSEX"</span>, <span class="st">"DMARETHN"</span>, <span class="st">"HYD1"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">withNA.df</span><span class="op">)</span><span class="op">)</span></span>
@@ -106,65 +118,90 @@
 <span><span class="co">#&gt;      211      211      211        0        0      211      124      114 </span></span>
 <span><span class="co">#&gt;   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 </span></span>
 <span><span class="co">#&gt;      161      169      124      167      117      192        7      211</span></span></code></pre></div>
-<p>We then impute this dataset using <code>mixgb</code> with default settings. A list of five imputed datasets are assigned to <code>imputed.data</code>. The dimension of each imputed dataset will be the same as the original data.</p>
+<p>We then impute this dataset using <code>mixgb</code> with default
+settings. A list of five imputed datasets are assigned to
+<code>imputed.data</code>. The dimension of each imputed dataset will be
+the same as the original data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<p>We can check the actual imputed values of a single variable using the function <code>show_var().</code> It will return a data.table of <code>m</code> columns, each column contains one set of imputed values for the specified variable. Only the imputed values of missing entries will be shown.</p>
+<p>We can check the actual imputed values of a single variable using the
+function <code>show_var().</code> It will return a data.table of
+<code>m</code> columns, each column contains one set of imputed values
+for the specified variable. Only the imputed values of missing entries
+will be shown.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/show_var.html">show_var</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        m1   m2   m3   m4   m5</span></span>
-<span><span class="co">#&gt;   1: 44.7 43.1 45.5 44.6 43.5</span></span>
-<span><span class="co">#&gt;   2: 44.9 45.2 46.2 45.9 46.0</span></span>
-<span><span class="co">#&gt;   3: 43.3 44.2 43.9 41.7 43.2</span></span>
-<span><span class="co">#&gt;   4: 46.1 44.9 43.0 44.1 43.6</span></span>
-<span><span class="co">#&gt;   5: 43.8 43.6 45.2 44.2 44.6</span></span>
+<span><span class="co">#&gt;   1: 46.6 47.5 46.1 44.7 45.9</span></span>
+<span><span class="co">#&gt;   2: 42.2 41.5 41.6 44.0 40.8</span></span>
+<span><span class="co">#&gt;   3: 42.0 43.4 42.3 42.1 42.5</span></span>
+<span><span class="co">#&gt;   4: 43.5 44.3 43.1 44.1 42.7</span></span>
+<span><span class="co">#&gt;   5: 47.3 48.1 46.8 44.8 47.6</span></span>
 <span><span class="co">#&gt;  ---                         </span></span>
-<span><span class="co">#&gt; 120: 45.5 46.5 45.4 44.3 45.6</span></span>
-<span><span class="co">#&gt; 121: 46.9 46.2 45.3 45.8 45.4</span></span>
-<span><span class="co">#&gt; 122: 41.6 42.6 40.0 43.1 42.3</span></span>
-<span><span class="co">#&gt; 123: 42.2 41.9 42.7 43.0 45.0</span></span>
-<span><span class="co">#&gt; 124: 42.6 41.5 43.9 43.0 45.1</span></span>
+<span><span class="co">#&gt; 120: 45.2 46.4 45.7 44.8 46.1</span></span>
+<span><span class="co">#&gt; 121: 43.7 47.4 43.8 43.0 43.8</span></span>
+<span><span class="co">#&gt; 122: 42.0 42.7 40.4 40.7 42.1</span></span>
+<span><span class="co">#&gt; 123: 43.8 42.9 42.5 43.1 40.8</span></span>
+<span><span class="co">#&gt; 124: 45.4 43.8 45.7 44.8 46.0</span></span>
 <span><span class="fu"><a href="../../reference/show_var.html">show_var</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    m1 m2 m3 m4 m5</span></span>
 <span><span class="co">#&gt; 1:  2  2  2  2  2</span></span>
-<span><span class="co">#&gt; 2:  1  1  2  1  1</span></span>
+<span><span class="co">#&gt; 2:  1  1  1  1  1</span></span>
 <span><span class="co">#&gt; 3:  2  2  2  2  2</span></span>
-<span><span class="co">#&gt; 4:  1  2  1  2  2</span></span>
-<span><span class="co">#&gt; 5:  2  1  1  1  2</span></span>
-<span><span class="co">#&gt; 6:  2  2  2  2  2</span></span>
-<span><span class="co">#&gt; 7:  2  2  2  2  2</span></span></code></pre></div>
+<span><span class="co">#&gt; 4:  1  1  1  1  2</span></span>
+<span><span class="co">#&gt; 5:  1  1  1  1  1</span></span>
+<span><span class="co">#&gt; 6:  2  1  2  2  2</span></span>
+<span><span class="co">#&gt; 7:  1  1  1  2  1</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="visual-diagnostics-plots">2 Visual diagnostics plots<a class="anchor" aria-label="anchor" href="#visual-diagnostics-plots"></a>
 </h2>
-<p>The <code>mixgb</code> package provides the following visual diagnostics functions:</p>
+<p>The <code>mixgb</code> package provides the following visual
+diagnostics functions:</p>
 <ol style="list-style-type: lower-roman">
-<li><p>Single variable: <code><a href="../../reference/plot_hist.html">plot_hist()</a></code>, <code><a href="../../reference/plot_box.html">plot_box()</a></code>, <code><a href="../../reference/plot_bar.html">plot_bar()</a></code> ;</p></li>
-<li><p>Two variables: <code><a href="../../reference/plot_2num.html">plot_2num()</a></code>, <code><a href="../../reference/plot_2fac.html">plot_2fac()</a></code>, <code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code> ;</p></li>
-<li><p>Three variables: <code><a href="../../reference/plot_2num1fac.html">plot_2num1fac()</a></code>, <code><a href="../../reference/plot_1num2fac.html">plot_1num2fac()</a></code>.</p></li>
+<li><p>Single variable: <code><a href="../../reference/plot_hist.html">plot_hist()</a></code>,
+<code><a href="../../reference/plot_box.html">plot_box()</a></code>, <code><a href="../../reference/plot_bar.html">plot_bar()</a></code> ;</p></li>
+<li><p>Two variables: <code><a href="../../reference/plot_2num.html">plot_2num()</a></code>,
+<code><a href="../../reference/plot_2fac.html">plot_2fac()</a></code>, <code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code> ;</p></li>
+<li><p>Three variables: <code><a href="../../reference/plot_2num1fac.html">plot_2num1fac()</a></code>,
+<code><a href="../../reference/plot_1num2fac.html">plot_1num2fac()</a></code>.</p></li>
 </ol>
-<p>Each function will return <code>m+1</code> panels to compare the observed data with <code>m</code> sets of actual imputed values.</p>
+<p>Each function will return <code>m+1</code> panels to compare the
+observed data with <code>m</code> sets of actual imputed values.</p>
 <div class="section level3">
 <h3 id="single-variable">2.1 Single variable<a class="anchor" aria-label="anchor" href="#single-variable"></a>
 </h3>
-<p>Only the imputations of missing entries in the specified variable will be ploted in panels <code>m1</code> to <code>m5</code>. If a variable is fully observed, it will return an error.</p>
+<p>Only the imputations of missing entries in the specified variable
+will be ploted in panels <code>m1</code> to <code>m5</code>. If a
+variable is fully observed, it will return an error.</p>
 <div class="section level4">
 <h4 id="numeric">2.1.1 Numeric<a class="anchor" aria-label="anchor" href="#numeric"></a>
 </h4>
 <p>We can plot an imputed numeric variable by histogram or boxplot.</p>
 <ul>
 <li>
-<p><code><a href="../../reference/plot_hist.html">plot_hist()</a></code>: plot histograms with density curves.</p>
-<p>Histograms are good at displaying the distribution of numeric data. Users can identify any unusual pattern of the imputed values from their shapes. Under MCAR, we would expect the distribution of imputed values to be the same as that of the observed ones. Under MAR, the distributions of observed and imputed values can be quite different. However, it is still worth plotting the imputed data as any to odd values may indicate that the imputation procedure is unsatisfactory.</p>
+<p><code><a href="../../reference/plot_hist.html">plot_hist()</a></code>: plot histograms with density
+curves.</p>
+<p>Histograms are good at displaying the distribution of numeric data.
+Users can identify any unusual pattern of the imputed values from their
+shapes. Under MCAR, we would expect the distribution of imputed values
+to be the same as that of the observed ones. Under MAR, the
+distributions of observed and imputed values can be quite different.
+However, it is still worth plotting the imputed data as any to odd
+values may indicate that the imputation procedure is unsatisfactory.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, </span>
 <span>      original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-6-1.png" width="95%"></p>
 </li>
 <li>
-<p><code><a href="../../reference/plot_box.html">plot_box()</a></code>: plot box plots with overlaying data points.</p>
-<p>Users can use <code><a href="../../reference/plot_box.html">plot_box()</a></code> to compare the median, lower and upper quantiles of imputed values with that of the observed ones. Also, we can see the difference between the number of missing values and observed values in the specified variable.</p>
+<p><code><a href="../../reference/plot_box.html">plot_box()</a></code>: plot box plots with overlaying data
+points.</p>
+<p>Users can use <code><a href="../../reference/plot_box.html">plot_box()</a></code> to compare the median, lower
+and upper quantiles of imputed values with that of the observed ones.
+Also, we can see the difference between the number of missing values and
+observed values in the specified variable.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_box.html">plot_box</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, </span>
 <span>     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
@@ -178,7 +215,8 @@
 <ul>
 <li>
 <p><code><a href="../../reference/plot_bar.html">plot_bar()</a></code>: plot bar plots</p>
-<p>The proportion of each level in a factor will be shown by <code><a href="../../reference/plot_bar.html">plot_bar()</a></code>.</p>
+<p>The proportion of each level in a factor will be shown by
+<code><a href="../../reference/plot_bar.html">plot_bar()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSSEX"</span>, </span>
 <span>     original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
@@ -193,12 +231,17 @@
 <div class="section level4">
 <h4 id="integer">2.1.3 Integer<a class="anchor" aria-label="anchor" href="#integer"></a>
 </h4>
-<p>When producing a plot, an integer variable can be treated as either numeric or factor. Users can plot an imputed integer variable according to their preferences using the following functions:</p>
+<p>When producing a plot, an integer variable can be treated as either
+numeric or factor. Users can plot an imputed integer variable according
+to their preferences using the following functions:</p>
 <ul>
-<li><p><code><a href="../../reference/plot_hist.html">plot_hist()</a></code>: plot histograms with density curves</p></li>
-<li><p><code><a href="../../reference/plot_box.html">plot_box()</a></code>: plot box plot with overlaying data points</p></li>
+<li><p><code><a href="../../reference/plot_hist.html">plot_hist()</a></code>: plot histograms with density
+curves</p></li>
+<li><p><code><a href="../../reference/plot_box.html">plot_box()</a></code>: plot box plot with overlaying data
+points</p></li>
 <li>
-<p><code><a href="../../reference/plot_bar.html">plot_bar()</a></code>: plot bar plot (treat an integer variable as a factor)</p>
+<p><code><a href="../../reference/plot_bar.html">plot_bar()</a></code>: plot bar plot (treat an integer variable
+as a factor)</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HSHSIZER"</span>, </span>
 <span>      original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
@@ -217,8 +260,13 @@
 <div class="section level4">
 <h4 id="ordinal-factor">2.1.4 Ordinal factor<a class="anchor" aria-label="anchor" href="#ordinal-factor"></a>
 </h4>
-<p>The function <code><a href="../../reference/Mixgb.html">mixgb()</a></code> will not convert any ordinal factor to integers by default. So we can just plot ordinal factors as factors. (see Section 2.1.2).</p>
-<p>However, setting <code>ordinalAsInteger = TRUE</code> in <code><a href="../../reference/Mixgb.html">mixgb()</a></code> may speed up the imputation process, but users need to decide whether to transform them back. In this case, we can just plot the imputed values as integers (see Section 2.1.3).</p>
+<p>The function <code><a href="../../reference/Mixgb.html">mixgb()</a></code> will not convert any ordinal factor
+to integers by default. So we can just plot ordinal factors as factors.
+(see Section 2.1.2).</p>
+<p>However, setting <code>ordinalAsInteger = TRUE</code> in
+<code><a href="../../reference/Mixgb.html">mixgb()</a></code> may speed up the imputation process, but users need
+to decide whether to transform them back. In this case, we can just plot
+the imputed values as integers (see Section 2.1.3).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">imputed.data2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span>, ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -238,29 +286,51 @@
 <div class="section level3">
 <h3 id="two-variables">2.2 Two variables<a class="anchor" aria-label="anchor" href="#two-variables"></a>
 </h3>
-<p>To plot the multiply imputed values of two variables, at least one of them has to be incomplete in the original data. In panels <code>m1</code> to <code>m5</code>, missing data either occurs in either one of the variables.</p>
+<p>To plot the multiply imputed values of two variables, at least one of
+them has to be incomplete in the original data. In panels
+<code>m1</code> to <code>m5</code>, missing data either occurs in either
+one of the variables.</p>
 <div class="section level4">
 <h4 id="two-numeric-variables">2.2.1 Two numeric variables<a class="anchor" aria-label="anchor" href="#two-numeric-variables"></a>
 </h4>
-<p>We can plot scatter plots of two numeric variables using <code><a href="../../reference/plot_2num.html">plot_2num()</a></code>. We can specify the name of a numeric variable on the x-axis in <code>var.x</code> , and another numeric variable on the y-axis in <code>var.y</code>.</p>
-<p>Users can choose to plot the shapes of different types of missing values by setting <code>shape = TRUE</code>. We only recommend plotting the shapes when the dataset is small. By default, <code>shape = FALSE</code> to speed up the plotting process.</p>
+<p>We can plot scatter plots of two numeric variables using
+<code><a href="../../reference/plot_2num.html">plot_2num()</a></code>. We can specify the name of a numeric variable
+on the x-axis in <code>var.x</code> , and another numeric variable on
+the y-axis in <code>var.y</code>.</p>
+<p>Users can choose to plot the shapes of different types of missing
+values by setting <code>shape = TRUE</code>. We only recommend plotting
+the shapes when the dataset is small. By default,
+<code>shape = FALSE</code> to speed up the plotting process.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, </span>
 <span>          original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-11-1.png" width="95%"></p>
-<p><strong>NA.condition</strong> represents the following types of missing values.</p>
+<p><strong>NA.condition</strong> represents the following types of
+missing values.</p>
 <ol style="list-style-type: lower-roman">
-<li><p><code>both.observed</code>: Both <code>var.x</code> and<code>var.y</code> are observed. This only appears in the first panel - <code>Observed</code> (Shape: diamond).</p></li>
-<li><p><code>both.missing</code>: Imputed values where both <code>var.x</code> and <code>var.y</code> are originally missing (Shape: circle);</p></li>
-<li><p><code>var.x.missing</code>: Imputed values where <code>var.x</code> is originally missing and <code>var.y</code> isn’t (Shape: X);</p></li>
-<li><p><code>var.y.missing</code>: Imputed values where <code>var.y</code> is originally missing and <code>var.x</code> isn’t (Shape: Y).</p></li>
+<li><p><code>both.observed</code>: Both <code>var.x</code>
+and<code>var.y</code> are observed. This only appears in the first panel
+- <code>Observed</code> (Shape: diamond).</p></li>
+<li><p><code>both.missing</code>: Imputed values where both
+<code>var.x</code> and <code>var.y</code> are originally missing (Shape:
+circle);</p></li>
+<li><p><code>var.x.missing</code>: Imputed values where
+<code>var.x</code> is originally missing and <code>var.y</code> isn’t
+(Shape: X);</p></li>
+<li><p><code>var.y.missing</code>: Imputed values where
+<code>var.y</code> is originally missing and <code>var.x</code> isn’t
+(Shape: Y).</p></li>
 </ol>
 </div>
 <div class="section level4">
 <h4 id="one-numeric-vs-one-factor">2.2.2 One numeric vs one factor<a class="anchor" aria-label="anchor" href="#one-numeric-vs-one-factor"></a>
 </h4>
-<p>We can plot a numeric variable versus a factor using <code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code>. The output is a box plot with overlaying points. Users need to specify a numeric variable in <code>var.num</code> and a factor in <code>var.fac</code>.</p>
-<p><strong>NA.condition</strong> is similar to the definition in Section 2.2.1.</p>
+<p>We can plot a numeric variable versus a factor using
+<code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code>. The output is a box plot with overlaying
+points. Users need to specify a numeric variable in <code>var.num</code>
+and a factor in <code>var.fac</code>.</p>
+<p><strong>NA.condition</strong> is similar to the definition in Section
+2.2.1.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.fac <span class="op">=</span> <span class="st">"HSSEX"</span>, </span>
 <span>              original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
@@ -269,7 +339,9 @@
 <div class="section level4">
 <h4 id="two-factors">2.2.3 Two factors<a class="anchor" aria-label="anchor" href="#two-factors"></a>
 </h4>
-<p>We can plot bar plots to show the relationship between two factors using <code><a href="../../reference/plot_2fac.html">plot_2fac()</a></code>. Note that this function requires at least one of the variables to be incomplete in the original dataset.</p>
+<p>We can plot bar plots to show the relationship between two factors
+using <code><a href="../../reference/plot_2fac.html">plot_2fac()</a></code>. Note that this function requires at
+least one of the variables to be incomplete in the original dataset.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2fac.html">plot_2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac1 <span class="op">=</span> <span class="st">"HYD1"</span>, var.fac2 <span class="op">=</span> <span class="st">"HFF1"</span>, </span>
 <span>          original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
@@ -278,7 +350,9 @@
 <div class="section level4">
 <h4 id="one-numeric-vs-one-integer">2.2.4 One numeric vs one integer<a class="anchor" aria-label="anchor" href="#one-numeric-vs-one-integer"></a>
 </h4>
-<p>We can use <code><a href="../../reference/plot_2num.html">plot_2num()</a></code> to plot a numeric variable versus an integer variable. Note that the plots would look different if we swap the variables <code>var.x</code> and <code>var.y</code>.</p>
+<p>We can use <code><a href="../../reference/plot_2num.html">plot_2num()</a></code> to plot a numeric variable versus
+an integer variable. Note that the plots would look different if we swap
+the variables <code>var.x</code> and <code>var.y</code>.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"HSAGEIR"</span>, </span>
 <span>          original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -287,7 +361,8 @@
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSAGEIR"</span>, var.y <span class="op">=</span> <span class="st">"BMPHEAD"</span>, </span>
 <span>          original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-14-2.png" width="95%"></p>
-<p>If we treat an integer variable as factor, we can use <code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code> .</p>
+<p>If we treat an integer variable as factor, we can use
+<code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code> .</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_1num1fac.html">plot_1num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.num <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.fac <span class="op">=</span> <span class="st">"HSAGEIR"</span>, </span>
 <span>              original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -296,7 +371,19 @@
 <div class="section level4">
 <h4 id="two-integers">2.2.5 Two integers<a class="anchor" aria-label="anchor" href="#two-integers"></a>
 </h4>
-<p>We can plot two variables of integer type using either <code><a href="../../reference/plot_2num.html">plot_2num()</a></code> ,<code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code> or <code><a href="../../reference/plot_2fac.html">plot_2fac()</a></code>. Users should choose the plotting functions based on the nature of the variable. For example, if an integer variable <code>age</code> has data ranging from 0 to 110, it may be easier to treat <code>age</code> as numeric rather than a factor. On the other hand, if we have an integer variable which only has several distinct values (e.g. 1,2,3), it may be better to treat them as factor for plotting. In this dataset, we only have two variables of integer type-<code>HSHSIZER</code>(household size) and <code>HSAGEIR</code>(baby’s age ranging from 2 to 11 months). We would not expect any obvious relation between these two, but we plot them anyway.</p>
+<p>We can plot two variables of integer type using either
+<code><a href="../../reference/plot_2num.html">plot_2num()</a></code> ,<code><a href="../../reference/plot_1num1fac.html">plot_1num1fac()</a></code> or
+<code><a href="../../reference/plot_2fac.html">plot_2fac()</a></code>. Users should choose the plotting functions
+based on the nature of the variable. For example, if an integer variable
+<code>age</code> has data ranging from 0 to 110, it may be easier to
+treat <code>age</code> as numeric rather than a factor. On the other
+hand, if we have an integer variable which only has several distinct
+values (e.g. 1,2,3), it may be better to treat them as factor for
+plotting. In this dataset, we only have two variables of integer
+type-<code>HSHSIZER</code>(household size) and
+<code>HSAGEIR</code>(baby’s age ranging from 2 to 11 months). We would
+not expect any obvious relation between these two, but we plot them
+anyway.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSHSIZER"</span>, var.y <span class="op">=</span> <span class="st">"HSAGEIR"</span>, </span>
 <span>          original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -314,39 +401,64 @@
 <div class="section level3">
 <h3 id="three-variables">2.3 Three variables<a class="anchor" aria-label="anchor" href="#three-variables"></a>
 </h3>
-<p>To plot the multiply imputed values of three variables, at least one of them has to be incomplete in the original data.</p>
+<p>To plot the multiply imputed values of three variables, at least one
+of them has to be incomplete in the original data.</p>
 <div class="section level4">
 <h4 id="two-numeric-variables-conditional-on-one-factor">2.3.1 Two numeric variables conditional on one factor<a class="anchor" aria-label="anchor" href="#two-numeric-variables-conditional-on-one-factor"></a>
 </h4>
-<p>We can generate a conditional scatter plots for two numeric variables using <code><a href="../../reference/plot_2num1fac.html">plot_2num1fac()</a></code> . The variable on the x-axis should be specified in <code>var.x</code>, while the y-axis one should be in <code>var.y</code> . The factor we want to be conditional on is <code>con.fac</code>.</p>
+<p>We can generate a conditional scatter plots for two numeric variables
+using <code><a href="../../reference/plot_2num1fac.html">plot_2num1fac()</a></code> . The variable on the x-axis should
+be specified in <code>var.x</code>, while the y-axis one should be in
+<code>var.y</code> . The factor we want to be conditional on is
+<code>con.fac</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,</span>
 <span>  con.fac <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-17-1.png" width="95%"></p>
-<p>When we have three variables, there are <span class="math inline">\(2^3\)</span> different types of missing patterns, consisting of all possible combinations of zero to three variables missing. However, it would be hard to differentiate all 8 types of missingness in the same plots, especially in the case when the dataset is not small. Therefore, we only choose to show the following three types in <strong>NA.condition</strong> in the plot when <code>shape = TRUE</code>.</p>
-<p><strong>NA.condition</strong> represents the following types of missing values.</p>
+<p>When we have three variables, there are <span class="math inline">\(2^3\)</span> different types of missing patterns,
+consisting of all possible combinations of zero to three variables
+missing. However, it would be hard to differentiate all 8 types of
+missingness in the same plots, especially in the case when the dataset
+is not small. Therefore, we only choose to show the following three
+types in <strong>NA.condition</strong> in the plot when
+<code>shape = TRUE</code>.</p>
+<p><strong>NA.condition</strong> represents the following types of
+missing values.</p>
 <ol style="list-style-type: lower-roman">
-<li><p><code>all.observed</code>: Observations where all three variables are observed. This only appears in the first panel - <code>Observed</code> .</p></li>
+<li><p><code>all.observed</code>: Observations where all three variables
+are observed. This only appears in the first panel -
+<code>Observed</code> .</p></li>
 <li>
-<p><code>con.fac.observed</code>: Imputed values where <code>con.fac</code> is originally observed.</p>
-<p>(These points are originally missing in either <code>var.x</code> or <code>var.y</code> or both)</p>
+<p><code>con.fac.observed</code>: Imputed values where
+<code>con.fac</code> is originally observed.</p>
+<p>(These points are originally missing in either <code>var.x</code> or
+<code>var.y</code> or both)</p>
 </li>
-<li><p><code>con.fac.missing</code>: imputed values where <code>con.fac</code> is originally missing. (These points can be originally observed, or missing in either <code>var.x</code> or <code>var.y</code> or both)</p></li>
+<li><p><code>con.fac.missing</code>: imputed values where
+<code>con.fac</code> is originally missing. (These points can be
+originally observed, or missing in either <code>var.x</code> or
+<code>var.y</code> or both)</p></li>
 </ol>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,</span>
 <span>              con.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span>, shape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-18-1.png" width="95%"></p>
-<p>If we want to treat integer variables as numeric, we can put them in either <code>var.x</code> or <code>var.y</code>. Here is an example, where <code>HSAGEIR</code> is an integer variable with values ranging from 2 to 11.</p>
+<p>If we want to treat integer variables as numeric, we can put them in
+either <code>var.x</code> or <code>var.y</code>. Here is an example,
+where <code>HSAGEIR</code> is an integer variable with values ranging
+from 2 to 11.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2num1fac.html">plot_2num1fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"HSAGEIR"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>,</span>
 <span>              con.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-19-1.png" width="95%"></p>
 </div>
 <div class="section level4">
-<h4 id="one-numeric-variable-and-one-factor-conditional-on-another-factor">2.3.2 One numeric variable and one factor conditional on another factor<a class="anchor" aria-label="anchor" href="#one-numeric-variable-and-one-factor-conditional-on-another-factor"></a>
+<h4 id="one-numeric-variable-and-one-factor-conditional-on-another-factor">2.3.2 One numeric variable and one factor conditional on another
+factor<a class="anchor" aria-label="anchor" href="#one-numeric-variable-and-one-factor-conditional-on-another-factor"></a>
 </h4>
-<p><code><a href="../../reference/plot_1num2fac.html">plot_1num2fac()</a></code> will generate boxplots with overlaying data points of one numeric variable vs a factor, conditional on another factor.</p>
+<p><code><a href="../../reference/plot_1num2fac.html">plot_1num2fac()</a></code> will generate boxplots with overlaying
+data points of one numeric variable vs a factor, conditional on another
+factor.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_1num2fac.html">plot_1num2fac</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.fac <span class="op">=</span> <span class="st">"DMARETHN"</span>, var.num <span class="op">=</span> <span class="st">"BMPRECUM"</span>, </span>
 <span>              con.fac <span class="op">=</span> <span class="st">"HSSEX"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span></code></pre></div>
@@ -357,12 +469,18 @@
 <div class="section level2">
 <h2 id="color-options">3 Color options<a class="anchor" aria-label="anchor" href="#color-options"></a>
 </h2>
-<p>By default, the observed panel is gray and the other <code>m</code> panels use <code>ggplot2</code>’s default color scheme.</p>
+<p>By default, the observed panel is gray and the other <code>m</code>
+panels use <code>ggplot2</code>’s default color scheme.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, </span>
 <span>          original.data <span class="op">=</span> <span class="va">withNA.df</span>, color.pal <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-21-1.png" width="95%"></p>
-<p>We can change the colors by providing a vector of color hex codes in the argument <code>color.pal</code>. For example, we can use one of the colorblind-friendly palette <code>Set2</code> from the R package <code>RColorBrewer</code>. Note that if we have <code>m</code> imputed datasets, we need <code>m+1</code> hex codes because we also have to display the <code>Observed</code> panel.</p>
+<p>We can change the colors by providing a vector of color hex codes in
+the argument <code>color.pal</code>. For example, we can use one of the
+colorblind-friendly palette <code>Set2</code> from the R package
+<code>RColorBrewer</code>. Note that if we have <code>m</code> imputed
+datasets, we need <code>m+1</code> hex codes because we also have to
+display the <code>Observed</code> panel.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span></span>
 <span><span class="va">color.codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html" class="external-link">brewer.pal</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, name <span class="op">=</span> <span class="st">"Set2"</span><span class="op">)</span></span>
@@ -379,14 +497,21 @@
 <span><span class="fu"><a href="../../reference/plot_2num.html">plot_2num</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.x <span class="op">=</span> <span class="st">"BMPHEAD"</span>, var.y <span class="op">=</span> <span class="st">"BMPRECUM"</span>, </span>
 <span>          original.data <span class="op">=</span> <span class="va">withNA.df</span>, color.pal <span class="op">=</span> <span class="va">color.names</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Visual-diagnostics_files/figure-html/unnamed-chunk-23-1.png" width="95%"></p>
-<p>Here is a very useful R colors names cheat-sheet created by Dr Ying Wei.</p>
+<p>Here is a very useful R colors names cheat-sheet created by Dr Ying
+Wei.</p>
 <p><a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf" class="external-link uri">http://www.stat.columbia.edu/\~tzheng/files/Rcolor.pdf</a></p>
 </div>
 <div class="section level2">
 <h2 id="plot-multiply-imputed-data-from-other-packages">4 Plot multiply imputed data from other packages<a class="anchor" aria-label="anchor" href="#plot-multiply-imputed-data-from-other-packages"></a>
 </h2>
-<p>We can also plot multiply imputed datasets obtaining from other packages, such as <code>mice</code>. Here is an example using the <code>nhanes2</code> data from <code>mice</code>.</p>
-<p>Note that this dataset is quite small, only has 25 rows and 4 columns (<code>age</code>, <code>bmi</code>, <code>hyp</code> and <code>chl</code>). There are only 9, 8 and 10 missing values in the variables <code>bmi</code>, <code>hyp</code> and <code>chl</code> respectively. Imputed values are volatile when the dataset is small.</p>
+<p>We can also plot multiply imputed datasets obtaining from other
+packages, such as <code>mice</code>. Here is an example using the
+<code>nhanes2</code> data from <code>mice</code>.</p>
+<p>Note that this dataset is quite small, only has 25 rows and 4 columns
+(<code>age</code>, <code>bmi</code>, <code>hyp</code> and
+<code>chl</code>). There are only 9, 8 and 10 missing values in the
+variables <code>bmi</code>, <code>hyp</code> and <code>chl</code>
+respectively. Imputed values are volatile when the dataset is small.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/amices/mice" class="external-link">mice</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">nhanes2</span><span class="op">)</span></span>
@@ -426,8 +551,13 @@
 <div class="section level2">
 <h2 id="plot-against-masked-true-values">5 Plot against masked true values<a class="anchor" aria-label="anchor" href="#plot-against-masked-true-values"></a>
 </h2>
-<p>In general, we wouldn’t know the true values of the missing data, so we can only plot the imputed values versus the observed data. However, if we happen to know the true value, we can compare the imputed values with them.</p>
-<p>Let’s generate a simple dataset <code>full.df</code> and create 30% missing values in variable <code>norm1</code> and <code>norm2</code>. We then impute <code>MCAR.df</code> using <code><a href="../../reference/Mixgb.html">mixgb()</a></code>.</p>
+<p>In general, we wouldn’t know the true values of the missing data, so
+we can only plot the imputed values versus the observed data. However,
+if we happen to know the true value, we can compare the imputed values
+with them.</p>
+<p>Let’s generate a simple dataset <code>full.df</code> and create 30%
+missing values in variable <code>norm1</code> and <code>norm2</code>. We
+then impute <code>MCAR.df</code> using <code><a href="../../reference/Mixgb.html">mixgb()</a></code>.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span><span class="va">norm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">N</span>, mean <span class="op">=</span> <span class="fl">1</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -437,7 +567,10 @@
 <span><span class="va">MCAR.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/createNA.html">createNA</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">full.df</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"norm1"</span>, <span class="st">"norm2"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MCAR.df</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<p>Now since we know the true data, we can specify it in the plotting functions. It will generate an extra panel called <code>MaskedTrue</code>, which shows values that are originally observed but intentionally made missing.</p>
+<p>Now since we know the true data, we can specify it in the plotting
+functions. It will generate an extra panel called
+<code>MaskedTrue</code>, which shows values that are originally observed
+but intentionally made missing.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/plot_hist.html">plot_hist</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">mixgb.data</span>, var.name <span class="op">=</span> <span class="st">"norm1"</span>, </span>
 <span>          original.data <span class="op">=</span> <span class="va">MCAR.df</span>, true.data <span class="op">=</span> <span class="va">full.df</span><span class="op">)</span></span></code></pre></div>
@@ -464,7 +597,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
     </footer>
