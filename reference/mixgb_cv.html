@@ -120,43 +120,38 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu">mixgb_cv</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:48.032285+0.052644	test-rmse:48.009961+0.235292 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:5.668994+0.029373	test-rmse:5.674090+0.129285 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Multiple eval metrics are present. Will use test_rmse for early stopping.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Will train until test_rmse hasn't improved in 10 rounds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:33.790307+0.039069	test-rmse:33.769299+0.269075 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:23.812667+0.029296	test-rmse:23.798414+0.282772 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:16.832128+0.026989	test-rmse:16.820986+0.327570 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:11.968092+0.030314	test-rmse:11.976539+0.326834 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:8.593018+0.040537	test-rmse:8.601800+0.348012 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:6.270329+0.052619	test-rmse:6.329023+0.361073 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:4.684832+0.058722	test-rmse:4.803712+0.406815 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:3.626624+0.069196	test-rmse:3.852995+0.442071 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:2.905563+0.082085	test-rmse:3.272019+0.488166 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11]	train-rmse:2.396417+0.078409	test-rmse:2.948746+0.506970 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12]	train-rmse:2.055029+0.076639	test-rmse:2.751801+0.522064 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13]	train-rmse:1.820365+0.067589	test-rmse:2.659842+0.534106 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14]	train-rmse:1.646174+0.057933	test-rmse:2.609659+0.532920 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15]	train-rmse:1.510708+0.059628	test-rmse:2.578243+0.554851 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16]	train-rmse:1.396963+0.067337	test-rmse:2.560365+0.558715 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:1.302385+0.084581	test-rmse:2.555470+0.545869 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18]	train-rmse:1.226626+0.079254	test-rmse:2.565982+0.540956 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19]	train-rmse:1.155997+0.077813	test-rmse:2.576105+0.541660 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20]	train-rmse:1.094470+0.078336	test-rmse:2.574121+0.526229 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21]	train-rmse:1.053330+0.077302	test-rmse:2.577190+0.527320 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22]	train-rmse:1.015246+0.083013	test-rmse:2.584709+0.517195 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23]	train-rmse:0.981667+0.073410	test-rmse:2.593943+0.522199 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [24]	train-rmse:0.935828+0.076756	test-rmse:2.592228+0.518498 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25]	train-rmse:0.905407+0.075484	test-rmse:2.593278+0.515265 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [26]	train-rmse:0.872310+0.077231	test-rmse:2.597805+0.512957 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27]	train-rmse:0.851707+0.078039	test-rmse:2.599420+0.514450 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:4.037627+0.028452	test-rmse:4.049914+0.147309 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:2.905190+0.030719	test-rmse:2.918298+0.165520 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:2.127553+0.035300	test-rmse:2.144819+0.191461 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:1.599436+0.040129	test-rmse:1.632963+0.214442 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:1.237208+0.040840	test-rmse:1.318104+0.223840 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:0.991165+0.041249	test-rmse:1.121004+0.246966 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:0.823648+0.040392	test-rmse:1.016617+0.248274 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:0.709410+0.038613	test-rmse:0.956697+0.250091 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:0.625397+0.036883	test-rmse:0.928860+0.247967 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11]	train-rmse:0.566013+0.030967	test-rmse:0.920451+0.248473 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12]	train-rmse:0.525176+0.023145	test-rmse:0.919590+0.248075 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13]	train-rmse:0.498547+0.023641	test-rmse:0.925714+0.247203 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14]	train-rmse:0.476845+0.019590	test-rmse:0.932537+0.247351 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15]	train-rmse:0.463126+0.018952	test-rmse:0.932030+0.245844 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16]	train-rmse:0.446635+0.013423	test-rmse:0.935238+0.246450 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:0.429979+0.015970	test-rmse:0.945742+0.243980 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18]	train-rmse:0.419346+0.016564	test-rmse:0.947974+0.242512 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19]	train-rmse:0.409104+0.017049	test-rmse:0.955613+0.245361 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20]	train-rmse:0.393874+0.016947	test-rmse:0.959154+0.244177 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21]	train-rmse:0.378493+0.015681	test-rmse:0.958922+0.244845 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22]	train-rmse:0.368074+0.012854	test-rmse:0.959723+0.243819 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stopping. Best iteration:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:1.302385+0.084581	test-rmse:2.555470+0.545869</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12]	train-rmse:0.525176+0.023145	test-rmse:0.919590+0.248075</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, m <span class="op">=</span> <span class="fl">5</span>, nrounds <span class="op">=</span> <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

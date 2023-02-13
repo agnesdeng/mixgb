@@ -109,7 +109,7 @@
 <span class="r-in"><span><span class="va">nhanes3_NA</span><span class="op">&lt;-</span><span class="fu"><a href="createNA.html">createNA</a></span><span class="op">(</span><span class="va">nhanes3</span>, var.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HSSEX"</span>,<span class="st">"DMARETHN"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># obtain m multiply datasets</span></span></span>
-<span class="r-in"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_NA</span>, m <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_NA</span>, m <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot the multiply imputed values for variables "HSSEX" versus "DMARETHN"</span></span></span>
 <span class="r-in"><span><span class="fu">plot_2fac</span><span class="op">(</span></span></span>

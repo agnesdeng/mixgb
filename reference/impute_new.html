@@ -80,7 +80,7 @@
 
 
 <dt>initial.newdata</dt>
-<dd><p>Whether to use the information of the new data to initially impute new data. By default, this is set to <code>FALSE</code>, the original data passed to <code><a href="Mixgb.html">mixgb()</a></code> will be used for initial imputation.</p></dd>
+<dd><p>Whether to use the information of the new data to initially impute new data. By default, this is set to <code>FALSE</code>, the original data passed to <code><a href="mixgb.html">mixgb()</a></code> will be used for initial imputation.</p></dd>
 
 
 <dt>pmm.k</dt>
@@ -110,7 +110,7 @@
 <span class="r-in"><span><span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">test.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="Mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">2</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">2</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#obtain m imputed datasets for train.data</span></span></span>
 <span class="r-in"><span><span class="va">train.imputed</span> <span class="op">&lt;-</span> <span class="va">mixgb.obj</span><span class="op">$</span><span class="va">imputed.data</span></span></span>

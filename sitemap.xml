@@ -28,9 +28,6 @@
     <loc>https://agnesdeng.github.io/mixgb/news/index.html</loc>
   </url>
   <url>
-    <loc>https://agnesdeng.github.io/mixgb/reference/Mixgb.html</loc>
-  </url>
-  <url>
     <loc>https://agnesdeng.github.io/mixgb/reference/createNA.html</loc>
   </url>
   <url>
@@ -44,6 +41,9 @@
   </url>
   <url>
     <loc>https://agnesdeng.github.io/mixgb/reference/mixgb-package.html</loc>
+  </url>
+  <url>
+    <loc>https://agnesdeng.github.io/mixgb/reference/mixgb.html</loc>
   </url>
   <url>
     <loc>https://agnesdeng.github.io/mixgb/reference/mixgb_cv.html</loc>
