@@ -77,7 +77,7 @@
                         <h4 data-toc-skip class="author">Yongshi
 Deng</h4>
             
-            <h4 data-toc-skip class="date">2023-02-02</h4>
+            <h4 data-toc-skip class="date">2023-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/Using-mixgb.Rmd" class="external-link"><code>vignettes/Using-mixgb.Rmd</code></a></small>
       <div class="d-none name"><code>Using-mixgb.Rmd</code></div>
@@ -89,13 +89,15 @@ Deng</h4>
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>Mixgb offers a scalable solution for imputing large datasets using
-XGBoost, subsampling and predictive mean matching. Mixgb is built under
-Fully Conditional Specification (FCS), where XGBoost imputation models
-are built for each incomplete variable. Mixgb can automatically handle
-different types of variables and users do not need to encode categorical
-variables themselves. Users can also choose different settings regarding
-subsampling and the types predictive mean matching to enhance imputation
-performance.</p>
+XGBoost, subsampling and predictive mean matching. Our method utilizes
+the capabilities of XGBoost, a highly efficient implementation of
+gradient boosted trees, to capture interactions and non-linear relations
+automatically. Moreover, we have integrated subsampling and predictive
+mean matching to minimize bias and reflect appropriate imputation
+variability. Our package supports various types of variables and offers
+flexible settings for subsampling and predictive mean matching. We also
+include diagnostic tools for evaluating the quality of the imputed
+values.</p>
 </div>
 <div class="section level2">
 <h2 id="impute-missing-values-with-mixgb">Impute missing values with <code>mixgb</code><a class="anchor" aria-label="anchor" href="#impute-missing-values-with-mixgb"></a>
@@ -212,32 +214,32 @@ first.</p>
 <code class="sourceCode R"><span><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">evaluation.log</span></span>
 <span><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
-<span><span class="co">#&gt;  1:    1       47.924901     0.04374794      47.912350     0.1940781</span></span>
-<span><span class="co">#&gt;  2:    2       33.662609     0.03151106      33.665150     0.1680427</span></span>
-<span><span class="co">#&gt;  3:    3       23.687532     0.02549310      23.685362     0.1569318</span></span>
-<span><span class="co">#&gt;  4:    4       16.722884     0.02377325      16.732710     0.1455586</span></span>
-<span><span class="co">#&gt;  5:    5       11.879223     0.03112897      11.907861     0.1702846</span></span>
-<span><span class="co">#&gt;  6:    6        8.530199     0.04046910       8.588736     0.2215784</span></span>
-<span><span class="co">#&gt;  7:    7        6.232815     0.05103006       6.349778     0.2764722</span></span>
-<span><span class="co">#&gt;  8:    8        4.674283     0.05916307       4.871523     0.3479545</span></span>
-<span><span class="co">#&gt;  9:    9        3.628431     0.06254837       3.929017     0.4299895</span></span>
-<span><span class="co">#&gt; 10:   10        2.934591     0.07197897       3.367202     0.4920389</span></span>
-<span><span class="co">#&gt; 11:   11        2.498200     0.07196290       3.037179     0.5321927</span></span>
-<span><span class="co">#&gt; 12:   12        2.198079     0.07244116       2.882313     0.5379975</span></span>
-<span><span class="co">#&gt; 13:   13        2.005396     0.08496625       2.806353     0.5515603</span></span>
-<span><span class="co">#&gt; 14:   14        1.877634     0.07555529       2.772998     0.5661522</span></span>
-<span><span class="co">#&gt; 15:   15        1.794172     0.08999361       2.771520     0.5742393</span></span>
-<span><span class="co">#&gt; 16:   16        1.721172     0.08574959       2.765831     0.5766496</span></span>
-<span><span class="co">#&gt; 17:   17        1.676407     0.10292644       2.776130     0.5790707</span></span>
-<span><span class="co">#&gt; 18:   18        1.627271     0.09573028       2.781218     0.5794280</span></span>
-<span><span class="co">#&gt; 19:   19        1.577588     0.11278940       2.786275     0.5832811</span></span>
-<span><span class="co">#&gt; 20:   20        1.531366     0.09811855       2.793958     0.5839512</span></span>
-<span><span class="co">#&gt; 21:   21        1.493403     0.09500925       2.797750     0.5846154</span></span>
-<span><span class="co">#&gt; 22:   22        1.454043     0.09915201       2.802588     0.5735200</span></span>
-<span><span class="co">#&gt; 23:   23        1.422802     0.10271118       2.808031     0.5769499</span></span>
-<span><span class="co">#&gt; 24:   24        1.393053     0.09601053       2.806787     0.5801394</span></span>
-<span><span class="co">#&gt; 25:   25        1.369125     0.08936917       2.808691     0.5830941</span></span>
-<span><span class="co">#&gt; 26:   26        1.339822     0.08581724       2.816260     0.5821447</span></span>
+<span><span class="co">#&gt;  1:    1       47.925988     0.05345374      47.924950     0.2701265</span></span>
+<span><span class="co">#&gt;  2:    2       33.662714     0.03918749      33.676982     0.2016418</span></span>
+<span><span class="co">#&gt;  3:    3       23.686533     0.03060376      23.686885     0.1655429</span></span>
+<span><span class="co">#&gt;  4:    4       16.722016     0.02653366      16.741111     0.1505227</span></span>
+<span><span class="co">#&gt;  5:    5       11.876992     0.02554879      11.925990     0.1439794</span></span>
+<span><span class="co">#&gt;  6:    6        8.524819     0.02898052       8.595663     0.1460153</span></span>
+<span><span class="co">#&gt;  7:    7        6.216828     0.02997878       6.348836     0.1584757</span></span>
+<span><span class="co">#&gt;  8:    8        4.649430     0.03608033       4.876440     0.1683733</span></span>
+<span><span class="co">#&gt;  9:    9        3.598549     0.04027177       3.947102     0.1907861</span></span>
+<span><span class="co">#&gt; 10:   10        2.898216     0.03705034       3.403856     0.2172133</span></span>
+<span><span class="co">#&gt; 11:   11        2.447825     0.05195122       3.100697     0.2398684</span></span>
+<span><span class="co">#&gt; 12:   12        2.164375     0.05495467       2.924485     0.2577504</span></span>
+<span><span class="co">#&gt; 13:   13        1.984435     0.06671252       2.837527     0.2652201</span></span>
+<span><span class="co">#&gt; 14:   14        1.866770     0.07660611       2.803507     0.2640421</span></span>
+<span><span class="co">#&gt; 15:   15        1.786873     0.08012191       2.786998     0.2633654</span></span>
+<span><span class="co">#&gt; 16:   16        1.709396     0.09235621       2.782727     0.2664741</span></span>
+<span><span class="co">#&gt; 17:   17        1.663428     0.09735317       2.783669     0.2689089</span></span>
+<span><span class="co">#&gt; 18:   18        1.621092     0.09011508       2.788168     0.2624039</span></span>
+<span><span class="co">#&gt; 19:   19        1.591775     0.09486407       2.786950     0.2615782</span></span>
+<span><span class="co">#&gt; 20:   20        1.553178     0.08789358       2.789076     0.2636315</span></span>
+<span><span class="co">#&gt; 21:   21        1.511129     0.09204933       2.794595     0.2667372</span></span>
+<span><span class="co">#&gt; 22:   22        1.475469     0.08031099       2.803143     0.2667534</span></span>
+<span><span class="co">#&gt; 23:   23        1.455495     0.08267415       2.807651     0.2675269</span></span>
+<span><span class="co">#&gt; 24:   24        1.421851     0.07788581       2.815501     0.2637185</span></span>
+<span><span class="co">#&gt; 25:   25        1.379272     0.09231609       2.820170     0.2659389</span></span>
+<span><span class="co">#&gt; 26:   26        1.351288     0.08503824       2.821708     0.2630962</span></span>
 <span><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">response</span></span>
 <span><span class="co">#&gt; [1] "BMPRECUM"</span></span>

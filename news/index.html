@@ -54,17 +54,14 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="mixgb-101">mixgb 1.0.1<a class="anchor" aria-label="anchor" href="#mixgb-101"></a></h2>
-<ul><li>Current default settings for mixgb().
+<ul><li>Major change of default settings for mixgb().
+<ul><li>Our package has changed from using bootstrapping to subsampling with a default setting of <code>subsample = 0.7</code>. After further investigations, we discovered that although bootstrapping often works effectively, it can introduce bias in certain situations. As a result, we have made subsampling the default method instead of bootstrapping.</li>
+<li>
+</li></ul></li>
+<li>Current default settings for mixgb().
 <ul><li>Subsampling (<code>subsample = 0.7</code>)</li>
 <li>No bootstrapping (<code>bootstrap = FALSE</code>)</li>
 </ul></li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0.9000" id="mixgb-1009000">mixgb 1.0.0.9000<a class="anchor" aria-label="anchor" href="#mixgb-1009000"></a></h2>
-<ul><li>
-<p>Major change of default settings for mixgb().</p>
-<p>Instead of using bootstrapping, we have changed to use subsampling with <code>subsample = 0.7</code> by default. After more investigations, we found that even though bootstrapping perform well in general settings, it did add bias for under some scenarios. We now use subsampling instead of bootstrapping as our default setting.</p>
-</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="mixgb-011">mixgb 0.1.1<a class="anchor" aria-label="anchor" href="#mixgb-011"></a></h2>
@@ -74,7 +71,7 @@
 <li>max_depth (from 6 to 3)</li>
 <li>nrounds (from 50 to 100)</li>
 <li>
-<code>bootstrap = TRUE</code> by default. (Edited description)</li>
+<code>bootstrap = TRUE</code> by default.</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
