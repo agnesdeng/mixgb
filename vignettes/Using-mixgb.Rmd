@@ -11,13 +11,15 @@ vignette: >
 ## Introduction
 
 Mixgb offers a scalable solution for imputing large datasets using
-XGBoost, subsampling and predictive mean matching. Mixgb is built
-under Fully Conditional Specification (FCS), where XGBoost imputation
-models are built for each incomplete variable. Mixgb can automatically
-handle different types of variables and users do not need to encode
-categorical variables themselves. Users can also choose different
-settings regarding subsampling and the types predictive mean matching
-to enhance imputation performance.
+XGBoost, subsampling and predictive mean matching. Our method utilizes
+the capabilities of XGBoost, a highly efficient implementation of gradient
+boosted trees, to capture interactions and non-linear relations automatically.
+Moreover, we have integrated subsampling and predictive mean matching to
+minimize bias and reflect appropriate imputation variability. Our package
+supports various types of variables and offers flexible settings for subsampling
+and predictive mean matching. We also include diagnostic tools for evaluating
+the quality of the imputed values.
+
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(

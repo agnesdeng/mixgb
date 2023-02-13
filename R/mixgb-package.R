@@ -1,13 +1,13 @@
 #' \pkg{mixgb}: Multiple Imputation Through XGBoost
 #' @name mixgb-package
 #' @docType package
-#' @description Mixgb offers a scalable solution for imputing large datasets using XGBoost, bootstrapping and predictive mean matching. Mixgb is built under Fully Conditional Specification (FCS), where XGBoost imputation models are built for each incomplete variable. Mixgb can automatically handle different types of variables and users do not need to encode categorical variables themselves. Users can also choose different settings regarding bootstrapping and predictive mean matching to enhance imputation performance.
+#' @description Multiple imputation using 'XGBoost', subsampling, and predictive mean matching as described in Deng and Lumley (2023) <arXiv:2106.01574>. Our method utilizes the capabilities of XGBoost, a highly efficient implementation of gradient boosted trees, to capture interactions and non-linear relations automatically. Moreover, we have integrated subsampling and predictive mean matching to minimize bias and reflect appropriate imputation variability. This package supports various types of variables and offers flexible settings for subsampling and predictive mean matching. Additionally, it includes diagnostic tools for evaluating the quality of the imputed values.
 #' @import data.table
 #' @importFrom Matrix sparse.model.matrix
 #' @importFrom xgboost xgboost xgb.cv
 #' @importFrom stats median rnorm sd complete.cases na.omit reformulate predict quantile rbinom
 #' @references
-#' Deng, Y., & Lumley, T. (2021). Multiple Imputation Through XGBoost.
+#' Deng, Y., & Lumley, T. (2023). Multiple Imputation Through XGBoost.
 #' arXiv:2106.01574.
 #'
 #' Chen, T., & Guestrin, C. (2016, August). XGBoost: A Scalable Tree Boosting System.
@@ -25,6 +25,4 @@
 #' Little, R. J. (1988). Missing-data adjustments in large surveys.
 #' Journal of Business & Economic Statistics, 6(3), 287.
 #'
-#' Efron, B. (1979). Bootstrap methods: Another look at the jackknife.
-#' The Annals of Statistics, 7(1).
 NULL

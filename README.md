@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
-[![](https://img.shields.io/badge/CRAN-0.1.0-9cf)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/CRAN-1.0.1-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
 [![](https://img.shields.io/badge/github-1.0.1-brightgreen)](https://github.com/agnesdeng/mixgb)
 <!-- badges: end -->
@@ -24,11 +24,11 @@ details, please check our paper <https://arxiv.org/abs/2106.01574>.
 
 -   Major change of default settings for mixgb().
 
-Instead of using bootstrapping, we have changed to use subsampling with
-`subsample = 0.7` by default. After more investigations, we found that
-even though bootstrapping perform well in general settings, it did add
-bias for under some scenarios. We now use subsampling instead of
-bootstrapping as our default setting.
+Our package has changed from using bootstrapping to subsampling with a
+default setting of `subsample = 0.7`. After further investigations, we
+discovered that although bootstrapping often works effectively, it can
+introduce bias in certain situations. As a result, we have made
+subsampling the default method instead of bootstrapping.
 
 **May 2022**
 
@@ -153,9 +153,9 @@ numeric, integer, factor or ordinal factor.
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 ```
 
-### 2.1 Customise imputation settings
+### 2.1 Customize imputation settings
 
-We can also customise imputation settings:
+We can also customize imputation settings:
 
 -   The number of imputed datasets `m`
 
@@ -209,9 +209,9 @@ default `nrounds` in `mixgb` is 100. However, we recommend using
 ``` r
 cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
 cv.results$response
-#> [1] "BMPSB1"
+#> [1] "BMPHEAD"
 cv.results$best.nrounds
-#> [1] 14
+#> [1] 18
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
