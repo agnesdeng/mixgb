@@ -18,7 +18,7 @@ impute_new(
 
 \item{newdata}{A data.frame or data.table. New data with missing values.}
 
-\item{initial.newdata}{Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{MIXGB$new()} will be used for initial imputation.}
+\item{initial.newdata}{Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{mixgb()} will be used for initial imputation.}
 
 \item{pmm.k}{The number of donors for predictive mean matching. If \code{NULL} (the default), the \code{pmm.k} value in the saved imputer object will be used.}
 

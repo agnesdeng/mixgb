@@ -1,7 +1,7 @@
 #' Impute new data with a saved \code{mixgb} imputer object
 #' @param  object A saved imputer object created by \code{mixgb(..., save.models = TRUE)}
 #' @param  newdata A data.frame or data.table. New data with missing values.
-#' @param  initial.newdata Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{MIXGB$new()} will be used for initial imputation.
+#' @param  initial.newdata Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{mixgb()} will be used for initial imputation.
 #' @param  pmm.k The number of donors for predictive mean matching. If \code{NULL} (the default), the \code{pmm.k} value in the saved imputer object will be used.
 #' @param  m The number of imputed datasets. If \code{NULL} (the default), the \code{m} value in the saved imputer object will be used.
 #' @param  verbose Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.

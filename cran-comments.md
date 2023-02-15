@@ -1,3 +1,12 @@
+## mixgb 1.0.1
+This is a new submission. We submit a new version because we have made a major change to our package by using subsampling instead of bootstrapping with our method by default. In addition, we have fixed some minor bugs.
+
+## R CMD check results
+── R CMD check results ─────────────────────────────────────────────────────────────────────────────────────────────────── mixgb 1.0.1 ────
+Duration: 1m 16.5s
+
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+
 ## Resubmission
 This is a resubmission. In this version I have:
 the feedback from CRAN.
@@ -80,3 +89,4 @@ It seems to be a bug in MiKTex as noted in [R-hub issue #503](https://github.com
   New submission
 
 0 errors ✔ | 0 warnings ✔ | 1 note ✖
+
