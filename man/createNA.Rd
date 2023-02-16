@@ -9,7 +9,7 @@ createNA(data, var.names = NULL, p = 0.3)
 \arguments{
 \item{data}{A complete data frame.}
 
-\item{var.names}{The var.names of variables where missing values will be generated.}
+\item{var.names}{The names of variables where missing values will be generated.}
 
 \item{p}{The proportion of missing values in the data frame or the proportions of missing values corresponding to the variables specified in \code{var.names}.}
 }
@@ -17,7 +17,7 @@ createNA(data, var.names = NULL, p = 0.3)
 A data frame with artificial missing values
 }
 \description{
-This function creates missing values under the missing complete at random mechanism (MCAR). It is for demonstration purposes only.
+This function creates missing values under the missing complete at random (MCAR) mechanism. It is for demonstration purposes only.
 }
 \examples{
 # Create 30\% MCAR data across all variables in a dataset
@@ -27,7 +27,8 @@ withNA.df <- createNA(data = iris, p = 0.3)
 withNA.df <- createNA(data = iris, var.names = c("Sepal.Length"), p = 0.3)
 
 # Create MCAR data in several specified variables in a dataset
-withNA.df <- createNA(data = iris,
+withNA.df <- createNA(
+  data = iris,
   var.names = c("Sepal.Length", "Petal.Width", "Species"),
   p = c(0.3, 0.2, 0.1)
 )

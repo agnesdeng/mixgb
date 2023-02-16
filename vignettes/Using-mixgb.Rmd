@@ -40,9 +40,9 @@ colSums(is.na(nhanes3_newborn))
 ```
 
 To impute this dataset, we can use the default settings. The default
-number of imputed datasets `m = 5`. Note that we do not need to convert
-our data into dgCMatrix or one-hot coding format. Our package will
-convert it automatically. Variables should be of the following types:
+number of imputed datasets is `m = 5`. Note that we do not need to convert
+our data into dgCMatrix or one-hot coding format. Our package will automatically
+convert it for you. Variables should be of the following types:
 numeric, integer, factor or ordinal factor.
 
 ```{r, eval = FALSE}
@@ -50,9 +50,9 @@ numeric, integer, factor or ordinal factor.
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 ```
 
-### Customise imputation settings
+### Customize imputation settings
 
-We can also customise imputation settings:
+We can also customize imputation settings:
 
 -   The number of imputed datasets
     `m`
@@ -68,10 +68,10 @@ We can also customise imputation settings:
 -   Predictive mean matching settings
     `pmm.type`, `pmm.k` and `pmm.link`.
    
--   Whether to convert ordinal factors to integer (imputation process will be faster)
+-   Whether ordinal factors should be converted to integer (imputation process may be faster)
     `ordinalAsInteger`
 
--   Whether to use bootstrapping 
+-   Whether or not to use bootstrapping 
     `bootstrap`
 
 -   Initial imputation methods for different types of variables
@@ -92,7 +92,7 @@ params <- list(
   colsample_bytree = 1,
   colsample_bylevel = 1,
   colsample_bynode = 1,
-  nthread = 4,
+  nthread = 2,
   tree_method = "auto",
   gpu_id = 0,
   predictor = "auto"
@@ -110,36 +110,37 @@ imputed.data <- mixgb(
 
 ### Tune hyperparameters
 
-Imputation performance can be affected by the hyperparameter settings.
-It may seem daunting to tune a large set of hyperparameters, but often
-we can narrow down the search as many hyperparameters are correlated. In
-our package, we have a function `mixgb_cv()` to tune `nrounds`. There is
-no default `nrounds` value in `XGBoost,` so we need to specify it. The
-default `nrounds` in `mixgb` is 100. However, we recommend using
+Imputation performance can be affected by the hyperparameter settings. Although 
+tuning a large set of hyperparameters may appear intimidating, it is often 
+possible to narrowing down the search space because many hyperparameters are
+correlated. In our package, the function `mixgb_cv()` can be used to tune 
+the number of boosting rounds - `nrounds`. There is no default `nrounds` value
+in `XGBoost,` so users are required to specify this value themselves. The
+default `nrounds` in `mixgb()` is 100. However, we recommend using
 `mixgb_cv()` to find the optimal `nrounds` first.
 
 ```{r}
-cv.results <- mixgb_cv(data = nhanes3_newborn, verbose = FALSE)
+params <- list(max_depth = 3, subsample = 0.7, nthread =2)
+cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
 cv.results$evaluation.log
 cv.results$response
 cv.results$best.nrounds
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
-the response and build an XGBoost model with other variables using the
-complete cases of the dataset. Therefore, each run of `mixgb_cv()` is
-likely to return different results. Users can also specify the response
-and covariates in the argument `response` and `select_features`,
-respectively.
+the response and build an XGBoost model with other variables as explanatory
+variables using the complete cases of the dataset. Therefore, each run of `mixgb_cv()`
+will likely return different results. Users can also specify the response
+and covariates in the argument `response` and `select_features` respectively.
 
 ```{r}
-cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1, 
-                       response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM",                           "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT"), verbose = FALSE)
+cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
+                       response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM","BMPSB1", "BMPSB2","BMPTR1", "BMPTR2", "BMPWT"),xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
 ```
 
-Let's just try setting `nrounds = cv.results$best.nrounds` in `mixgb()` to obtain `m` imputed datasets.
+Let's just try setting `nrounds = cv.results$best.nrounds` in `mixgb()` to obtain 5 imputed datasets.
 
 ```{r, eval = FALSE}
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
@@ -159,6 +160,6 @@ The `mixgb` package provides the following visual diagnostics functions:
 Each function will return `m+1` panels to compare the observed data with
 `m` sets of actual imputed values.
 
-For more details, please check the vignette on github [Visual diagnostics
+For more details, please check the vignette on GitHub [Visual diagnostics
 for multiply imputed
 values](https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html).

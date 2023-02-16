@@ -18,7 +18,7 @@ impute_new(
 
 \item{newdata}{A data.frame or data.table. New data with missing values.}
 
-\item{initial.newdata}{Whether to use the information of the new data to initially impute new data. By default, this is set to \code{FALSE}, the original data passed to \code{mixgb()} will be used for initial imputation.}
+\item{initial.newdata}{Whether to use the information from the new data to initially impute the missing values of the new data. By default, this is set to \code{FALSE}, the original data passed to \code{mixgb()} will be used for initial imputation.}
 
 \item{pmm.k}{The number of donors for predictive mean matching. If \code{NULL} (the default), the \code{pmm.k} value in the saved imputer object will be used.}
 
@@ -39,12 +39,14 @@ idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
 train.data <- nhanes3[idx, ]
 test.data <- nhanes3[-idx, ]
 
-mixgb.obj <- mixgb(data = train.data, m = 2, save.models = TRUE)
+params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
+mixgb.obj <- mixgb(data = train.data, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
 
-#obtain m imputed datasets for train.data
+# obtain m imputed datasets for train.data
 train.imputed <- mixgb.obj$imputed.data
 train.imputed
 
-#use the saved imputer to impute new data
+# use the saved imputer to impute new data
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
+test.imputed
 }

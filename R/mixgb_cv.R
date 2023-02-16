@@ -1,22 +1,26 @@
 #' Use cross-validation to find the optimal \code{nrounds}
-#' @description Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to find the optimal \code{nrounds}.
+#' @description Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to obtain the optimal \code{nrounds}.
 #' @param data A data.frame or a data.table with missing values.
 #' @param nfold The number of subsamples which are randomly partitioned and of equal size. Default: 5
 #' @param nrounds The max number of iterations in XGBoost training. Default: 100
-#' @param early_stopping_rounds An integer value \code{k}. Training will stop if the validation performance hasn't improved for \code{k} rounds.
-#' @param response The name or column index of a response variable. Default: \code{NULL} (Randomly select an incomplete variable).
-#' @param select_features The names or indices of selected features. Default: \code{NULL} (Select all other variables in the dataset).
-#' @param stringsAsFactors A logical value indicating whether character vectors should be converted to factors.
+#' @param early_stopping_rounds An integer value \code{k}. Training will stop if the validation performance has not improved for \code{k} rounds.
+#' @param response The name or the column index of a response variable. Default: \code{NULL} (Randomly select an incomplete variable).
+#' @param select_features The names or the indices of selected features. Default: \code{NULL} (Select all the other variables in the dataset).
+#' @param xgb.params A list of XGBoost parameters. For more details, please check \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
+#' @param stringsAsFactors A logical value indicating whether all character vectors in the dataset should be converted to factors.
 #' @param verbose A logical value. Whether to print out cross-validation results during the process.
-#' @param ... Extra arguments to pass to XGBoost.
+#' @param ... Extra arguments to be passed to XGBoost.
 #' @return A list of the optimal \code{nrounds}, \code{evaluation.log} and the chosen \code{response}.
 #' @export
 #' @examples
-#' cv.results <- mixgb_cv(data = nhanes3)
+#' params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
+#' cv.results <- mixgb_cv(data = nhanes3, xgb.params = params)
 #' cv.results$best.nrounds
 #'
-#' imputed.data <- mixgb(data = nhanes3, m = 5, nrounds = cv.results$best.nrounds)
-mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL, stringsAsFactors = FALSE, verbose = TRUE, ...) {
+#' imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params, nrounds = cv.results$best.nrounds)
+mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL,
+                     xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1, subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+                     stringsAsFactors = FALSE, verbose = TRUE, ...) {
   num.cc <- sum(complete.cases(data))
 
 
@@ -73,18 +77,18 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     obj.type <- "reg:squarederror"
     # 1 row vectoc
     obs.y <- cc.data[[response]]
-    cv.train <- xgb.cv(data = obs.data, label = obs.y, objective = obj.type, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else if (Types[response] == "binary") {
     obj.type <- "binary:logistic"
     eval_metric <- "logloss"
     obs.y <- as.integer(cc.data[[response]]) - 1
-    cv.train <- xgb.cv(data = obs.data, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else {
     obj.type <- "multi:softmax"
     eval_metric <- "mlogloss"
     obs.y <- as.integer(cc.data[[response]]) - 1
     N.class <- length(levels(cc.data[[response]]))
-    cv.train <- xgb.cv(data = obs.data, label = obs.y, num_class = N.class, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, num_class = N.class, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   }
 
   evaluation.log <- cv.train$evaluation_log

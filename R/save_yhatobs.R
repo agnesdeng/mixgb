@@ -5,9 +5,9 @@ save_yhatobs <- function(yobs.list, maxit, pmm.link, sorted.dt, missing.vars, ex
                          nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                          ...) {
 
-  #param xgb.params NULL if XGBmodels was fed in
-  #return a list of yhatobs values for specified variables
-  #check whether xgb.params contains sample related hyperparameters, need to coerce to 1 as we want to obtain yhatobs using the whole dataset
+  # param xgb.params NULL if XGBmodels was fed in
+  # return a list of yhatobs values for specified variables
+  # check whether xgb.params contains sample related hyperparameters, need to coerce to 1 as we want to obtain yhatobs using the whole dataset
 
   sample.params <- grepl("sample", names(xgb.params))
   if (any(sample.params == TRUE)) {

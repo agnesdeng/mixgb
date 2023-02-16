@@ -1,5 +1,4 @@
 # Checking for pmm.type and bootstrap constraints
-
 check_pmm <- function(pmm.type, bootstrap, xgb.params, Nrow, sorted.naSums, sorted.types, pmm.k) {
   # without bootstrapping: at least one of the sample related hyperparameters in xgboost must be less than 1
   if (!is.null(pmm.type)) {

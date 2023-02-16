@@ -1,3 +1,7 @@
+# mixgb 1.0.2
+  * Minor change:
+  - All examples use `nthread = 2` to meet the requirement of the CRAN policy.
+ 
 # mixgb 1.0.1
   * Major change of default settings for mixgb().
      - Our package has changed from using bootstrapping to subsampling with a default setting of `subsample = 0.7`. After further investigations, we discovered that although bootstrapping often works effectively, it can introduce bias in certain situations. As a result, we have made subsampling the default method instead of bootstrapping.

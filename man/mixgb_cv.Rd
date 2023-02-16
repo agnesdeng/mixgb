@@ -11,6 +11,9 @@ mixgb_cv(
   early_stopping_rounds = 10,
   response = NULL,
   select_features = NULL,
+  xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1,
+    subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
+    tree_method = "auto", gpu_id = 0, predictor = "auto"),
   stringsAsFactors = FALSE,
   verbose = TRUE,
   ...
@@ -23,27 +26,30 @@ mixgb_cv(
 
 \item{nrounds}{The max number of iterations in XGBoost training. Default: 100}
 
-\item{early_stopping_rounds}{An integer value \code{k}. Training will stop if the validation performance hasn't improved for \code{k} rounds.}
+\item{early_stopping_rounds}{An integer value \code{k}. Training will stop if the validation performance has not improved for \code{k} rounds.}
 
-\item{response}{The name or column index of a response variable. Default: \code{NULL} (Randomly select an incomplete variable).}
+\item{response}{The name or the column index of a response variable. Default: \code{NULL} (Randomly select an incomplete variable).}
 
-\item{select_features}{The names or indices of selected features. Default: \code{NULL} (Select all other variables in the dataset).}
+\item{select_features}{The names or the indices of selected features. Default: \code{NULL} (Select all the other variables in the dataset).}
 
-\item{stringsAsFactors}{A logical value indicating whether character vectors should be converted to factors.}
+\item{xgb.params}{A list of XGBoost parameters. For more details, please check \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.}
+
+\item{stringsAsFactors}{A logical value indicating whether all character vectors in the dataset should be converted to factors.}
 
 \item{verbose}{A logical value. Whether to print out cross-validation results during the process.}
 
-\item{...}{Extra arguments to pass to XGBoost.}
+\item{...}{Extra arguments to be passed to XGBoost.}
 }
 \value{
 A list of the optimal \code{nrounds}, \code{evaluation.log} and the chosen \code{response}.
 }
 \description{
-Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to find the optimal \code{nrounds}.
+Use cross-validation to find the optimal \code{nrounds} for an \code{Mixgb} imputer. Note that this method relies on the complete cases of a dataset to obtain the optimal \code{nrounds}.
 }
 \examples{
-cv.results <- mixgb_cv(data = nhanes3)
+params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
+cv.results <- mixgb_cv(data = nhanes3, xgb.params = params)
 cv.results$best.nrounds
 
-imputed.data <- mixgb(data = nhanes3, m = 5, nrounds = cv.results$best.nrounds)
+imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params, nrounds = cv.results$best.nrounds)
 }

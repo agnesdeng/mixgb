@@ -1,3 +1,17 @@
+## mixgb 1.0.2
+* Minor change: 
+- All examples now use `nthread = 2 ` to meet the reuirement of the CRAN policy. 
+
+## Resubmission
+This is a resubmission. In this version I have changed all examples to use  `nthread = 2 ` to ensure that the number of threads used is compliant with the CRAN policy.
+
+In addition, Uwe Ligges, the CRAN maintainer of binary packages for Windows notified me that the issue on Windows platforms are false positive.
+
+## R CMD check results
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+
+
+
 ## mixgb 1.0.1
 This is a new submission. We submit a new version because we have made a major change to our package by using subsampling instead of bootstrapping with our method by default. In addition, we have fixed some minor bugs.
 
@@ -8,8 +22,7 @@ Duration: 1m 16.5s
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
 ## Resubmission
-This is a resubmission. In this version I have:
-the feedback from CRAN.
+This is a resubmission. In this version I have changed the following according to the feedback from CRAN: 
 
 * Converted XGBoost to 'XGBoost' in the DESCRIPTION title.
 

@@ -19,9 +19,9 @@ mixgb(
   save.models = FALSE,
   save.vars = NULL,
   verbose = F,
-  xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1, subsample
-    = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, tree_method
-    = "auto", gpu_id = 0, predictor = "auto"),
+  xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1,
+    subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
+    tree_method = "auto", gpu_id = 0, predictor = "auto"),
   nrounds = 100,
   early_stopping_rounds = 10,
   print_every_n = 10L,
@@ -38,9 +38,9 @@ mixgb(
 
 \item{ordinalAsInteger}{Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.}
 
-\item{bootstrap}{Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = FALSE}. Setting \code{bootstrap = TRUE} would improve imputation variability if sampling-related hyperparameters of XGBoost are set to 1 (default).}
+\item{bootstrap}{Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = FALSE}. Setting \code{bootstrap = TRUE} can improve imputation variability if sampling-related hyperparameters of XGBoost are set to 1.}
 
-\item{pmm.type}{The types of predictive mean matching (PMM). Possible values:
+\item{pmm.type}{The type of predictive mean matching (PMM). Possible values:
 \itemize{
  \item \code{NULL}: Imputations without PMM;
  \item \code{0}: Imputations with PMM type 0;
@@ -51,7 +51,7 @@ mixgb(
 
 \item{pmm.k}{The number of donors for predictive mean matching. Default: 5}
 
-\item{pmm.link}{The link for predictive mean matching binary variables
+\item{pmm.link}{The link for predictive mean matching in binary variables
 \itemize{
  \item \code{"prob"} (Default): use probabilities;
  \item \code{"logit"}: use logit values.
@@ -78,9 +78,9 @@ mixgb(
  \item \code{"sample"}.
 }}
 
-\item{save.models}{Whether to save models for imputing new data later on. Default: \code{FALSE}}
+\item{save.models}{Whether to save imputation models for imputing new data later on. Default: \code{FALSE}}
 
-\item{save.vars}{Response models for variables specified in \code{save.vars} will be saved for imputing new data. Can be a vector of names or indices. By default, \code{save.vars = NULL}, response models for variables with missing values will be saved. To save all models, please specify \code{save.vars = colnames(data)}.}
+\item{save.vars}{For the purpose of imputing new data, the imputation models for response variables specified in \code{save.vars} will be saved. The values in \code{save.vars} can be a vector of names or indices. By default, only the imputation models for variables with missing values in the original data will be saved (\code{save.vars = NULL}). To save imputation models for all variables, users can specify it with \code{save.vars = colnames(data)}.}
 
 \item{verbose}{Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.}
 
@@ -88,24 +88,25 @@ mixgb(
 
 \item{nrounds}{The maximum number of boosting iterations for XGBoost. Default: 100}
 
-\item{early_stopping_rounds}{An integer value \code{k}. XGBoost training will stop if the validation performance hasn't improved for \code{k} rounds. Default: 10.}
+\item{early_stopping_rounds}{An integer value \code{k}. XGBoost training will stop if the validation performance has not improved for \code{k} rounds. Default: 10.}
 
 \item{print_every_n}{Print XGBoost evaluation information at every nth iteration if \code{xgboost_verbose > 0}.}
 
 \item{xgboost_verbose}{Verbose setting for XGBoost training: 0 (silent), 1 (print information) and 2 (print additional information). Default: 0}
 
-\item{...}{Extra arguments to pass to XGBoost}
+\item{...}{Extra arguments to be passed to XGBoost}
 }
 \value{
-If \code{save.models = FALSE}, will return a list of \code{m} imputed datasets. If \code{save.models = TRUE}, will return an object with imputed datasets, saved models and parameters.
+If \code{save.models = FALSE}, this function will return a list of \code{m} imputed datasets. If \code{save.models = TRUE}, it will return an object with imputed datasets, saved models and parameters.
 }
 \description{
-Obtain multiply imputed datasets using XGBoost, with an option to save models for imputing new data later on. Users can choose different settings regarding bootstrapping and predictive mean matching as well as XGBoost hyperparameters.
+This function is used to generate multiply imputed datasets using XGBoost, subsampling and predictive mean matching (PMM).
 }
 \examples{
 # obtain m multiply datasets without saving models
-mixgb.data <- mixgb(data = nhanes3, m = 2)
+params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
+mixgb.data <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
 
 # obtain m multiply imputed datasets and save models for imputing new data later on
-mixgb.obj <- mixgb(data = nhanes3, m = 2, save.models = TRUE)
+mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
 }

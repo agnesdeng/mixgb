@@ -23,31 +23,31 @@ knitr::opts_chunk$set(
 
 # 1. Introduction
 
-It is important to assess the plausibility of imputations before doing analysis. The `mixgb` package provides several visual diagnostic functions using `ggplot2` to compare multiply imputed values versus observed data.
+It is crucial to assess the plausibility of imputations before doing an analysis. The `mixgb` package provides several visual diagnostic functions using `ggplot2` to compare multiply imputed values versus observed data.
 
 ## 1.1 Inspecting imputed values
 
-We will demonstrate these functions using the `nhanes3_newborn` dataset. In the original data, almost all missing values occurred in numeric variables. Only seven observations are missing in the binary factor variable `HFF1` .
+We will demonstrate these functions using the `nhanes3_newborn` dataset. In the original data, almost all missing values occurred in numeric variables. Only seven observations are missing in the binary factor variable `HFF1`. 
 
 ```{r}
 library(mixgb)
 colSums(is.na(nhanes3_newborn))
 ```
 
-In order to visualize some imputed values for other types of variables, we create some extra missing values in `HSHSIZER` (integer), `HSAGEIR` (integer), `HSSEX` (binary factor), `DMARETHN` (multiclass factor) and `HYD1` (Ordinal factor) under MCAR.
+In order to visualize some imputed values for other types of variables, we create some extra missing values in `HSHSIZER` (integer), `HSAGEIR` (integer), `HSSEX` (binary factor), `DMARETHN` (multiclass factor) and `HYD1` (Ordinal factor) under the missing completely at random (MCAR) mechanism.
 
 ```{r}
 withNA.df <- createNA(data = nhanes3_newborn, var.names = c("HSHSIZER", "HSAGEIR", "HSSEX", "DMARETHN", "HYD1"), p = 0.1)
 colSums(is.na(withNA.df))
 ```
 
-We then impute this dataset using `mixgb` with default settings. A list of five imputed datasets are assigned to `imputed.data`. The dimension of each imputed dataset will be the same as the original data.
+We then impute this dataset using `mixgb()` with default settings. After completion, a list of five imputed datasets is assigned to `imputed.data`. Each imputed dataset will have the same dimension as the original data.
 
 ```{r}
 imputed.data <- mixgb(data = withNA.df, m = 5)
 ```
 
-We can check the actual imputed values of a single variable using the function `show_var().` It will return a data.table of `m` columns, each column contains one set of imputed values for the specified variable. Only the imputed values of missing entries will be shown.
+By using the function `show_var()`, we can see the multiply imputed values of the missing data for a given variable. The function returns a data.table of `m` columns, each of which represents a set of imputed values for the variable of interest. Note that the output of this function only includes the imputed values of missing entries in the specified variable.
 
 ```{r}
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD", original.data = withNA.df)
@@ -64,11 +64,11 @@ The `mixgb` package provides the following visual diagnostics functions:
 
 (iii) Three variables: `plot_2num1fac()`, `plot_1num2fac()`.
 
-Each function will return `m+1` panels to compare the observed data with `m` sets of actual imputed values.
+Each function returns `m+1` panels that enable a comparison between the observed data and `m` sets of imputed values for the missing data.
 
 ## 2.1 Single variable
 
-Only the imputations of missing entries in the specified variable will be ploted in panels `m1` to `m5`. If a variable is fully observed, it will return an error.
+Only imputed values of missing entries in the specified variable will be plotted in panels `m1` to `m5`. An error message will be displayed if the variable is fully observed and there are no missing entries to impute.
 
 ### 2.1.1 Numeric
 
@@ -76,7 +76,7 @@ We can plot an imputed numeric variable by histogram or boxplot.
 
 -   `plot_hist()`: plot histograms with density curves.
 
-    Histograms are good at displaying the distribution of numeric data. Users can identify any unusual pattern of the imputed values from their shapes. Under MCAR, we would expect the distribution of imputed values to be the same as that of the observed ones. Under MAR, the distributions of observed and imputed values can be quite different. However, it is still worth plotting the imputed data as any to odd values may indicate that the imputation procedure is unsatisfactory.
+    Histograms are a useful tool for displaying the distribution of numeric data. Users can examine the shapes of the histograms to identify any unusual patterns in the imputed values. If the data is missing completely at random (MCAR), we would expect the distribution of imputed values to be the same as that of the observed values. However, if the data is missing at random (MAR), the distributions of observed and imputed values can be quite different. Nevertheless, it is still worth plotting the imputed data, as any unusual values may indicate that the imputation procedure is unsatisfactory.
 
     ```{r}
 plot_hist(imputation.list = imputed.data, var.name = "BMPHEAD", 
@@ -85,7 +85,7 @@ plot_hist(imputation.list = imputed.data, var.name = "BMPHEAD",
 
 -   `plot_box()`: plot box plots with overlaying data points.
 
-    Users can use `plot_box()` to compare the median, lower and upper quantiles of imputed values with that of the observed ones. Also, we can see the difference between the number of missing values and observed values in the specified variable.
+    Users can use `plot_box()` to compare the median, lower and upper quantiles of imputed values with those of the observed values. The plot also visually displays the disparity in counts between observed and missing values in the variable of interest.
 
     ```{r}
 plot_box(imputation.list = imputed.data, var.name = "BMPHEAD", 
@@ -107,7 +107,7 @@ plot_bar(imputation.list = imputed.data, var.name = "DMARETHN",
 
 ### 2.1.3 Integer
 
-When producing a plot, an integer variable can be treated as either numeric or factor. Users can plot an imputed integer variable according to their preferences using the following functions:
+Users have the flexibility to choose how to treat integer variables when generating a plot, as they can be viewed either as numeric or factor variables. To plot an imputed integer variable, users can use one of the following functions based on their preferred representation:
 
 -   `plot_hist()`: plot histograms with density curves
 
@@ -126,9 +126,9 @@ plot_bar(imputation.list = imputed.data, var.name = "HSHSIZER",
 
 ### 2.1.4 Ordinal factor
 
-The function `mixgb()` will not convert any ordinal factor to integers by default. So we can just plot ordinal factors as factors. (see Section 2.1.2).
+By default, the function `mixgb()` does not convert ordinal factors to integers. Therefore, we may simply plot ordinal factors as factors (see Section 2.1.2).
 
-However, setting `ordinalAsInteger = TRUE` in `mixgb()` may speed up the imputation process, but users need to decide whether to transform them back. In this case, we can just plot the imputed values as integers (see Section 2.1.3).
+However, setting `ordinalAsInteger = TRUE` in `mixgb()` may speed up the imputation process, but users must decide whether to transform them back. If we choose to convert ordinal factors to integers prior to imputation, the imputed values must be plotted as if they were integers (see Section 2.1.3).
 
 
 ```{r}
@@ -144,32 +144,32 @@ plot_box(imputation.list = imputed.data2, var.name = "HYD1",
 
 ## 2.2 Two variables
 
-To plot the multiply imputed values of two variables, at least one of them has to be incomplete in the original data. In panels `m1` to `m5`, missing data either occurs in either one of the variables.
+All of the functions in this section for visualizing the multiply imputed values of two variables require at least one of the variables in the original dataset to be incomplete. The imputed values shown in panels `m1` to `m5` are those that were originally missing in one or both of the variables.
 
 ### 2.2.1 Two numeric variables
 
-We can plot scatter plots of two numeric variables using `plot_2num()`. We can specify the name of a numeric variable on the x-axis in `var.x` , and another numeric variable on the y-axis in `var.y`.
+We can generate scatter plots of two imputed numeric variables by using `plot_2num()`. We can specify the x-axis variable in `var.x` and the y-axis variable in `var.y`.
 
-Users can choose to plot the shapes of different types of missing values by setting `shape = TRUE`. We only recommend plotting the shapes when the dataset is small. By default, `shape = FALSE` to speed up the plotting process.
+Users can choose to plot the shapes of different types of missing values by setting `shape = TRUE`. We only recommend plotting the shapes for small datasets. By default, `shape = FALSE` is used to expedite the plotting process.
 
 ```{r}
 plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM", 
           original.data = withNA.df, shape = TRUE)
 ```
 
-**NA.condition** represents the following types of missing values.
+**NA.condition** represents the following four types of missing values.
 
 (i) `both.observed`: Both `var.x` and`var.y` are observed. This only appears in the first panel - `Observed` (Shape: diamond).
 
 (ii) `both.missing`: Imputed values where both `var.x` and `var.y` are originally missing (Shape: circle);
 
-(iii) `var.x.missing`: Imputed values where `var.x` is originally missing and `var.y` isn't (Shape: X);
+(iii) `var.x.missing`: Imputed values where `var.x` is originally missing and `var.y` is not (Shape: X);
 
-(iv) `var.y.missing`: Imputed values where `var.y` is originally missing and `var.x` isn't (Shape: Y).
+(iv) `var.y.missing`: Imputed values where `var.y` is originally missing and `var.x` is not (Shape: Y).
 
 ### 2.2.2 One numeric vs one factor
 
-We can plot a numeric variable versus a factor using `plot_1num1fac()`. The output is a box plot with overlaying points. Users need to specify a numeric variable in `var.num` and a factor in `var.fac`.
+We can plot a numeric variable versus a factor using `plot_1num1fac()`. The output of this function is a box plot with overlaying points. Users are required to specify a numeric variable in `var.num` and a factor in `var.fac`.
 
 **NA.condition** is similar to the definition in Section 2.2.1.
 
@@ -180,7 +180,7 @@ plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HS
 
 ### 2.2.3 Two factors
 
-We can plot bar plots to show the relationship between two factors using `plot_2fac()`. Note that this function requires at least one of the variables to be incomplete in the original dataset.
+We can generate bar plots to show the relationship between two factors by using `plot_2fac()`. 
 
 ```{r}
 plot_2fac(imputation.list = imputed.data, var.fac1 = "HYD1", var.fac2 = "HFF1", 
@@ -189,7 +189,7 @@ plot_2fac(imputation.list = imputed.data, var.fac1 = "HYD1", var.fac2 = "HFF1",
 
 ### 2.2.4 One numeric vs one integer
 
-We can use `plot_2num()` to plot a numeric variable versus an integer variable. Note that the plots would look different if we swap the variables `var.x` and `var.y`.
+We can use `plot_2num()` to visualize the relationship between a numeric variable and an integer variable. Note that the graphs would appear differently if the variables `var.x` and `var.y` were swapped.
 
 ```{r}
 plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "HSAGEIR", 
@@ -198,7 +198,7 @@ plot_2num(imputation.list = imputed.data, var.x = "HSAGEIR", var.y = "BMPHEAD",
           original.data = withNA.df, shape = TRUE)
 ```
 
-If we treat an integer variable as factor, we can use `plot_1num1fac()` .
+If the integer variable `HSAGEIR` is to be treated as a factor rather than a numeric variable, the function `plot 1num1fac()` can be used.
 
 ```{r}
 plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HSAGEIR", 
@@ -207,7 +207,7 @@ plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HS
 
 ### 2.2.5 Two integers
 
-We can plot two variables of integer type using either `plot_2num()` ,`plot_1num1fac()` or `plot_2fac()`. Users should choose the plotting functions based on the nature of the variable. For example, if an integer variable `age` has data ranging from 0 to 110, it may be easier to treat `age` as numeric rather than a factor. On the other hand, if we have an integer variable which only has several distinct values (e.g. 1,2,3), it may be better to treat them as factor for plotting. In this dataset, we only have two variables of integer type-`HSHSIZER`(household size) and `HSAGEIR`(baby's age ranging from 2 to 11 months). We would not expect any obvious relation between these two, but we plot them anyway.
+We can plot two integer variables using either `plot_2num()` ,`plot_1num1fac()`, or `plot_2fac()`. Users should choose the plotting functions based on the nature of the variable. For example, if an integer variable `age` has values between 0 and 110, it may be more convenient to treat `age` as numeric rather than a factor. If, on the other hand, an integer variable has just a few unique values (such as 1, 2, 3), it may be preferable to be plotted as a factor.  In this dataset, there are only two variables of integer type - `HSHSIZER`(household size) and `HSAGEIR`(baby's age ranging from 2 to 11 months). Although there is no expected relationship between these two, we still create a plot for demonstration purposes.
 
 ```{r}
 plot_2num(imputation.list = imputed.data, var.x = "HSHSIZER", var.y = "HSAGEIR", 
@@ -220,20 +220,20 @@ plot_2fac(imputation.list = imputed.data, var.fac1 = "HSHSIZER", var.fac2 = "HSA
 
 ## 2.3 Three variables
 
-To plot the multiply imputed values of three variables, at least one of them has to be incomplete in the original data.
+To plot the multiply imputed values of three variables, at least one of them has to be incomplete in the original dataset.
 
 ### 2.3.1 Two numeric variables conditional on one factor
 
-We can generate a conditional scatter plots for two numeric variables using `plot_2num1fac()` . The variable on the x-axis should be specified in `var.x`, while the y-axis one should be in `var.y` . The factor we want to be conditional on is `con.fac`.
+We can generate a scatter plot of two numeric variables when conditioned on a factor by using `plot_2num1fac()`. The variable for the x-axis should be specified in `var.x`, whereas the variable for the y-axis should be specified in `var.y`. The factor on which we want to condition is `con.fac`.
 
 ```{r}
 plot_2num1fac(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
   con.fac = "HFF1", original.data = withNA.df)
 ```
 
-When we have three variables, there are $2^3$ different types of missing patterns, consisting of all possible combinations of zero to three variables missing. However, it would be hard to differentiate all 8 types of missingness in the same plots, especially in the case when the dataset is not small. Therefore, we only choose to show the following three types in **NA.condition** in the plot when `shape = TRUE`.
+When we have three variables, there are $2^3$ different types of missing patterns. These patterns consist of all possible combinations of zero to three variables missing. However, attempting to differentiate all eight types of missingness in the same plot can be challenging, particularly when working with large datasets. Therefore, we have decided to display the following three types of missing patterns (**NA.condition**) in the plot when `shape = TRUE`.
 
-**NA.condition** represents the following types of missing values.
+**NA.condition** represents the following three types of missing values.
 
 (i) `all.observed`: Observations where all three variables are observed. This only appears in the first panel - `Observed` .
 
@@ -248,7 +248,7 @@ plot_2num1fac(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPREC
               con.fac = "DMARETHN", original.data = withNA.df, shape = TRUE)
 ```
 
-If we want to treat integer variables as numeric, we can put them in either `var.x` or `var.y`. Here is an example, where `HSAGEIR` is an integer variable with values ranging from 2 to 11.
+If we want to treat an integer variable as numeric, we can place it in either `var.x` or `var.y`. Here is an example, where `HSAGEIR` is an integer variable whose values range from 2 to 11.
 
 ```{r,fig.asp = 1}
 plot_2num1fac(imputation.list = imputed.data, var.x = "HSAGEIR", var.y = "BMPRECUM",
@@ -257,7 +257,7 @@ plot_2num1fac(imputation.list = imputed.data, var.x = "HSAGEIR", var.y = "BMPREC
 
 ### 2.3.2 One numeric variable and one factor conditional on another factor
 
-`plot_1num2fac()` will generate boxplots with overlaying data points of one numeric variable vs a factor, conditional on another factor.
+The function `plot_1num2fac()` generates boxplots with overlaying data points for a numeric variable with a factor, conditional on another factor.
 
 ```{r,fig.asp = 0.7}
 plot_1num2fac(imputation.list = imputed.data, var.fac = "DMARETHN", var.num = "BMPRECUM", 
@@ -273,7 +273,7 @@ plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
           original.data = withNA.df, color.pal = NULL)
 ```
 
-We can change the colors by providing a vector of color hex codes in the argument `color.pal`. For example, we can use one of the colorblind-friendly palette `Set2` from the R package `RColorBrewer`. Note that if we have `m` imputed datasets, we need `m+1` hex codes because we also have to display the `Observed` panel.
+The `color.pal` argument allows users to specify a custom color palette with a vector of hex codes, such as the colorblind-friendly palette `Set2` from the R package `RColorBrewer`. Note that if there are `m` imputed datasets, a vector of `m+1` hex codes is required because an extra color is needed for the `Observed` panel.
 
 ```{r}
 library(RColorBrewer)
@@ -293,7 +293,7 @@ plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD", var.y = "BMPRECUM",
           original.data = withNA.df, color.pal = color.names)
 ```
 
-Here is a very useful R colors names cheat-sheet created by Dr Ying Wei.
+Here is a very useful cheat sheet of R colors names created by Dr Ying Wei.
 
 [http://www.stat.columbia.edu/\\\~tzheng/files/Rcolor.pdf](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf){.uri}
 
@@ -301,7 +301,7 @@ Here is a very useful R colors names cheat-sheet created by Dr Ying Wei.
 
 We can also plot multiply imputed datasets obtaining from other packages, such as `mice`. Here is an example using the `nhanes2` data from `mice`.
 
-Note that this dataset is quite small, only has 25 rows and 4 columns (`age`, `bmi`, `hyp` and `chl`). There are only 9, 8 and 10 missing values in the variables `bmi`, `hyp` and `chl` respectively. Imputed values are volatile when the dataset is small.
+This dataset consists of just 25 rows and 4 columns (`age`, `bmi`, `hyp` and `chl`). There are only 9, 8 and 10 missing values in the variables `bmi`, `hyp`, and `chl`, respectively. Note that imputed values are volatile when the dataset is this small.
 
 ```{r}
 library(mice)
@@ -327,9 +327,9 @@ plot_2num1fac(imputation.list = mice.data, var.x = "chl", var.y = "bmi",
 ```
 
 # 5 Plot against masked true values 
-In general, we wouldn't know the true values of the missing data, so we can only plot the imputed values versus the observed data. However, if we happen to know the true value, we can compare the imputed values with them.
+In general, we do not know the true values of the missing data, thus we can only plot the imputed values versus the observed data. However, if we happen to know the true values (e.g., in cases where it is generated by simulation), we may compare them to the imputed values.
 
-Let's generate a simple dataset `full.df` and create 30% missing values in variable `norm1` and `norm2`. We then impute `MCAR.df` using `mixgb()`. 
+Let us generate a simple dataset `full.df` and create 30% missing values in variable `norm1` and `norm2` under the MCAR mechanism. We then impute the `MCAR.df` dataset with `mixgb()`. 
 ```{r}
 N <- 1000
 norm1 <- rnorm(n = N, mean = 1, sd = 1)
@@ -341,7 +341,7 @@ MCAR.df <- createNA(data = full.df, var.names = c("norm1", "norm2"), p = c(0.3, 
 mixgb.data <- mixgb(data = MCAR.df, m = 5, nrounds = 10)
 ```
 
-Now since we know the true data, we can specify it in the plotting functions. It will generate an extra panel called `MaskedTrue`, which shows values that are originally observed but intentionally made missing.
+If the true data is known, it can be specified in the argument `true.data` in the visual diagnostic functions. The output will then have an extra panel called `MaskedTrue`, which shows values originally observed but intentionally made missing.
 ```{r}
 plot_hist(imputation.list = mixgb.data, var.name = "norm1", 
           original.data = MCAR.df, true.data = full.df)

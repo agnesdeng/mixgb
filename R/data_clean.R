@@ -1,5 +1,5 @@
 #' Data cleaning
-#' @description  Check some common errors of a raw dataset and return a suitable dataset to be fed into the imputer. Note that this function is just a preliminary check. It will not guarantee the output dataset is fully cleaned.
+#' @description  The function `data_clean()` serves the purpose of performing a preliminary check and fix some evident issues. However, the function cannot resolve all data quality-related problems.
 #' @param  rawdata A data frame.
 #' @param  levels.tol Tolerant proportion of the number of levels to the number of observations in a multiclass variable. Default: 0.2
 #' @return A preliminary cleaned dataset
