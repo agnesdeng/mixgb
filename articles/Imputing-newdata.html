@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@
                         <h4 data-toc-skip class="author">Yongshi
 Deng</h4>
             
-            <h4 data-toc-skip class="date">2023-02-13</h4>
+            <h4 data-toc-skip class="date">2023-02-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/Imputing-newdata.Rmd" class="external-link"><code>vignettes/Imputing-newdata.Rmd</code></a></small>
       <div class="d-none name"><code>Imputing-newdata.Rmd</code></div>
@@ -88,28 +88,29 @@ Deng</h4>
 <div class="section level2">
 <h2 id="impute-new-unseen-data-using-a-saved-imputer-object">Impute new unseen data using a saved imputer object<a class="anchor" aria-label="anchor" href="#impute-new-unseen-data-using-a-saved-imputer-object"></a>
 </h2>
-<p>First we can split the <code>nhanes3_newborn</code> dataset into
+<p>First, let us split the <code>nhanes3_newborn</code> dataset into
 training data and test data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"nhanes3_newborn"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nhanes3_newborn</span><span class="op">)</span></span>
 <span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.7</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
 <span><span class="va">test.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3_newborn</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span></code></pre></div>
-<p>We can use the training data to obtain <code>m</code> imputed
+<p>We can use the training data to generate <code>m</code> imputed
 datasets and save their imputation models. To achieve this, users need
-to set <code>save.models = TRUE</code>. By default
-<code>save.vars = NULL</code>, imputation models for variables with
-missing data in the training data will be saved. However, the unseen
-data may also have missing values in other variables. Users can be
-comprehensive by saving models for all variables by setting
-<code>save.vars = colnames(train.data)</code>. Note that this would take
-much longer as we need to train and save a model for each variable. If
-users are confident that only certain variables will have missing values
-in the new data, we recommend specifying the names or indices of these
-variables in <code>save.vars</code> instead of saving models for all
-variables.</p>
+to set <code>save.models = TRUE</code>. By default, imputation models
+for all variables with missing values in the training data will be saved
+(<code>save.vars = NULL</code>). However, it is possible that unseen
+data may have missing values in other variables. To be thorough, users
+can save models for all variables by setting
+<code>save.vars = colnames(train.data)</code>. Note that this may take
+significantly longer as it requires training and saving a model for each
+variable. In cases where users are confident that only certain variables
+will have missing values in the new data, it is advisable to specify the
+names or indices of these variables in <code>save.vars</code> rather
+than saving models for all variables.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># obtain m imputed datasets for train.data and save imputation models</span></span>
 <span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.vars <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
@@ -117,14 +118,14 @@ variables.</p>
 return an object containing the following:</p>
 <ul>
 <li><p><code>imputed.data</code>: a list of <code>m</code> imputed
-dataset for training data</p></li>
+datasets for training data</p></li>
 <li><p><code>XGB.models</code>: a list of <code>m</code> sets of XGBoost
 models for variables specified in <code>save.vars</code>.</p></li>
 <li><p><code>params</code>: a list of parameters that are required for
 imputing new data using <code><a href="../reference/impute_new.html">impute_new()</a></code> later on.</p></li>
 </ul>
-<p>We can extract <code>m</code> imputed datasets from the saved imputer
-object by <code>$imputed.data</code>.</p>
+<p>We can access the <code>m</code> imputed datasets from the saved
+imputer object by using <code>$imputed.data</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">train.imputed</span> <span class="op">&lt;-</span> <span class="va">mixgb.obj</span><span class="op">$</span><span class="va">imputed.data</span></span>
 <span><span class="co"># the 5th imputed dataset</span></span>
@@ -143,24 +144,26 @@ object by <code>$imputed.data</code>.</p>
 <span><span class="co">#&gt; 4:   10.0   16.6   16.0  8.98  0.561    1    3</span></span>
 <span><span class="co">#&gt; 5:    5.8    9.0    9.0  7.60  2.379    2    1</span></span>
 <span><span class="co">#&gt; 6:    5.4    9.2    9.4  9.00  2.173    2    2</span></span></code></pre></div>
-<p>To impute new data with this saved imputer object, we use the
-<code><a href="../reference/impute_new.html">impute_new()</a></code> function. User can also specify whether to use
-new data for initial imputation. By default,
-<code>initial.newdata = FALSE</code>, we will use the information of
-training data to initially impute the new data. New data will be imputed
-with the saved models. This process will be considerably faster as we
-don’t need to build the imputation models again.</p>
+<p>To impute new data with this saved imputer object, we can use the
+<code><a href="../reference/impute_new.html">impute_new()</a></code> function. Users can choose whether to use new
+data for initial imputation. By default, the information of training
+data is used to initially impute the missing data in the new dataset
+(<code>initial.newdata = FALSE</code>). After this, the missing values
+in the new dataset will be imputed using the saved models from the
+imputer object. This process will be considerably faster because it will
+not involve rebuilding the imputation models.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span></code></pre></div>
-<p>If PMM is used when we call <code><a href="../reference/mixgb.html">mixgb()</a></code>, predicted values of
-missing entries in the new dataset are matched with donors from training
-data. Users can also set the number of donors for PMM when imputing new
-data. By default, <code>pmm.k = NULL</code> , which means the same
-setting as the training object will be used.</p>
+<p>If PMM is used in <code><a href="../reference/mixgb.html">mixgb()</a></code>, predicted values of missing
+entries in the new dataset will be matched with donors from the training
+data. Additionally, users can set the number of donors to be used in PMM
+when imputing new data. The default setting <code>pmm.k = NULL</code>
+indicates that the same setting as the training object will be used.</p>
 <p>Similarly, users can set the number of imputed datasets
-<code>m</code>. Note that this value has to be smaller than or equal to
-the <code>m</code> in <code><a href="../reference/mixgb.html">mixgb()</a></code>. If it is not specified, it
-will use the same <code>m</code> value as the saved object.</p>
+<code>m</code> in <code><a href="../reference/impute_new.html">impute_new()</a></code>. Note that this value has to
+be less than or equal to the <code>m</code> value specified in
+<code><a href="../reference/mixgb.html">mixgb()</a></code>. If this value is not specified, the function will
+use the same <code>m</code> value as the saved object.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span>, initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 </div>
