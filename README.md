@@ -8,7 +8,7 @@
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/CRAN-1.0.2-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github-1.0.2-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/github-1.0.3-brightgreen)](https://github.com/agnesdeng/mixgb)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -184,16 +184,13 @@ We can also customize imputation settings:
 
 ``` r
 # Use mixgb with chosen settings
-params <- list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1,
-    subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1,
-    colsample_bynode = 1, nthread = 4, tree_method = "auto",
-    gpu_id = 0, predictor = "auto")
+params <- list(max_depth = 5, subsample = 0.9, nthread = 2, tree_method = "hist")
 
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5, maxit = 1,
+imputed.data <- mixgb(data = nhanes3_newborn, m = 10, maxit = 2,
     ordinalAsInteger = FALSE, bootstrap = FALSE, pmm.type = "auto",
     pmm.k = 5, pmm.link = "prob", initial.num = "normal", initial.int = "mode",
     initial.fac = "mode", save.models = FALSE, save.vars = NULL,
-    xgb.params = params, nrounds = 100, early_stopping_rounds = 10,
+    xgb.params = params, nrounds = 200, early_stopping_rounds = 10,
     print_every_n = 10L, verbose = 0)
 ```
 
@@ -214,9 +211,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPHEAD"
+#> [1] "BMPTR2"
 cv.results$best.nrounds
-#> [1] 18
+#> [1] 17
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -233,10 +230,10 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 18
+#> [1] 20
 ```
 
-Let’s just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
+Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
 to obtain 5 imputed datasets.
 
 ``` r
@@ -300,25 +297,25 @@ specified variable.
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 #>        m1   m2   m3   m4   m5
-#>   1: 44.2 44.7 42.9 43.6 41.7
-#>   2: 42.2 40.2 43.3 41.8 45.7
-#>   3: 43.5 42.4 46.0 43.5 43.8
-#>   4: 42.8 44.3 45.1 42.2 45.1
-#>   5: 45.4 45.0 45.2 46.6 46.8
+#>   1: 44.4 42.8 43.2 44.5 43.0
+#>   2: 45.7 42.2 44.3 45.9 48.2
+#>   3: 42.1 43.7 43.0 42.3 41.8
+#>   4: 42.5 42.6 42.5 43.0 43.5
+#>   5: 45.5 46.8 45.6 45.7 42.7
 #>  ---                         
-#> 120: 44.4 46.2 46.0 45.5 46.3
-#> 121: 45.3 46.4 44.8 46.7 45.0
-#> 122: 41.5 41.9 41.4 39.6 40.8
-#> 123: 42.4 42.9 42.3 40.4 43.0
-#> 124: 44.8 44.6 42.6 43.0 42.4
+#> 120: 45.2 45.5 47.6 45.8 46.0
+#> 121: 44.0 45.2 46.1 44.9 45.9
+#> 122: 41.8 42.6 42.4 42.4 41.6
+#> 123: 46.2 43.9 41.6 43.0 43.1
+#> 124: 45.1 43.3 44.7 44.9 45.6
 show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
 #>    m1 m2 m3 m4 m5
-#> 1:  2  2  1  2  2
-#> 2:  1  2  1  2  2
+#> 1:  2  2  2  2  2
+#> 2:  2  2  2  2  2
 #> 3:  2  2  2  2  2
-#> 4:  2  2  2  2  2
-#> 5:  1  1  1  1  1
-#> 6:  1  2  1  1  1
+#> 4:  1  2  2  1  2
+#> 5:  1  1  1  2  1
+#> 6:  1  2  2  2  2
 #> 7:  2  2  2  2  2
 ```
 
@@ -494,9 +491,7 @@ GPU-realted arguments include `gpu_id` and `predictor`. By default,
 `gpu_id = 0` and `predictor = "auto"`.
 
 ``` r
-params <- list(max_depth = 3, gamma = 0.1, eta = 0.3, min_child_weight = 1,
-    subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1,
-    colsample_bynode = 1, nthread = 1, tree_method = "gpu_hist",
+params <- list(max_depth = 3, subsample = 0.7, nthread = 1, tree_method = "gpu_hist",
     gpu_id = 0, predictor = "auto")
 
 

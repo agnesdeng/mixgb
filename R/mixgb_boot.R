@@ -1,7 +1,7 @@
 # Multiple imputation using xgboost with bootstrap
 
 mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
-                       xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, colsample_bytree = 1, min_child_weight = 1, subsample = 1, tree_method = "auto", gpu_id = 0, predictor = "auto", scale_pos_weight = 1),
+                       xgb.params = list(),
                        nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                        ...) {
   for (var in missing.vars) {

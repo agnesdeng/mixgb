@@ -1,5 +1,5 @@
 # Initially impute a dataset with missing values
-initial_imp <- function(data, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = TRUE) {
+initial_imp <- function(data, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = FALSE) {
   # @param data A data table (with missing values NA's)
   # @param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
   # @param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode"

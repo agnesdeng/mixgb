@@ -1,13 +1,12 @@
 # Initially impute missing values in the new data using information of a previously trained imputer object.
-initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorted.types, sorted.names, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = TRUE) {
+initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorted.types, sorted.names, initial.num = "normal", initial.int = "mode", initial.fac = "mode") {
   # @param initial.newdata Whether or not to use the information of the new data to initially impute new data (mean,median,sd etc). Default: FALSE (use training set information instead)
   # @param new.sorted A data.table (with missing values NA's). Must be of the same order as sorted training data.
   # @param traindata A data.table
-  # @param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
-  # @param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode"
-  # @param initial.fac Initial imputation method for factor type data ("mode","sample"). Default: "mode"
-  # @param bootstrap Whether or not use bootstrap for multiple imputation. If TRUE, also return sortedNA.dt
-  # @return A list of objects that will be used for imputation later
+  # @param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal".
+  # @param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode".
+  # @param initial.fac Initial imputation method for factor type data ("mode","sample"). Default: "mode".
+  # @return A list of objects that will be used for imputation later.
 
 
   # newdata has the same order as new.sorted in traindata
@@ -102,11 +101,9 @@ initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorte
     }
   }
 
-  if (bootstrap == TRUE) {
+
     return(list("sorted.dt" = new.sorted, "missing.vars" = missing.vars, "missing.types" = missing.types, "Na.idx" = Na.idx, "sorted.names" = sorted.names))
-  } else {
-    return(list("sorted.dt" = new.sorted, "missing.vars" = missing.vars, "missing.types" = missing.types, "Na.idx" = Na.idx, "sorted.names" = sorted.names))
-  }
+
 }
 
 

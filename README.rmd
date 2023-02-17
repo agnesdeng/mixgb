@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/CRAN-1.0.2-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github-1.0.2-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/github-1.0.3-brightgreen)](https://github.com/agnesdeng/mixgb)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -145,30 +145,22 @@ We can also customize imputation settings:
     `save.models` and `save.vars`.
     
 
-```{r}
+```{r, eval = FALSE}
 # Use mixgb with chosen settings
 params <- list(
-  max_depth = 3,
-  gamma = 0,
-  eta = 0.3,
-  min_child_weight = 1,
-  subsample = 0.7,
-  colsample_bytree = 1,
-  colsample_bylevel = 1,
-  colsample_bynode = 1,
-  nthread = 4,
-  tree_method = "auto",
-  gpu_id = 0,
-  predictor = "auto"
+  max_depth = 5,
+  subsample = 0.9,
+  nthread = 2,
+  tree_method = "hist"
 )
 
 imputed.data <- mixgb(
-  data = nhanes3_newborn, m = 5, maxit = 1,
+  data = nhanes3_newborn, m = 10, maxit = 2,
   ordinalAsInteger = FALSE, bootstrap = FALSE,
   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
   save.models = FALSE, save.vars = NULL,
-  xgb.params = params, nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
+  xgb.params = params, nrounds = 200, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
 )
 ```
 
@@ -206,7 +198,7 @@ cv.results$best.nrounds
 
 
 
-Let's just try setting `nrounds = cv.results$best.nrounds` in `mixgb()` to obtain 5 imputed datasets.
+Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()` to obtain 5 imputed datasets.
 
 ```{r, eval = FALSE}
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
@@ -340,13 +332,7 @@ To utilize the GPU version of mixgb(), users can simply specify ` tree_method = 
 ```{r, eval = FALSE}
 params <- list(
   max_depth = 3,
-  gamma = 0.1,
-  eta = 0.3,
-  min_child_weight = 1,
   subsample = 0.7,
-  colsample_bytree = 1,
-  colsample_bylevel = 1,
-  colsample_bynode = 1,
   nthread = 1,
   tree_method = "gpu_hist",
   gpu_id = 0,

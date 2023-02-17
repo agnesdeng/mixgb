@@ -11,9 +11,7 @@ mixgb_cv(
   early_stopping_rounds = 10,
   response = NULL,
   select_features = NULL,
-  xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1,
-    subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1,
-    tree_method = "auto", gpu_id = 0, predictor = "auto"),
+  xgb.params = list(),
   stringsAsFactors = FALSE,
   verbose = TRUE,
   ...

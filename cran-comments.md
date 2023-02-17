@@ -5,7 +5,7 @@
 ## Resubmission
 This is a resubmission. In this version I have changed all examples to use  `nthread = 2 ` to ensure that the number of threads used is compliant with the CRAN policy.
 
-In addition, Uwe Ligges, the CRAN maintainer of binary packages for Windows notified me that the issue on Windows platforms are false positive.
+In addition, the CRAN maintainer of binary packages for Windows notified me that the issue of the last submission on Windows platforms are false positive.
 
 ## R CMD check results
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔

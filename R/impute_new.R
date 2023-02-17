@@ -146,7 +146,7 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
 
 
 
-  initial.obj <- initial_impnew(initial.newdata = initial.newdata, new.sorted = sortedNA.dt, traindata = trainNA.dt, sorted.names = sorted.names, sorted.types = sorted.types, initial.num = initial.num, initial.fac = initial.fac, bootstrap = bootstrap)
+  initial.obj <- initial_impnew(initial.newdata = initial.newdata, new.sorted = sortedNA.dt, traindata = trainNA.dt, sorted.names = sorted.names, sorted.types = sorted.types, initial.num = initial.num, initial.fac = initial.fac)
   # if initial.newdata=TRUE use newdata information to initially impute newdata
   # if initial.newdata=FALSE use training data information to initially impute newdata
 

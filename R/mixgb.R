@@ -59,15 +59,19 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
                   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
                   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
                   save.models = FALSE, save.vars = NULL, verbose = F,
-                  xgb.params = list(max_depth = 3, gamma = 0, eta = 0.3, min_child_weight = 1, subsample = 0.7, colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, tree_method = "auto", gpu_id = 0, predictor = "auto"),
+                  xgb.params = list(),
                   nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, xgboost_verbose = 0, ...) {
-  if (!(is.data.frame(data) || is.matrix(data))) {
+
+   if (!(is.data.frame(data) || is.matrix(data))) {
     stop("Data need to be a data frame or a matrix.")
   }
 
   if (!is.data.table(data)) {
     data <- as.data.table(data)
   }
+
+  xgb.params <- do.call("default_params", xgb.params)
+  xgb.params
 
 
   if (ordinalAsInteger == TRUE) {
@@ -347,3 +351,44 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
     return(mixgb.obj)
   }
 } # end of impute function
+
+
+
+#' Auxiliary function for validating xgb.params
+#' @description Auxiliary function for setting up the default XGBoost-related hyperparameters for mixgb and checking the \code{xgb.params} argument in \code{mixgb()}. For more details on XGBoost hyperparameters, please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
+#' @param eta Step size shrinkage. Default: 0.3.
+#' @param gamma Minimum loss reduction required to make a further partition on a leaf node of the tree. Default: 0
+#' @param max_depth Maximum depth of a tree. Default: 3.
+#' @param min_child_weight Minimum sum of instance weight needed in a child. Default: 1.
+#' @param max_delta_step Maximum delta step. Default: 0.
+#' @param subsample Subsampling ratio of the data. Default: 0.7.
+#' @param sampling_method The method used to sample the data. Default: "uniform".
+#' @param colsample_bytree Subsampling ratio of columns when constructing each tree. Default: 1.
+#' @param colsample_bylevel Subsampling ratio of columns for each level. Default: 1.
+#' @param colsample_bynode Subsampling ratio of columns for each node. Default: 1.
+#' @param lambda L2 regularization term on weights. Default: 1.
+#' @param alpha L1 regularization term on weights. Default: 0.
+#' @param tree_method Options: "auto", "exact", "approx", "hist", and "gpu_hist". Default: "auto".
+#' @param scale_pos_weight Used for unbalanced classes to control the balance of positive and negative weights. Default: 1.
+#' @param max_leaves Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.
+#' @param max_bin Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.
+#' @param predictor Default: "auto"
+#' @param num_parallel_tree The number of parallel trees used for boosted random forests. Default: 1.
+#' @param gpu_id Which GPU device should be used. Default: 0.
+#' @param nthread The number of CPU threads to be used. Default: -1 (all available threads).
+#' @return A list of hyperparameters.
+#' @export
+#' @examples
+#' default_params()
+#'
+#' xgb.params <- list(subsample = 0.9, nthread = 2)
+#' default_params(subsample = xgb.params$subsample, nthread = xgb.params$nthread)
+#'
+#' xgb.params <- do.call("default_params", xgb.params)
+#' xgb.params
+default_params <- function(eta = 0.3, gamma = 0, max_depth = 3, min_child_weight = 1, max_delta_step, subsample = 0.7, sampling_method = "uniform", colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, lambda = 1, alpha = 0, tree_method = "auto", scale_pos_weight = 1, max_leaves = 0, max_bin = 256, predictor = "auto", num_parallel_tree = 1, gpu_id = 0, nthread = -1){
+
+  list(eta = eta, gamma = gamma, max_depth = max_depth, min_child_weight = min_child_weight, subsample = subsample, sampling_method = sampling_method, colsample_bytree = colsample_bytree, colsample_bylevel = colsample_bylevel, colsample_bynode = colsample_bynode, lambda = lambda, alpha = alpha, tree_method = tree_method, scale_pos_weight = scale_pos_weight, max_leaves = max_leaves, max_bin = max_bin, predictor = predictor, num_parallel_tree = num_parallel_tree, gpu_id = gpu_id, nthread = nthread)
+
+}
+

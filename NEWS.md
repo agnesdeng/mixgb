@@ -1,3 +1,8 @@
+# mixgb 1.0.3
+  * Minor change:
+  - Add an auxiliary function `default_params()` for the main function `mixgb()`. 
+    This function is designed to validate the list of XGBoost hyperparameters that are provided by the user. If users only want to modify a subset of hyperparameter, they can simply pass in those specific hyperparameters as a list in the `xgb_params` argument, without having to listing all other hyperparameters along with their default values.
+  
 # mixgb 1.0.2
   * Minor change:
   - All examples use `nthread = 2` to meet the requirement of the CRAN policy.

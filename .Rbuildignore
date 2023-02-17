@@ -1,6 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
+^README\.md$
+^NEWS\.md$
 ^LICENSE\.md$
 ^doc$
 ^Meta$
@@ -8,6 +10,7 @@
 ^_pkgdown\.yml$
 ^docs$
 ^\.github$
+.gitignore
 ^vignettes\web$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$

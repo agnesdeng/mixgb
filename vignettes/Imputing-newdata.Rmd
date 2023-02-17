@@ -34,8 +34,14 @@ test.data <- nhanes3_newborn[-idx, ]
 We can use the training data to generate `m` imputed datasets and save their imputation models. To achieve this, users need to set `save.models = TRUE`. By default, imputation models for all variables with missing values in the training data will be saved (`save.vars = NULL`).  However, it is possible that unseen data may have missing values in other variables. To be thorough, users can save models for all variables by setting `save.vars = colnames(train.data)`. Note that this may take significantly longer as it requires training and saving a model for each variable. In cases where users are confident that only certain variables will have missing values in the new data, it is advisable to specify the names or indices of these variables in `save.vars` rather than saving models for all variables.
 
 ```{r}
+params <- list(
+  max_depth = 3,
+  subsample = 0.7,
+  nthread = 2
+)
+
 # obtain m imputed datasets for train.data and save imputation models
-mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE, save.vars = NULL)
+mixgb.obj <- mixgb(data = train.data, m = 5, xgb.params = params, save.models = TRUE, save.vars = NULL)
 ```
 
 When `save.models = TRUE`, `mixgb()` will return an object containing the following:
@@ -56,7 +62,7 @@ head(train.imputed[[5]])
 
 To impute new data with this saved imputer object, we can use the `impute_new()` function. Users can choose whether to use new data for initial imputation. By default, the information of training data is used to initially impute the missing data in the new dataset (`initial.newdata = FALSE`). After this, the missing values in the new dataset will be imputed using the saved models from the imputer object. This process will be considerably faster because it will not involve rebuilding the imputation models.
 
-```{r}
+```{r, eval = FALSE}
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
 ```
 
@@ -64,6 +70,6 @@ If PMM is used in `mixgb()`, predicted values of missing entries in the new data
 
 Similarly, users can set the number of imputed datasets `m` in `impute_new()`. Note that this value has to be less than or equal to the `m` value specified in `mixgb()`. If this value is not specified, the function will use the same `m` value as the saved object.
 
-```{r}
+```{r, eval = FALSE}
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data, initial.newdata = FALSE, pmm.k = 3, m = 4)
 ```
