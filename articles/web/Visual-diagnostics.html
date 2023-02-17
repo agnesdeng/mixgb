@@ -125,34 +125,34 @@ to <code>imputed.data</code>. Each imputed dataset will have the same
 dimension as the original data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [10:49:17] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:53:50] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:17] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:53:51] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:20] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:53:54] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:20] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:53:54] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:23] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:53:57] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:24] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:53:57] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:27] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:00] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:27] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:01] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:30] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:04] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:31] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:04] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span></code></pre></div>
 <p>By using the function <code><a href="../../reference/show_var.html">show_var()</a></code>, we can see the
 multiply imputed values of the missing data for a given variable. The
@@ -163,26 +163,26 @@ missing entries in the specified variable.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/show_var.html">show_var</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"BMPHEAD"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        m1   m2   m3   m4   m5</span></span>
-<span><span class="co">#&gt;   1: 43.7 43.6 42.6 42.1 43.1</span></span>
-<span><span class="co">#&gt;   2: 42.3 44.8 44.5 42.3 44.1</span></span>
-<span><span class="co">#&gt;   3: 42.0 43.0 42.6 43.7 43.3</span></span>
-<span><span class="co">#&gt;   4: 41.8 44.2 44.9 44.0 42.8</span></span>
-<span><span class="co">#&gt;   5: 45.0 45.5 46.2 45.3 47.5</span></span>
+<span><span class="co">#&gt;   1: 40.7 42.5 43.3 40.8 42.1</span></span>
+<span><span class="co">#&gt;   2: 41.6 43.9 44.2 42.4 44.3</span></span>
+<span><span class="co">#&gt;   3: 42.3 43.2 44.7 43.8 43.6</span></span>
+<span><span class="co">#&gt;   4: 46.4 47.0 44.3 44.0 41.6</span></span>
+<span><span class="co">#&gt;   5: 45.2 45.5 45.4 46.9 44.9</span></span>
 <span><span class="co">#&gt;  ---                         </span></span>
-<span><span class="co">#&gt; 120: 46.4 45.7 44.4 46.7 46.8</span></span>
-<span><span class="co">#&gt; 121: 45.5 45.0 45.3 45.5 45.2</span></span>
-<span><span class="co">#&gt; 122: 40.2 40.2 40.1 42.0 41.0</span></span>
-<span><span class="co">#&gt; 123: 46.1 48.0 46.8 43.8 44.6</span></span>
-<span><span class="co">#&gt; 124: 46.1 44.0 44.2 46.3 43.8</span></span>
+<span><span class="co">#&gt; 120: 45.6 45.2 46.1 46.1 44.9</span></span>
+<span><span class="co">#&gt; 121: 43.5 44.9 44.2 45.6 43.6</span></span>
+<span><span class="co">#&gt; 122: 43.5 39.6 38.7 41.2 40.2</span></span>
+<span><span class="co">#&gt; 123: 44.5 41.2 44.7 45.1 44.6</span></span>
+<span><span class="co">#&gt; 124: 44.7 44.7 46.8 44.4 43.8</span></span>
 <span><span class="fu"><a href="../../reference/show_var.html">show_var</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data</span>, var.name <span class="op">=</span> <span class="st">"HFF1"</span>, original.data <span class="op">=</span> <span class="va">withNA.df</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    m1 m2 m3 m4 m5</span></span>
 <span><span class="co">#&gt; 1:  2  2  2  2  2</span></span>
-<span><span class="co">#&gt; 2:  2  2  2  2  2</span></span>
-<span><span class="co">#&gt; 3:  2  1  1  2  1</span></span>
-<span><span class="co">#&gt; 4:  2  1  1  1  2</span></span>
-<span><span class="co">#&gt; 5:  1  2  1  1  1</span></span>
-<span><span class="co">#&gt; 6:  2  2  1  1  2</span></span>
-<span><span class="co">#&gt; 7:  1  1  1  1  2</span></span></code></pre></div>
+<span><span class="co">#&gt; 2:  1  2  2  1  1</span></span>
+<span><span class="co">#&gt; 3:  2  2  2  2  2</span></span>
+<span><span class="co">#&gt; 4:  1  1  1  1  1</span></span>
+<span><span class="co">#&gt; 5:  1  1  1  1  1</span></span>
+<span><span class="co">#&gt; 6:  1  2  1  2  1</span></span>
+<span><span class="co">#&gt; 7:  2  2  2  1  1</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -306,19 +306,19 @@ factors to integers prior to imputation, the imputed values must be
 plotted as if they were integers (see Section 2.1.3).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">imputed.data2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">withNA.df</span>, m <span class="op">=</span> <span class="fl">5</span>, ordinalAsInteger <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [10:49:40] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:13] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:43] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:16] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:45] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:19] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:48] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:22] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [10:49:51] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [10:54:25] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "scale_pos_weight" } are not used.</span></span>
 <span></span>
 <span><span class="fu"><a href="../../reference/plot_bar.html">plot_bar</a></span><span class="op">(</span>imputation.list <span class="op">=</span> <span class="va">imputed.data2</span>, var.name <span class="op">=</span> <span class="st">"HYD1"</span>, </span>
