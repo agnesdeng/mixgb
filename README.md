@@ -8,7 +8,7 @@
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/CRAN-1.0.2-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github-1.0.3-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/github-1.1.0-brightgreen)](https://github.com/agnesdeng/mixgb)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -23,7 +23,7 @@ paper <https://arxiv.org/abs/2106.01574>.
 
 **January 2023**
 
--   Major change of default settings for mixgb().
+- Major change of default settings for mixgb().
 
 Our package has changed from using bootstrapping to subsampling with a
 default setting of `subsample = 0.7`. After further investigations, we
@@ -33,37 +33,37 @@ subsampling the default method instead of bootstrapping.
 
 **May 2022**
 
--   Visual diagnostic functions of multiply imputed data
--   Use S3 instead of R6
--   Plot functions can show masked missing data (if provided)
+- Visual diagnostic functions of multiply imputed data
+- Use S3 instead of R6
+- Plot functions can show masked missing data (if provided)
 
 **April 2022**
 
--   User can now set different number of iterations `maxit`.
--   Both single and multiple imputation with XGBoost can do predictive
-    mean matching
--   Bootstrap data to make `m` imputations is optional. Users can set
-    `bootstrap = FALSE` to disable bootstrap. Users can also set
-    sampling-related hyperparameters of XGBoost (subsample,
-    colsample_bytree, colsample_bylevel, colsample_bynode) to be less
-    than 1 to achieve a similar effect.
--   Add predicted mean matching type 0. Now the options for `pmm.type`
-    are `NULL`,`0`,`1`,`2` or `"auto"` (type 2 for numeric/integer
-    variables, no PMM for categorical variables).
--   Added more validation checks
--   Compatible with `data.table`
--   Cross-validation to pre-tune `nrounds`
+- User can now set different number of iterations `maxit`.
+- Both single and multiple imputation with XGBoost can do predictive
+  mean matching
+- Bootstrap data to make `m` imputations is optional. Users can set
+  `bootstrap = FALSE` to disable bootstrap. Users can also set
+  sampling-related hyperparameters of XGBoost (subsample,
+  colsample_bytree, colsample_bylevel, colsample_bynode) to be less than
+  1 to achieve a similar effect.
+- Add predicted mean matching type 0. Now the options for `pmm.type` are
+  `NULL`,`0`,`1`,`2` or `"auto"` (type 2 for numeric/integer variables,
+  no PMM for categorical variables).
+- Added more validation checks
+- Compatible with `data.table`
+- Cross-validation to pre-tune `nrounds`
 
 ## Under development
 
--   make m imputation parallel
--   pre-tune other hyperparameters
+- make m imputation parallel
+- pre-tune other hyperparameters
 
 ## Notice
 
--   Users can set XGBoost parameter `nthread` for multithreading with
-    OpenMP support. However, OpenMP support has been presently disabled
-    on MacOS.
+- Users can set XGBoost parameter `nthread` for multithreading with
+  OpenMP support. However, OpenMP support has been presently disabled on
+  MacOS.
 
 ## 1. Installation
 
@@ -85,14 +85,13 @@ library(mixgb)
 It is highly recommended to clean and check your data before imputation.
 Here are some common issues:
 
--   Data should be a data frame.
--   ID should be removed
--   Missing values should be coded as `NA` not `NaN`
--   `Inf` or `-Inf` are not allowed
--   Empty cells should be coded as `NA` or sensible values
--   Variables of “character” type should be converted to “factor”
-    instead
--   Variables of “factor” type should have at least two levels
+- Data should be a data frame.
+- ID should be removed
+- Missing values should be coded as `NA` not `NaN`
+- `Inf` or `-Inf` are not allowed
+- Empty cells should be coded as `NA` or sensible values
+- Variables of “character” type should be converted to “factor” instead
+- Variables of “factor” type should have at least two levels
 
 The function `data_clean()` serves the purpose of performing a
 preliminary check and fix some evident issues. However, the function
@@ -158,29 +157,28 @@ imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
 
 We can also customize imputation settings:
 
--   The number of imputed datasets `m`
+- The number of imputed datasets `m`
 
--   The number of imputation iterations `maxit`
+- The number of imputation iterations `maxit`
 
--   XGBoost hyperparameters and verbose settings. `xgb.params`,
-    `nrounds`, `early_stopping_rounds`, `print_every_n` and `verbose`.
+- XGBoost hyperparameters and verbose settings. `xgb.params`, `nrounds`,
+  `early_stopping_rounds`, `print_every_n` and `verbose`.
 
--   Subsampling ratio. By default, `subsample = 0.7`. Users can change
-    this value under the `xgb.params` argument.
+- Subsampling ratio. By default, `subsample = 0.7`. Users can change
+  this value under the `xgb.params` argument.
 
--   Predictive mean matching settings `pmm.type`, `pmm.k` and
-    `pmm.link`.
+- Predictive mean matching settings `pmm.type`, `pmm.k` and `pmm.link`.
 
--   Whether ordinal factors should be converted to integer (imputation
-    process may be faster) `ordinalAsInteger`
+- Whether ordinal factors should be converted to integer (imputation
+  process may be faster) `ordinalAsInteger`
 
--   Whether or not to use bootstrapping `bootstrap`
+- Whether or not to use bootstrapping `bootstrap`
 
--   Initial imputation methods for different types of variables
-    `initial.num`, `initial.int` and `initial.fac`.
+- Initial imputation methods for different types of variables
+  `initial.num`, `initial.int` and `initial.fac`.
 
--   Whether to save models for imputing newdata `save.models` and
-    `save.vars`.
+- Whether to save models for imputing newdata `save.models` and
+  `save.vars`.
 
 ``` r
 # Use mixgb with chosen settings
@@ -211,9 +209,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPTR2"
+#> [1] "BMPRECUM"
 cv.results$best.nrounds
-#> [1] 17
+#> [1] 21
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -230,7 +228,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 20
+#> [1] 18
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
@@ -284,6 +282,35 @@ original data.
 
 ``` r
 imputed.data <- mixgb(data = withNA.df, m = 5)
+#> [14:11:43] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:43] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:47] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:47] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:50] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:51] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:54] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:54] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:57] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
+#> 
+#> [14:11:58] WARNING: src/learner.cc:767: 
+#> Parameters: { "scale_pos_weight" } are not used.
 ```
 
 By using the function `show_var()`, we can see the multiply imputed
@@ -297,25 +324,25 @@ specified variable.
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 #>        m1   m2   m3   m4   m5
-#>   1: 44.4 42.8 43.2 44.5 43.0
-#>   2: 45.7 42.2 44.3 45.9 48.2
-#>   3: 42.1 43.7 43.0 42.3 41.8
-#>   4: 42.5 42.6 42.5 43.0 43.5
-#>   5: 45.5 46.8 45.6 45.7 42.7
+#>   1: 44.0 42.6 45.4 43.2 41.7
+#>   2: 42.2 43.7 41.6 39.4 41.1
+#>   3: 42.3 42.5 42.0 43.5 42.6
+#>   4: 41.6 42.1 42.4 42.3 42.2
+#>   5: 43.7 41.9 44.0 43.7 42.9
 #>  ---                         
-#> 120: 45.2 45.5 47.6 45.8 46.0
-#> 121: 44.0 45.2 46.1 44.9 45.9
-#> 122: 41.8 42.6 42.4 42.4 41.6
-#> 123: 46.2 43.9 41.6 43.0 43.1
-#> 124: 45.1 43.3 44.7 44.9 45.6
+#> 120: 45.7 46.0 45.3 44.2 46.1
+#> 121: 44.2 44.9 45.8 45.3 44.8
+#> 122: 42.0 42.0 42.8 41.4 42.2
+#> 123: 42.6 43.5 41.8 44.1 43.2
+#> 124: 42.4 43.5 43.9 44.8 42.6
 show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
 #>    m1 m2 m3 m4 m5
 #> 1:  2  2  2  2  2
-#> 2:  2  2  2  2  2
+#> 2:  1  1  1  1  1
 #> 3:  2  2  2  2  2
-#> 4:  1  2  2  1  2
-#> 5:  1  1  1  2  1
-#> 6:  1  2  2  2  2
+#> 4:  1  1  2  2  1
+#> 5:  1  1  1  1  1
+#> 6:  2  2  2  2  2
 #> 7:  2  2  2  2  2
 ```
 
@@ -400,13 +427,13 @@ mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE,
 When `save.models = TRUE`, `mixgb()` will return an object containing
 the following:
 
--   `imputed.data`: a list of `m` imputed datasets for training data
+- `imputed.data`: a list of `m` imputed datasets for training data
 
--   `XGB.models`: a list of `m` sets of XGBoost models for variables
-    specified in `save.vars`.
+- `XGB.models`: a list of `m` sets of XGBoost models for variables
+  specified in `save.vars`.
 
--   `params`: a list of parameters that are required for imputing new
-    data using `impute_new()` later on.
+- `params`: a list of parameters that are required for imputing new data
+  using `impute_new()` later on.
 
 We can access the `m` imputed datasets from the saved imputer object by
 using `$imputed.data`.

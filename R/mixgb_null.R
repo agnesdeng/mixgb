@@ -77,6 +77,9 @@ mixgb_null <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL
             # for pmm.type=0 or 2
             yhatobs <- predict(xgb.fit, obs.data)
           }
+
+          # yhatmiss<-pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          # sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis + 1]
           sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
       }
@@ -112,7 +115,8 @@ mixgb_null <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL
           # probability matrix for each class
           yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
         }
-        sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
       }
     }
   } # end of for each missing variable

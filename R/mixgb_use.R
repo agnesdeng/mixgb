@@ -1,7 +1,6 @@
 # Multiple imputation using xgboost (through saved models)
 mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL,
                       sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol) {
-
   # param m.set the ith imputation
   # param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   # param yobs.list  observed values in the original training data
@@ -71,11 +70,17 @@ mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, e
         yhatmis <- predict(xgb.models[[var]], mis.data, reshape = TRUE)
         if (pmm.type == 1) {
           # for pmm.type=1
-          sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         } else {
           # for pmm.type=0 or 2
-          sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
+        sorted.dt[[var]][na.idx]<-levels(sorted.dt[[var]])[yhatmis]
+
+
+
+
+
       }
     }
   } # end of for each missing variable

@@ -21,7 +21,6 @@
 mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL,
                      xgb.params = list(),
                      stringsAsFactors = FALSE, verbose = TRUE, ...) {
-
   xgb.params <- do.call("default_params", xgb.params)
   xgb.params
 

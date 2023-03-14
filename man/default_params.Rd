@@ -18,7 +18,6 @@ default_params(
   lambda = 1,
   alpha = 0,
   tree_method = "auto",
-  scale_pos_weight = 1,
   max_leaves = 0,
   max_bin = 256,
   predictor = "auto",
@@ -53,8 +52,6 @@ default_params(
 \item{alpha}{L1 regularization term on weights. Default: 0.}
 
 \item{tree_method}{Options: "auto", "exact", "approx", "hist", and "gpu_hist". Default: "auto".}
-
-\item{scale_pos_weight}{Used for unbalanced classes to control the balance of positive and negative weights. Default: 1.}
 
 \item{max_leaves}{Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.}
 

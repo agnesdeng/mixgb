@@ -102,8 +102,7 @@ initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorte
   }
 
 
-    return(list("sorted.dt" = new.sorted, "missing.vars" = missing.vars, "missing.types" = missing.types, "Na.idx" = Na.idx, "sorted.names" = sorted.names))
-
+  return(list("sorted.dt" = new.sorted, "missing.vars" = missing.vars, "missing.types" = missing.types, "Na.idx" = Na.idx, "sorted.names" = sorted.names))
 }
 
 

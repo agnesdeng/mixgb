@@ -126,8 +126,10 @@ will likely return different results. Users can also specify the response
 and covariates in the argument `response` and `select_features` respectively.
 
 ```{r}
-cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
-                       response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM","BMPSB1", "BMPSB2","BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
+cv.results <- mixgb_cv(
+  data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
+  response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE
+)
 
 cv.results$best.nrounds
 ```

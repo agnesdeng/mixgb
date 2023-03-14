@@ -4,7 +4,6 @@ save_yhatobs <- function(yobs.list, maxit, pmm.link, sorted.dt, missing.vars, ex
                          xgb.params = list(max_depth = 6, gamma = 0.1, eta = 0.3, colsample_bytree = 1, min_child_weight = 1, subsample = 1, tree_method = "auto", gpu_id = 0, predictor = "auto", scale_pos_weight = 1),
                          nrounds = 50, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                          ...) {
-
   # param xgb.params NULL if XGBmodels was fed in
   # return a list of yhatobs values for specified variables
   # check whether xgb.params contains sample related hyperparameters, need to coerce to 1 as we want to obtain yhatobs using the whole dataset
@@ -186,7 +185,7 @@ save_yhatobs <- function(yobs.list, maxit, pmm.link, sorted.dt, missing.vars, ex
           # predict return class
           obj.type <- "multi:softmax"
         } else {
-          # predict return prob
+          # last iteration: return prob
           obj.type <- "multi:softprob"
         }
 

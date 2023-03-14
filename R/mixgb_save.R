@@ -136,8 +136,11 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
           yhatobs.list[[var]] <- yhatobs
         }
-        sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
-      }
+
+        yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
+
+         }
     }
   } # end of for each missing variable
 

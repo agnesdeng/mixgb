@@ -127,17 +127,18 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
       } else {
         # predict returns probability matrix for each class
         yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
-        if (pmm.type == 1) {
-          # for pmm.type=1 (yobs.list[[var]] is original class "A" "B" "C")
-          yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
-          sorted.dt[[var]][na.idx] <- yhatmis
-        } else {
-          # for pmm.type=0 or 2, obs.y is of interger form   as.integer(obs.y)-1
-          # probability matrix for each class
+
+        if(pmm.type ==1){
+          yhatobs = yhatobs.list[[var]]
+        }else{
           yhatobs <- predict(xgb.fit, Obs.data, reshape = TRUE)
-          sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
+
+        yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
+
       }
+
     }
   } # end of for each missing variable
   return(sorted.dt)
@@ -146,7 +147,6 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
 
 # helper function for mixgb_boot()
 boot <- function(Nrow, sorted.dt, sortedNA.dt, missing.vars, mp) {
-
   # use bootstrap to achieve multiple imputation
   boot.idx <- sample(Nrow, Nrow, replace = TRUE)
   # bootstrapped data with initial imputed values

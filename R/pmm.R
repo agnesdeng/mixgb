@@ -7,7 +7,6 @@
 #' @importFrom mice matchindex
 #' @keywords internal
 pmm <- function(yhatobs, yhatmis, yobs, k) {
-
   # idx=.Call('_mice_matcher', PACKAGE = 'mice', yhatobs, yhatmis, k)
   idx <- mice::matchindex(d = yhatobs, t = yhatmis, k = k)
   yobs[idx]
@@ -35,7 +34,8 @@ pmm.multiclass <- function(yhatobs, yhatmis, yobs, k) {
   idx <- sample(donor.size, replace = F)
   random.yhatobs <- yhatobs[idx, ]
   random.yobs <- yobs[idx]
-  # matching
+  # matching (return column)
   match.class <- Rfast::knn(xnew = yhatmis, y = random.yobs, x = random.yhatobs, k = k)
+  # return a row vector
   as.vector(match.class)
 }

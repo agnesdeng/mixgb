@@ -25,8 +25,6 @@
 #' test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
 #' test.imputed
 impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m = NULL, verbose = FALSE) {
-
-
   # extract params from the training object
   params <- object$params
 

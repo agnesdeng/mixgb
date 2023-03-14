@@ -9,7 +9,8 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom rlang .data
 #' @importFrom grDevices nclass.Sturges
-#' @importFrom ggplot2 ggplot aes vars geom_histogram geom_density facet_grid labs scale_color_manual scale_fill_manual guides theme element_text
+#' @importFrom stats density
+#' @importFrom ggplot2 ggplot aes vars geom_histogram geom_density facet_grid labs scale_color_manual scale_fill_manual guides theme element_text after_stat
 #' @return Histogram with density plots
 #' @export
 #' @examples
@@ -38,7 +39,8 @@ plot_hist <- function(imputation.list, var.name, original.data, true.data = NULL
   )
 
   ggplot(data = all.dt, aes(x = .data[[var.name]])) +
-    geom_histogram(alpha = 0.5, aes(fill = m.set, color = m.set, y = ..density..), breaks = breaks) +
+   # geom_histogram(alpha = 0.5, aes(fill = m.set, color = m.set, y = ..density..), breaks = breaks) +
+    geom_histogram(alpha = 0.5, aes(fill = m.set, color = m.set, y = after_stat(density)), breaks = breaks) +
     geom_density(size = 1, alpha = 0.6, aes(color = m.set)) +
     facet_grid(cols = vars(m.set)) +
     labs(title = "Histogram with density curve", subtitle = paste(" imputed sets for variable: ", var.name)) +
@@ -123,7 +125,7 @@ plot_box <- function(imputation.list, var.name, original.data, true.data = NULL,
 #' @importFrom scales hue_pal
 #' @importFrom tidyr pivot_longer
 #' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot aes vars geom_bar scale_y_continuous ylab facet_grid labs scale_color_manual scale_fill_manual guides theme element_text
+#' @importFrom ggplot2 ggplot aes vars geom_bar scale_y_continuous ylab facet_grid labs scale_color_manual scale_fill_manual guides theme element_text after_stat
 #' @return Bar plots for a factor variable
 #' @export
 #' @examples
@@ -154,8 +156,9 @@ plot_bar <- function(imputation.list, var.name, original.data, true.data = NULL,
     all.dt[[var.name]] <- factor(all.dt[[var.name]])
   }
 
+
   ggplot(all.dt, aes(x = .data[[var.name]])) +
-    geom_bar(stat = "count", alpha = 0.8, width = 0.8, aes(color = m.set, fill = m.set, y = ..prop.., group = m.set)) +
+    geom_bar(stat = "count", alpha = 0.8, width = 0.8, aes(color = m.set, fill = m.set, y = after_stat(prop), group = m.set)) +
     scale_y_continuous(labels = scales::percent) +
     ylab("Proportion") +
     facet_grid(cols = vars(m.set)) +

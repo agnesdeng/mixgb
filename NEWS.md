@@ -1,7 +1,13 @@
-# mixgb 1.0.3
-  * Minor change:
+# mixgb 1.1.0
+  * Added feature:
   - Added an auxiliary function `default_params()` for the main function `mixgb()`. 
     This function is designed to validate the list of XGBoost hyperparameters that are provided by the user. If users only want to modify a subset of hyperparameter, they can simply pass in those specific hyperparameters as a list in the `xgb_params` argument, without having to listing all other hyperparameters along with their default values.
+	
+  * Bug fixes:
+  - Bugs related to PMM for multiclass variables.
+  - Updates `plot_hist()` and `plot_bar()` because the dot-dot notation (`..prop..`) was deprecated in ggplot2 3.4.0.
+    - use `after_stat(density)` instead of `..density..` in the function `plot_hist()`
+    - use `after_stat(prop)` instead of `..prop..` in the function `plot_bar()`
   
 # mixgb 1.0.2
   * Minor change:

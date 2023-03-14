@@ -6,7 +6,6 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
                            xgb.params = list(),
                            nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                            ...) {
-
   # yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
 
   # pre-allocation for models
@@ -161,10 +160,13 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
         } else {
           # for pmm.type=0 or 2
           # probability matrix for each class
-          yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
+          yhatobs <- predict(xgb.fit, Obs.data, reshape = TRUE)
           yhatobs.list[[var]] <- yhatobs
         }
-        sorted.dt[[var]][na.idx] <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+
+        yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
+
       }
     }
   } # end of for each missing variable

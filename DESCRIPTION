@@ -1,6 +1,6 @@
 Package: mixgb
 Title: Multiple Imputation Through 'XGBoost'
-Version: 1.0.3
+Version: 1.1.0
 Authors@R: c(
     person(given = "Yongshi", family ="Deng", email = "yongshi.deng@auckland.ac.nz",
            role = c("aut","cre"),comment =c(ORCID = "0000-0001-5845-859X")),
@@ -24,7 +24,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     data.table,
-    ggplot2,
+    ggplot2 (>= 3.4.1),
     Matrix,
     mice,
     Rfast,
@@ -40,5 +40,5 @@ Suggests:
     RColorBrewer
 Depends: R (>= 3.5.0)
 VignetteBuilder: knitr
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 Config/testthat/edition: 3
