@@ -39,7 +39,7 @@ plot_hist <- function(imputation.list, var.name, original.data, true.data = NULL
   )
 
   ggplot(data = all.dt, aes(x = .data[[var.name]])) +
-   # geom_histogram(alpha = 0.5, aes(fill = m.set, color = m.set, y = ..density..), breaks = breaks) +
+    # geom_histogram(alpha = 0.5, aes(fill = m.set, color = m.set, y = ..density..), breaks = breaks) +
     geom_histogram(alpha = 0.5, aes(fill = m.set, color = m.set, y = after_stat(density)), breaks = breaks) +
     geom_density(size = 1, alpha = 0.6, aes(color = m.set)) +
     facet_grid(cols = vars(m.set)) +

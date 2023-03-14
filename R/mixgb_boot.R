@@ -128,17 +128,15 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
         # predict returns probability matrix for each class
         yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
 
-        if(pmm.type ==1){
-          yhatobs = yhatobs.list[[var]]
-        }else{
+        if (pmm.type == 1) {
+          yhatobs <- yhatobs.list[[var]]
+        } else {
           yhatobs <- predict(xgb.fit, Obs.data, reshape = TRUE)
         }
 
         yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
-
       }
-
     }
   } # end of for each missing variable
   return(sorted.dt)
