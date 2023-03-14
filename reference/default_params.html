@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,6 @@
 <span>  lambda <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  tree_method <span class="op">=</span> <span class="st">"auto"</span>,</span>
-<span>  scale_pos_weight <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  max_leaves <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  max_bin <span class="op">=</span> <span class="fl">256</span>,</span>
 <span>  predictor <span class="op">=</span> <span class="st">"auto"</span>,</span>
@@ -135,10 +134,6 @@
 
 <dt>tree_method</dt>
 <dd><p>Options: "auto", "exact", "approx", "hist", and "gpu_hist". Default: "auto".</p></dd>
-
-
-<dt>scale_pos_weight</dt>
-<dd><p>Used for unbalanced classes to control the balance of positive and negative weights. Default: 1.</p></dd>
 
 
 <dt>max_leaves</dt>
@@ -211,9 +206,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tree_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "auto"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $scale_pos_weight</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_leaves</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -271,9 +263,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tree_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "auto"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $scale_pos_weight</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_leaves</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -330,9 +319,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tree_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "auto"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $scale_pos_weight</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_leaves</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,15 +110,6 @@
 <span class="r-in"><span><span class="co"># obtain m multiply datasets</span></span></span>
 <span class="r-in"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">3</span>, subsample <span class="op">=</span> <span class="fl">0.8</span>, nthread <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_NA</span>, m <span class="op">=</span> <span class="fl">3</span>, xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10:53:18] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "scale_pos_weight" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10:53:19] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "scale_pos_weight" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10:53:19] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "scale_pos_weight" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot the multiply imputed values for variables "HSSEX" versus "DMARETHN"</span></span></span>
