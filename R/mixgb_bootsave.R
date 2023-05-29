@@ -286,7 +286,6 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
           }
         }
       } else if (extra.types[var] == "logical") {
-
         bin.t <- sort(table(obs.y))
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
         # when bin.t only has one value: bin.t[1] the only existent class

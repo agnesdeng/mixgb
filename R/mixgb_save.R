@@ -53,7 +53,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
       sorted.dt[[var]][na.idx] <- yhatmis
       # save models
       xgb.models[[var]] <- xgb.fit
-    } else if (missing.types[var] == "binary" ) {
+    } else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
       bin.t <- sort(table(obs.y))
@@ -100,7 +100,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
       }
-    } else if (missing.types[var] == "logical"  ) {
+    } else if (missing.types[var] == "logical") {
       # binary ---------------------------------------------------------------------------
 
       bin.t <- sort(table(obs.y))
@@ -147,7 +147,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
       }
-    }else {
+    } else {
       # multiclass ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
@@ -216,7 +216,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
           yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
         }
-      } else if (extra.types[var] == "binary" ) {
+      } else if (extra.types[var] == "binary") {
         obs.y <- as.integer(obs.y) - 1
         bin.t <- sort(table(obs.y))
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
@@ -247,8 +247,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
             yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
           }
         }
-      } else if (extra.types[var] == "logical"  ) {
-
+      } else if (extra.types[var] == "logical") {
         bin.t <- sort(table(obs.y))
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
         # when bin.t only has one value: bin.t[1] the only existent class

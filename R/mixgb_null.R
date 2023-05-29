@@ -39,7 +39,7 @@ mixgb_null <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL
       }
       # update dataset
       sorted.dt[[var]][na.idx] <- yhatmis
-    } else if (missing.types[var] == "binary" ) {
+    } else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
       bin.t <- sort(table(obs.y))
@@ -83,7 +83,7 @@ mixgb_null <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL
           sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
       }
-    }  else if (missing.types[var] == "logical"  ) {
+    } else if (missing.types[var] == "logical") {
       bin.t <- sort(table(obs.y))
       # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
       # when bin.t only has one value: bin.t[1] the only existent class
