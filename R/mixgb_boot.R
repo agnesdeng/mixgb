@@ -103,8 +103,7 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
           }
         }
       }
-    }else if (missing.types[var] == "logical") {
-
+    } else if (missing.types[var] == "logical") {
       bin.t <- sort(table(obs.y))
       # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
       # when bin.t only has one value: bin.t[1] the only existent class
@@ -134,7 +133,6 @@ mixgb_boot <- function(BNa.idx, boot.dt, pmm.type, pmm.link, pmm.k, yobs.list, y
           sorted.dt[[var]][na.idx] <- yhatmis
         } else {
           if (pmm.type == 1) {
-
             sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
           } else {
             # for pmm.type=0 or 2

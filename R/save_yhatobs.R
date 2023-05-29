@@ -130,7 +130,7 @@ save_yhatobs <- function(yobs.list, maxit, pmm.link, sorted.dt, missing.vars, ex
               prob <- exp(yhatmis) / (1 + exp(yhatmis))
             }
             yhatmis <- ifelse(yhatmis >= 0.5, T, F)
-            sorted.dt[[var]][na.idx] <-  yhatmis
+            sorted.dt[[var]][na.idx] <- yhatmis
           } else {
             # if pmm.link="logit", these would be logit values, otherwise would be probability values
             yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
@@ -194,7 +194,7 @@ save_yhatobs <- function(yobs.list, maxit, pmm.link, sorted.dt, missing.vars, ex
           ...
         )
         yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
-      } else if (extra.types[var] == "binary" ) {
+      } else if (extra.types[var] == "binary") {
         obs.y <- as.integer(obs.y) - 1
         bin.t <- sort(table(obs.y))
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
@@ -220,7 +220,7 @@ save_yhatobs <- function(yobs.list, maxit, pmm.link, sorted.dt, missing.vars, ex
           # if pmm.link="logit", these would be logit values, otherwise would be probability values
           yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
         }
-      }else if (extra.types[var] == "logical") {
+      } else if (extra.types[var] == "logical") {
         bin.t <- sort(table(obs.y))
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
         # when bin.t only has one value: bin.t[1] the only existent class
