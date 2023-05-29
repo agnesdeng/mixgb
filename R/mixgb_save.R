@@ -53,7 +53,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
       sorted.dt[[var]][na.idx] <- yhatmis
       # save models
       xgb.models[[var]] <- xgb.fit
-    } else if (missing.types[var] == "binary") {
+    } else if (missing.types[var] == "binary" ) {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
       bin.t <- sort(table(obs.y))
@@ -100,7 +100,54 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
       }
-    } else {
+    } else if (missing.types[var] == "logical"  ) {
+      # binary ---------------------------------------------------------------------------
+
+      bin.t <- sort(table(obs.y))
+      # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
+      # when bin.t only has one value: bin.t[1] the only existent class
+      if (is.na(bin.t[2])) {
+        # this binary variable only have one class being observed (e.g., observed values are all "0"s)
+        # skip xgboost training, just impute the only existent class
+        sorted.dt[[var]][na.idx] <- as.logical(names(bin.t[1]))
+        # save models=the only class exist in the sample
+        xgb.models[[var]] <- as.logical(names(bin.t[1]))
+        yhatobs.list[[var]] <- rep(as.logical(names(bin.t[1])), length(yobs.list[[var]]))
+        msg <- paste("The logical variable", var, "in the data only have single class. Imputation models can't be built.")
+        stop(msg)
+      } else {
+        if (!is.null(pmm) & pmm.link == "logit") {
+          # pmm by "logit" value
+          obj.type <- "binary:logitraw"
+        } else {
+          # pmm by "prob" and for no pmm
+          obj.type <- "binary:logistic"
+        }
+        xgb.fit <- xgboost(
+          data = obs.data, label = obs.y, objective = obj.type, eval_metric = "logloss",
+          params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
+          ...
+        )
+        # save models
+        xgb.models[[var]] <- xgb.fit
+        yhatmis <- predict(xgb.fit, mis.data)
+        if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
+          # for pmm.type=NULL or "auto"
+          yhatmis <- ifelse(yhatmis >= 0.5, T, F)
+          sorted.dt[[var]][na.idx] <- yhatmis
+        } else {
+          if (pmm.type == 1) {
+            # for pmm.type=1
+            yhatobs <- yhatobs.list[[var]]
+          } else {
+            # for pmm.type=0 or 2
+            yhatobs <- predict(xgb.fit, obs.data)
+            yhatobs.list[[var]] <- yhatobs
+          }
+          yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        }
+      }
+    }else {
       # multiclass ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
@@ -170,7 +217,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
           yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
         }
-      } else if (extra.types[var] == "binary") {
+      } else if (extra.types[var] == "binary" ) {
         obs.y <- as.integer(obs.y) - 1
         bin.t <- sort(table(obs.y))
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
@@ -181,6 +228,37 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
 
           xgb.models[[var]] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
           yhatobs.list[[var]] <- rep(levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1], length(yobs.list[[var]]))
+        } else {
+          # general case
+          if (pmm.link == "logit") {
+            # pmm by "logit" value
+            obj.type <- "binary:logitraw"
+          } else {
+            # pmm by "prob" value
+            obj.type <- "binary:logistic"
+          }
+          xgb.fit <- xgboost(
+            data = obs.data, label = obs.y, objective = obj.type, eval_metric = "logloss",
+            params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
+            ...
+          )
+          xgb.models[[var]] <- xgb.fit
+          # if pmm.link="logit", these would be logit values, otherwise would be probability values
+          if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
+            yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
+          }
+        }
+      } else if (extra.types[var] == "logical"  ) {
+
+        bin.t <- sort(table(obs.y))
+        # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
+        # when bin.t only has one value: bin.t[1] the only existent class
+        if (is.na(bin.t[2])) {
+          # this binary variable only has a single class being observed (e.g., observed values are all "0"s)
+          # skip xgboost training, just impute the only existent class
+
+          xgb.models[[var]] <- as.logical(names(bin.t[1]))
+          yhatobs.list[[var]] <- rep(as.logical(names(bin.t[1])), length(yobs.list[[var]]))
         } else {
           # general case
           if (pmm.link == "logit") {

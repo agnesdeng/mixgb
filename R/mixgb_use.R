@@ -57,6 +57,28 @@ mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, e
           }
         }
       }
+    } else if (missing.types[var] == "logical") {
+      # binary ---------------------------------------------------------------------------
+      if (length(xgb.models[[var]]) == 1) {
+        sorted.dt[[var]][na.idx] <- xgb.models[[var]]
+        msg <- paste("Imputation for variable", var, "use the only existent class in the bootstrap sample. May not be reliable.")
+        warning(msg)
+      } else {
+        yhatmis <- predict(xgb.models[[var]], mis.data)
+        if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
+          # for pmm.type=NULL or "auto"
+          yhatmis <- ifelse(yhatmis >= 0.5, T, F)
+          sorted.dt[[var]][na.idx] <- yhatmis
+        } else {
+          if (pmm.type == 1) {
+            # for pmm.type=1
+            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          } else {
+            # for pmm.type=0 or 2
+            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          }
+        }
+      }
     } else {
       # multiclass ---------------------------------------------------------------------------
 

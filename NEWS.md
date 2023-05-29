@@ -1,4 +1,12 @@
 # mixgb 1.2.0
+* Added feature
+- Support logical variable without the need to convert it to factor. 
+  Now `mixgb(data,...)` support a dataset with the following data types: 
+  - numeric
+  - integer
+  - factor
+  - logical
+Please note that variables of character type need to be manually converted to factor by the user first.  
 
 # mixgb 1.1.0
   * Added feature:

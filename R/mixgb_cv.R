@@ -86,7 +86,12 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     eval_metric <- "logloss"
     obs.y <- as.integer(cc.data[[response]]) - 1
     cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
-  } else {
+  }  else if (Types[response] == "logical") {
+    obj.type <- "binary:logistic"
+    eval_metric <- "logloss"
+    obs.y <- cc.data[[response]]
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+  }else {
     obj.type <- "multi:softmax"
     eval_metric <- "mlogloss"
     obs.y <- as.integer(cc.data[[response]]) - 1
