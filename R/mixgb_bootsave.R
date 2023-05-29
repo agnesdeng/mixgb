@@ -213,7 +213,6 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
 
         yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
-
       }
     }
   } # end of for each missing variable

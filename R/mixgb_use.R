@@ -97,12 +97,7 @@ mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, e
           # for pmm.type=0 or 2
           yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
-        sorted.dt[[var]][na.idx]<-levels(sorted.dt[[var]])[yhatmis]
-
-
-
-
-
+        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
       }
     }
   } # end of for each missing variable
