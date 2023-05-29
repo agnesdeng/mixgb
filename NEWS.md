@@ -1,3 +1,5 @@
+# mixgb 1.2.0
+
 # mixgb 1.1.0
   * Added feature:
   - Added an auxiliary function `default_params()` for the main function `mixgb()`. 
