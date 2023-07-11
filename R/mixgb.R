@@ -70,7 +70,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
   }
 
   xgb.params <- do.call("default_params", xgb.params)
-  xgb.params
+
 
 
   if (ordinalAsInteger == TRUE) {
