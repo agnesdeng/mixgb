@@ -1,3 +1,6 @@
+# mixgb 1.2.1
+* Added url of the published article 
+
 # mixgb 1.2.0
 * Added feature
 - Support logical variable without the need to convert it to factor. 

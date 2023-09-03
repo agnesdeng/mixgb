@@ -1,0 +1,16 @@
+citHeader("To cite mixgb in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "Multiple Imputation Through XGBoost",
+  author   = "Yongshi Deng, Thomas Lumley",
+  journal  = "arXiv",
+  year     = 2023,
+  url      = "https://arxiv.org/abs/2106.01574",
+ textVersion = paste(
+    "Yongshi Deng, Thomas Lumley (2023). Multiple Imputation Through XGBoost. arXiv.",
+    "URL: https://arxiv.org/abs/2106.01574"
+  )
+)
+
+

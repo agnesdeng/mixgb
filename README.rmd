@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The R package `mixgb` provides a scalable solution for multiple imputation that utilizes XGBoost, subsampling and predictive mean matching. We have shown that our framework obtains less biased estimates and reflects appropriate imputation variability, while achieving high computational efficiency. For further information, please refer to our paper https://arxiv.org/abs/2106.01574.
+The R package `mixgb` provides a scalable solution for multiple imputation that utilizes XGBoost, subsampling and predictive mean matching. We have shown that our framework obtains less biased estimates and reflects appropriate imputation variability, while achieving high computational efficiency. For further information, please refer to our paper  [Multiple Imputation Through XGBoost][paper-url].
 
 ## New updates
 
@@ -362,3 +362,5 @@ mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 ```
 
 [Visual-diagnostics]:https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html
+
+[paper-url]:https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501

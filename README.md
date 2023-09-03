@@ -17,7 +17,8 @@ imputation that utilizes XGBoost, subsampling and predictive mean
 matching. We have shown that our framework obtains less biased estimates
 and reflects appropriate imputation variability, while achieving high
 computational efficiency. For further information, please refer to our
-paper <https://arxiv.org/abs/2106.01574>.
+paper [Multiple Imputation Through
+XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
 
 ## New updates
 
@@ -227,9 +228,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPWT"
+#> [1] "BMPSB2"
 cv.results$best.nrounds
-#> [1] 18
+#> [1] 16
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -246,7 +247,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 22
+#> [1] 19
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
@@ -313,26 +314,26 @@ specified variable.
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 #>        m1   m2   m3   m4   m5
-#>   1: 44.6 41.9 42.0 40.2 43.5
-#>   2: 47.6 46.0 44.7 44.1 45.8
-#>   3: 42.2 44.0 41.9 43.2 42.8
-#>   4: 43.8 45.9 46.7 46.7 45.2
-#>   5: 44.7 42.0 42.6 44.2 42.5
+#>   1: 42.8 43.0 43.2 42.0 43.5
+#>   2: 47.0 45.1 45.5 43.2 43.8
+#>   3: 43.2 44.6 42.9 42.3 44.2
+#>   4: 42.8 42.2 43.2 41.8 42.0
+#>   5: 46.2 45.1 46.1 45.7 45.4
 #>  ---                         
-#> 120: 46.7 44.6 43.8 45.3 47.2
-#> 121: 44.4 45.3 45.6 44.6 43.8
-#> 122: 41.8 42.0 42.4 40.8 40.8
-#> 123: 43.6 45.1 42.9 45.2 45.8
-#> 124: 46.6 44.4 44.8 45.0 43.9
+#> 120: 45.6 46.6 47.0 45.9 45.8
+#> 121: 43.8 44.8 45.8 45.2 44.3
+#> 122: 42.6 41.7 41.0 41.6 41.6
+#> 123: 44.6 44.4 43.8 45.7 44.9
+#> 124: 45.1 43.3 44.0 42.7 43.9
 show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
 #>    m1 m2 m3 m4 m5
 #> 1:  2  2  2  2  2
-#> 2:  2  2  2  2  2
-#> 3:  2  2  2  2  2
-#> 4:  2  2  2  2  2
-#> 5:  2  1  1  2  1
-#> 6:  2  2  2  2  1
-#> 7:  2  2  2  1  1
+#> 2:  1  1  2  1  1
+#> 3:  2  2  2  1  2
+#> 4:  1  1  1  1  1
+#> 5:  1  1  1  1  1
+#> 6:  1  1  2  1  1
+#> 7:  2  2  1  1  2
 ```
 
 The `mixgb` package provides the following visual diagnostics functions:
