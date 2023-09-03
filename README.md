@@ -8,7 +8,7 @@
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://img.shields.io/badge/CRAN-1.0.2-9cf)](https://github.com/agnesdeng/mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github-1.2.0-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![](https://img.shields.io/badge/github-1.2.1-brightgreen)](https://github.com/agnesdeng/mixgb)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -228,9 +228,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPSB2"
+#> [1] "BMPWT"
 cv.results$best.nrounds
-#> [1] 16
+#> [1] 18
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -247,7 +247,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 19
+#> [1] 22
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
@@ -314,26 +314,26 @@ specified variable.
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 #>        m1   m2   m3   m4   m5
-#>   1: 42.8 43.0 43.2 42.0 43.5
-#>   2: 47.0 45.1 45.5 43.2 43.8
-#>   3: 43.2 44.6 42.9 42.3 44.2
-#>   4: 42.8 42.2 43.2 41.8 42.0
-#>   5: 46.2 45.1 46.1 45.7 45.4
+#>   1: 42.9 44.2 45.2 45.4 44.8
+#>   2: 44.0 44.0 42.7 43.7 43.9
+#>   3: 43.0 43.5 42.8 42.6 42.5
+#>   4: 43.6 46.2 44.2 46.1 46.2
+#>   5: 45.8 45.8 46.2 44.6 47.6
 #>  ---                         
-#> 120: 45.6 46.6 47.0 45.9 45.8
-#> 121: 43.8 44.8 45.8 45.2 44.3
-#> 122: 42.6 41.7 41.0 41.6 41.6
-#> 123: 44.6 44.4 43.8 45.7 44.9
-#> 124: 45.1 43.3 44.0 42.7 43.9
+#> 120: 42.4 43.9 44.1 44.7 44.2
+#> 121: 44.0 44.7 44.4 46.0 44.6
+#> 122: 42.2 41.2 42.8 42.1 41.0
+#> 123: 41.6 43.2 40.7 41.6 42.4
+#> 124: 46.2 44.4 45.1 44.8 45.3
 show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
 #>    m1 m2 m3 m4 m5
 #> 1:  2  2  2  2  2
-#> 2:  1  1  2  1  1
-#> 3:  2  2  2  1  2
+#> 2:  2  2  2  2  2
+#> 3:  2  2  2  2  1
 #> 4:  1  1  1  1  1
-#> 5:  1  1  1  1  1
-#> 6:  1  1  2  1  1
-#> 7:  2  2  1  1  2
+#> 5:  2  2  2  2  2
+#> 6:  2  2  2  2  2
+#> 7:  2  2  2  2  2
 ```
 
 The `mixgb` package provides the following visual diagnostics functions:
