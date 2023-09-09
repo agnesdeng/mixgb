@@ -384,6 +384,6 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
 #'
 #' xgb.params <- do.call("default_params", xgb.params)
 #' xgb.params
-default_params <- function(eta = 0.3, gamma = 0, max_depth = 3, min_child_weight = 1, max_delta_step, subsample = 0.7, sampling_method = "uniform", colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, lambda = 1, alpha = 0, tree_method = "auto", max_leaves = 0, max_bin = 256, predictor = "auto", num_parallel_tree = 1, gpu_id = 0, nthread = -1) {
+default_params <- function(eta = 0.3, gamma = 0, max_depth = 3, min_child_weight = 1, max_delta_step = 0, subsample = 0.7, sampling_method = "uniform", colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, lambda = 1, alpha = 0, tree_method = "auto", max_leaves = 0, max_bin = 256, predictor = "auto", num_parallel_tree = 1, gpu_id = 0, nthread = -1) {
   list(eta = eta, gamma = gamma, max_depth = max_depth, min_child_weight = min_child_weight, subsample = subsample, sampling_method = sampling_method, colsample_bytree = colsample_bytree, colsample_bylevel = colsample_bylevel, colsample_bynode = colsample_bynode, lambda = lambda, alpha = alpha, tree_method = tree_method, max_leaves = max_leaves, max_bin = max_bin, predictor = predictor, num_parallel_tree = num_parallel_tree, gpu_id = gpu_id, nthread = nthread)
 }

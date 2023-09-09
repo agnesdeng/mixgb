@@ -9,7 +9,7 @@ default_params(
   gamma = 0,
   max_depth = 3,
   min_child_weight = 1,
-  max_delta_step,
+  max_delta_step = 0,
   subsample = 0.7,
   sampling_method = "uniform",
   colsample_bytree = 1,
