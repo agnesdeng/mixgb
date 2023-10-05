@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,6 +73,7 @@
 <span>  initial.fac <span class="op">=</span> <span class="st">"mode"</span>,</span>
 <span>  save.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save.vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  save.models.folder <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  xgb.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  nrounds <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -153,6 +154,10 @@
 <dd><p>For the purpose of imputing new data, the imputation models for response variables specified in <code>save.vars</code> will be saved. The values in <code>save.vars</code> can be a vector of names or indices. By default, only the imputation models for variables with missing values in the original data will be saved (<code>save.vars = NULL</code>). To save imputation models for all variables, users can specify it with <code>save.vars = colnames(data)</code>.</p></dd>
 
 
+<dt>save.models.folder</dt>
+<dd><p>Users can specify a folder directory to save all imputation models. Models will be saved as JSON format by internally calling <code>xgb.save()</code>, which is recommended by XGBoost.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Verbose setting for mixgb. If <code>TRUE</code>, will print out the progress of imputation. Default: <code>FALSE</code>.</p></dd>
 
@@ -193,9 +198,45 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># obtain m multiply datasets without saving models</span></span></span>
 <span class="r-in"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">3</span>, subsample <span class="op">=</span> <span class="fl">0.7</span>, nthread <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu">mixgb</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, m <span class="op">=</span> <span class="fl">2</span>, xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># obtain m multiply imputed datasets and save models for imputing new data later on</span></span></span>
 <span class="r-in"><span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu">mixgb</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, m <span class="op">=</span> <span class="fl">2</span>, xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="fl">10</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:57:05] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
