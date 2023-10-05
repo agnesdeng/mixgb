@@ -1,10 +1,12 @@
-# Multiple imputation using xgboost (save models and imputations)
-mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt,
-                       missing.vars, sorted.names, Na.idx, missing.types, Ncol,
-                       xgb.params = list(),
-                       nrounds, early_stopping_rounds, print_every_n, verbose = 0,
-                       ...) {
+# Multiple imputation using xgboost with bootstrap (save models using xgb.save() and imputations)
+mixgb_boot_xgb_save <- function(save.models.folder, i, BNa.idx, boot.dt, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k,
+                                yobs.list, yhatobs.list = NULL, sorted.dt,
+                                missing.vars, sorted.names, Na.idx, missing.types, Ncol,
+                                xgb.params = list(),
+                                nrounds, early_stopping_rounds, print_every_n, verbose,
+                                ...) {
   # yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
+
   # pre-allocation for models
   xgb.models <- vector("list", save.p)
   names(xgb.models) <- save.vars
@@ -18,30 +20,55 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
   for (var in missing.vars) {
     features <- setdiff(sorted.names, var)
     form <- reformulate(termlabels = features, response = var)
+    # bootstrap
+
+    if (length(BNa.idx[[var]]) == 0) {
+      # bootstrap sample for this variable contains no missing value
+      obs.y <- boot.dt[[var]]
+      if (Ncol == 2) {
+        obs.data <- sparse.model.matrix(form, data = boot.dt)
+      } else {
+        obs.data <- sparse.model.matrix(form, data = boot.dt)[, -1, drop = FALSE]
+      }
+    } else {
+      # bootstrap sample for this variable contains missing values
+      bna.idx <- BNa.idx[[var]]
+      obs.y <- boot.dt[[var]][-bna.idx]
+      if (Ncol == 2) {
+        obs.data <- sparse.model.matrix(form, data = boot.dt[-bna.idx, ])
+      } else {
+        obs.data <- sparse.model.matrix(form, data = boot.dt[-bna.idx, ])[, -1, drop = FALSE]
+      }
+    }
 
     na.idx <- Na.idx[[var]]
-    obs.y <- yobs.list[[var]]
 
     if (Ncol == 2) {
-      obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])
+      Obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])
       mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])
     } else {
-      obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])[, -1, drop = FALSE]
+      Obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])[, -1, drop = FALSE]
       mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])[, -1, drop = FALSE]
     }
+
+
+
     # numeric or integer ---------------------------------------------------------------------------
     if (missing.types[var] == "numeric" | missing.types[var] == "integer") {
       obj.type <- "reg:squarederror"
+      # use bootstrap sample to build models
       xgb.fit <- xgboost(
         data = obs.data, label = obs.y, objective = obj.type,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
         ...
       )
+      # impute the NAs in the full dataset
       yhatmis <- predict(xgb.fit, mis.data)
       if (!is.null(pmm.type)) {
         if (pmm.type != 1) {
           # for pmm.type=0 or 2 or auto (type 2 for numeric or integer)
-          yhatobs <- predict(xgb.fit, obs.data)
+          # get yhatobs of the observed data in the full dataset (full: Obs.data->  bootstrap:obs.data)
+          yhatobs <- predict(xgb.fit, Obs.data)
           yhatobs.list[[var]] <- yhatobs
         } else {
           # for pmm.type=1
@@ -52,7 +79,10 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
       # update dataset
       sorted.dt[[var]][na.idx] <- yhatmis
       # save models
-      xgb.models[[var]] <- xgb.fit
+      filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
+      filedir <- paste(filedir, ".json", sep = "")
+      xgb.save(model = xgb.fit, fname = filedir)
+      xgb.models[[var]] <- filedir
     } else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
@@ -62,12 +92,12 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
       if (is.na(bin.t[2])) {
         # this binary variable only have one class being observed (e.g., observed values are all "0"s)
         # skip xgboost training, just impute the only existent class
+        msg <- paste("The binary variable", var, "in the bootstrapped sample only has a single class. The only existent class will be used to impute NAs. Imputation model for this variable may not be reliable. Recommend to get more data. ")
+        warning(msg)
         sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
-        # save models=the only class exist in the sample
+        # save models
         xgb.models[[var]] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
         yhatobs.list[[var]] <- rep(levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1], length(yobs.list[[var]]))
-        msg <- paste("The binary variable", var, "in the data only have single class. Imputation models can't be built.")
-        stop(msg)
       } else {
         if (!is.null(pmm) & pmm.link == "logit") {
           # pmm by "logit" value
@@ -82,7 +112,11 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           ...
         )
         # save models
-        xgb.models[[var]] <- xgb.fit
+        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
+        filedir <- paste(filedir, ".json", sep = "")
+        xgb.save(model = xgb.fit, fname = filedir)
+        xgb.models[[var]] <- filedir
+
         yhatmis <- predict(xgb.fit, mis.data)
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
           # for pmm.type=NULL or "auto"
@@ -94,10 +128,10 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
             yhatobs <- yhatobs.list[[var]]
           } else {
             # for pmm.type=0 or 2
-            yhatobs <- predict(xgb.fit, obs.data)
+            yhatobs <- predict(xgb.fit, Obs.data)
             yhatobs.list[[var]] <- yhatobs
           }
-          yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
       }
     } else if (missing.types[var] == "logical") {
@@ -109,12 +143,12 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
       if (is.na(bin.t[2])) {
         # this binary variable only have one class being observed (e.g., observed values are all "0"s)
         # skip xgboost training, just impute the only existent class
+        msg <- paste("The logical variable", var, "in the bootstrapped sample only has a single class. The only existent class will be used to impute NAs. Imputation model for this variable may not be reliable. Recommend to get more data. ")
+        warning(msg)
         sorted.dt[[var]][na.idx] <- as.logical(names(bin.t[1]))
-        # save models=the only class exist in the sample
+        # save models
         xgb.models[[var]] <- as.logical(names(bin.t[1]))
         yhatobs.list[[var]] <- rep(as.logical(names(bin.t[1])), length(yobs.list[[var]]))
-        msg <- paste("The logical variable", var, "in the data only have single class. Imputation models can't be built.")
-        stop(msg)
       } else {
         if (!is.null(pmm) & pmm.link == "logit") {
           # pmm by "logit" value
@@ -129,7 +163,11 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           ...
         )
         # save models
-        xgb.models[[var]] <- xgb.fit
+        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
+        filedir <- paste(filedir, ".json", sep = "")
+        xgb.save(model = xgb.fit, fname = filedir)
+        xgb.models[[var]] <- filedir
+
         yhatmis <- predict(xgb.fit, mis.data)
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
           # for pmm.type=NULL or "auto"
@@ -141,10 +179,10 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
             yhatobs <- yhatobs.list[[var]]
           } else {
             # for pmm.type=0 or 2
-            yhatobs <- predict(xgb.fit, obs.data)
+            yhatobs <- predict(xgb.fit, Obs.data)
             yhatobs.list[[var]] <- yhatobs
           }
-          yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
       }
     } else {
@@ -163,13 +201,15 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
         ...
       )
       # save models
-      xgb.models[[var]] <- xgb.fit
+      filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
+      filedir <- paste(filedir, ".json", sep = "")
+      xgb.save(model = xgb.fit, fname = filedir)
+      xgb.models[[var]] <- filedir
 
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
         # use softmax, predict returns class
         # for pmm.type=NULL or "auto"
         yhatmis <- predict(xgb.fit, mis.data)
-        # update dataset
         sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis + 1]
       } else {
         # predict returns probability matrix for each class
@@ -180,7 +220,7 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
         } else {
           # for pmm.type=0 or 2
           # probability matrix for each class
-          yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
+          yhatobs <- predict(xgb.fit, Obs.data, reshape = TRUE)
           yhatobs.list[[var]] <- yhatobs
         }
 
@@ -196,14 +236,23 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
       features <- setdiff(sorted.names, var)
       form <- reformulate(termlabels = features, response = var)
 
-      obs.y <- yobs.list[[var]]
-
+      # bootstrap sample for this variable contains no missing value
+      obs.y <- boot.dt[[var]]
       if (Ncol == 2) {
-        obs.data <- sparse.model.matrix(form, data = sorted.dt)
+        obs.data <- sparse.model.matrix(form, data = boot.dt)
       } else {
-        obs.data <- sparse.model.matrix(form, data = sorted.dt)[, -1, drop = FALSE]
+        obs.data <- sparse.model.matrix(form, data = boot.dt)[, -1, drop = FALSE]
       }
 
+      # use it to get yhatobs.list for pmm
+      na.idx <- Na.idx[[var]]
+      if (Ncol == 2) {
+        Obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])
+      } else {
+        Obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])[, -1, drop = FALSE]
+      }
+
+      ############# use bootstrap sample (fully observed) to save xgb.models
 
       if (extra.types[var] == "numeric" | extra.types[var] == "integer") {
         obj.type <- "reg:squarederror"
@@ -212,9 +261,12 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
           ...
         )
-        xgb.models[[var]] <- xgb.fit
+        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
+        filedir <- paste(filedir, ".json", sep = "")
+        xgb.save(model = xgb.fit, fname = filedir)
+        xgb.models[[var]] <- filedir
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
-          yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
+          yhatobs.list[[var]] <- predict(xgb.fit, Obs.data)
         }
       } else if (extra.types[var] == "binary") {
         obs.y <- as.integer(obs.y) - 1
@@ -222,8 +274,10 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
         # when bin.t only has one value: bin.t[1] the only existent class
         if (is.na(bin.t[2])) {
-          # this binary variable only has a single class being observed (e.g., observed values are all "0"s)
+          # this binary variable only have one class being observed (e.g., observed values are all "0"s)
           # skip xgboost training, just impute the only existent class
+          msg <- paste("The binary variable", var, "in the bootstrapped sample only has a single class. The only existent class will be used to impute NAs. Imputation model for this variable may not be reliable. Recommend to get more data. ")
+          warning(msg)
 
           xgb.models[[var]] <- levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1]
           yhatobs.list[[var]] <- rep(levels(sorted.dt[[var]])[as.integer(names(bin.t[1])) + 1], length(yobs.list[[var]]))
@@ -241,10 +295,13 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
             ...
           )
-          xgb.models[[var]] <- xgb.fit
+          filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
+          filedir <- paste(filedir, ".json", sep = "")
+          xgb.save(model = xgb.fit, fname = filedir)
+          xgb.models[[var]] <- filedir
           # if pmm.link="logit", these would be logit values, otherwise would be probability values
           if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
-            yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
+            yhatobs.list[[var]] <- predict(xgb.fit, Obs.data)
           }
         }
       } else if (extra.types[var] == "logical") {
@@ -252,8 +309,10 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
         # when bin.t only has one value: bin.t[1] the only existent class
         if (is.na(bin.t[2])) {
-          # this binary variable only has a single class being observed (e.g., observed values are all "0"s)
+          # this binary variable only have one class being observed (e.g., observed values are all "0"s)
           # skip xgboost training, just impute the only existent class
+          msg <- paste("The logical variable", var, "in the bootstrapped sample only has a single class. The only existent class will be used to impute NAs. Imputation model for this variable may not be reliable. Recommend to get more data. ")
+          warning(msg)
 
           xgb.models[[var]] <- as.logical(names(bin.t[1]))
           yhatobs.list[[var]] <- rep(as.logical(names(bin.t[1])), length(yobs.list[[var]]))
@@ -271,10 +330,13 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
             ...
           )
-          xgb.models[[var]] <- xgb.fit
+          filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
+          filedir <- paste(filedir, ".json", sep = "")
+          xgb.save(model = xgb.fit, fname = filedir)
+          xgb.models[[var]] <- filedir
           # if pmm.link="logit", these would be logit values, otherwise would be probability values
           if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
-            yhatobs.list[[var]] <- predict(xgb.fit, obs.data)
+            yhatobs.list[[var]] <- predict(xgb.fit, Obs.data)
           }
         }
       } else {
@@ -293,11 +355,14 @@ mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
           ...
         )
-        xgb.models[[var]] <- xgb.fit
+        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
+        filedir <- paste(filedir, ".json", sep = "")
+        xgb.save(model = xgb.fit, fname = filedir)
+        xgb.models[[var]] <- filedir
 
         # prediction returns probability for matching: probability matrix for each class
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
-          yhatobs.list[[var]] <- predict(xgb.fit, obs.data, reshape = TRUE)
+          yhatobs.list[[var]] <- predict(xgb.fit, Obs.data, reshape = TRUE)
         }
       }
     } # end of for each extra variable

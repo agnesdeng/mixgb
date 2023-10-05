@@ -5,6 +5,8 @@
 \title{Auxiliary function for validating xgb.params}
 \usage{
 default_params(
+  device = "cpu",
+  tree_method = "hist",
   eta = 0.3,
   gamma = 0,
   max_depth = 3,
@@ -17,16 +19,17 @@ default_params(
   colsample_bynode = 1,
   lambda = 1,
   alpha = 0,
-  tree_method = "auto",
   max_leaves = 0,
   max_bin = 256,
-  predictor = "auto",
   num_parallel_tree = 1,
-  gpu_id = 0,
   nthread = -1
 )
 }
 \arguments{
+\item{device}{Can be either "cpu" or "cuda". For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.}
+
+\item{tree_method}{Options: "auto", "exact", "approx", and "hist". Default: "hist".}
+
 \item{eta}{Step size shrinkage. Default: 0.3.}
 
 \item{gamma}{Minimum loss reduction required to make a further partition on a leaf node of the tree. Default: 0}
@@ -51,17 +54,11 @@ default_params(
 
 \item{alpha}{L1 regularization term on weights. Default: 0.}
 
-\item{tree_method}{Options: "auto", "exact", "approx", "hist", and "gpu_hist". Default: "auto".}
-
 \item{max_leaves}{Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.}
 
 \item{max_bin}{Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.}
 
-\item{predictor}{Default: "auto"}
-
 \item{num_parallel_tree}{The number of parallel trees used for boosted random forests. Default: 1.}
-
-\item{gpu_id}{Which GPU device should be used. Default: 0.}
 
 \item{nthread}{The number of CPU threads to be used. Default: -1 (all available threads).}
 }

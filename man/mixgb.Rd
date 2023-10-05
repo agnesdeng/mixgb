@@ -18,6 +18,7 @@ mixgb(
   initial.fac = "mode",
   save.models = FALSE,
   save.vars = NULL,
+  save.models.folder = NULL,
   verbose = F,
   xgb.params = list(),
   nrounds = 100,
@@ -79,6 +80,8 @@ mixgb(
 \item{save.models}{Whether to save imputation models for imputing new data later on. Default: \code{FALSE}}
 
 \item{save.vars}{For the purpose of imputing new data, the imputation models for response variables specified in \code{save.vars} will be saved. The values in \code{save.vars} can be a vector of names or indices. By default, only the imputation models for variables with missing values in the original data will be saved (\code{save.vars = NULL}). To save imputation models for all variables, users can specify it with \code{save.vars = colnames(data)}.}
+
+\item{save.models.folder}{Users can specify a folder directory to save all imputation models. Models will be saved as JSON format by internally calling \code{xgb.save()}, which is recommended by XGBoost.}
 
 \item{verbose}{Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.}
 

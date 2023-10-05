@@ -1,6 +1,6 @@
 Package: mixgb
 Title: Multiple Imputation Through 'XGBoost'
-Version: 1.2.1
+Version: 1.3.1
 Authors@R: c(
     person(given = "Yongshi", family ="Deng", email = "yongshi.deng@auckland.ac.nz",
            role = c("aut","cre"),comment =c(ORCID = "0000-0001-5845-859X")),
@@ -8,14 +8,14 @@ Authors@R: c(
            role = "ths")
   ) 
 Description: Multiple imputation using 'XGBoost', subsampling, and predictive mean 
-    matching as described in Deng and Lumley (2023) <doi:10.1080/10618600.2023.2252501>. Our
-    method utilizes the capabilities of XGBoost, a highly efficient implementation
-    of gradient boosted trees, to capture interactions and non-linear relations
-    automatically. Moreover, we have integrated subsampling and predictive mean
-    matching to minimize bias and reflect appropriate imputation variability. This
-    package supports various types of variables and offers flexible settings for
-    subsampling and predictive mean matching. Additionally, it includes diagnostic
-    tools for evaluating the quality of the imputed values.
+    matching as described in Deng and Lumley (2023) 
+    <doi:10.1080/10618600.2023.2252501>. Our method utilizes the capabilities of
+    XGBoost, a highly efficient implementation of gradient boosted trees, to capture
+    interactions and non-linear relations automatically. Moreover, we have integrated
+    subsampling and predictive mean matching to minimize bias and reflect appropriate
+    imputation variability. This package supports various types of variables and offers
+    flexible settings for subsampling and predictive mean matching. Additionally, it 
+    includes diagnostic tools for evaluating the quality of the imputed values.
 URL: https://github.com/agnesdeng/mixgb,
      https://agnesdeng.github.io/mixgb/
 BugReports: https://github.com/agnesdeng/mixgb/issues

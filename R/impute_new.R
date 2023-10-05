@@ -102,8 +102,8 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
 
 
   # extract imputer models from the training object
-  XGB.models <- object$XGB.models
 
+  XGB.models <- object$XGB.models
 
 
   # extract one imputed set from the training object for initial imputation
@@ -168,10 +168,19 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
     }
     # feed in the initial imputed dataset
     sorted.dt <- initial.obj$sorted.dt
-    sorted.dt <- mixgb_use(
-      m.set = i, xgb.models = XGB.models[[i]], pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt,
-      missing.vars = missing.vars, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol
-    )
+
+    if (isTRUE(object$XGB.save)) {
+      sorted.dt <- mixgb_load_use(
+        m.set = i, xgb.models = XGB.models[[i]], pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt,
+        missing.vars = missing.vars, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol
+      )
+    } else {
+      sorted.dt <- mixgb_use(
+        m.set = i, xgb.models = XGB.models[[i]], pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt,
+        missing.vars = missing.vars, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol
+      )
+    }
+
 
     imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
   }

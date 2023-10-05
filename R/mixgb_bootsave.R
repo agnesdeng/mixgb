@@ -4,7 +4,7 @@ mixgb_bootsave <- function(BNa.idx, boot.dt, save.vars, save.p, extra.vars = NUL
                            yobs.list, yhatobs.list = NULL, sorted.dt,
                            missing.vars, sorted.names, Na.idx, missing.types, Ncol,
                            xgb.params = list(),
-                           nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
+                           nrounds, early_stopping_rounds, print_every_n, verbose,
                            ...) {
   # yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
 

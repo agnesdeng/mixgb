@@ -1,3 +1,15 @@
+# mixgb 1.3.1
+*  Now compatible with XGBoost 2.0.0 
+-  added new parameter `device` 
+-  removed depreciated parameters `gpu_id` and `predictor`
+-  set `tree_method = "hist"` by default, match with XGBoost 2.0.0
+
+* Added feature
+- Support saving imputation models in a local directory. Users can specify the directory in the parameter `save.models.folder` in the main function `mixgb()`.
+- Models will be save as JSON format using `xgb.save()` internally. Saving XGBoost models in this way instead of using `saveRDS` in R is recommended by XGBoost. This can ensure that the imputation models can still be used in later release of XGBoost.
+- If users specify the `save.models.folder`, the return object of the main function `mixgb()` will include the current m sets of imputed datasets, a list of directories of the imputation models, and relevant parameters. Users can still save this object using `saveRDS()`, as it does not contain the models themselves. For later use, one can load the object into R and impute new data using `impute_new(object,newdata,...)` 
+
+
 # mixgb 1.2.1
 * Added url of the published article 
 

@@ -1,15 +1,15 @@
-citHeader("To cite mixgb in publications use:")
+citHeader("To cite mixgb in publications please use:")
 
 citEntry(
   entry    = "Article",
   title    = "Multiple Imputation Through XGBoost",
   author   = "Yongshi Deng, Thomas Lumley",
-  journal  = "arXiv",
+  journal  = "Journal of Computational and Graphical Statistics",
   year     = 2023,
-  url      = "https://arxiv.org/abs/2106.01574",
+  url      = "https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501",
  textVersion = paste(
-    "Yongshi Deng, Thomas Lumley (2023). Multiple Imputation Through XGBoost. arXiv.",
-    "URL: https://arxiv.org/abs/2106.01574"
+    "Yongshi Deng & Thomas Lumley (2023) Multiple Imputation Through XGBoost, 
+     Journal of Computational and Graphical Statistics, DOI: 10.1080/10618600.2023.2252501"
   )
 )
 
