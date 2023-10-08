@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,83 +53,115 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.3.1" id="mixgb-131">mixgb 1.3.1<a class="anchor" aria-label="anchor" href="#mixgb-131"></a></h2>
-<ul><li><p>Now compatible with XGBoost 2.0.0</p></li>
-<li><p>added new parameter <code>device</code></p></li>
-<li><p>removed depreciated parameters <code>gpu_id</code> and <code>predictor</code></p></li>
-<li><p>set <code>tree_method = "hist"</code> by default, match with XGBoost 2.0.0</p></li>
-<li><p>Added feature</p></li>
-<li><p>Support saving imputation models in a local directory. Users can specify the directory in the parameter <code>save.models.folder</code> in the main function <code><a href="../reference/mixgb.html">mixgb()</a></code>.</p></li>
-<li><p>Models will be save as JSON format using <code>xgb.save()</code> internally. Saving XGBoost models in this way instead of using <code>saveRDS</code> in R is recommended by XGBoost. This can ensure that the imputation models can still be used in later release of XGBoost.</p></li>
-<li><p>If users specify the <code>save.models.folder</code>, the return object of the main function <code><a href="../reference/mixgb.html">mixgb()</a></code> will include the current m sets of imputed datasets, a list of directories of the imputation models, and relevant parameters. Users can still save this object using <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>, as it does not contain the models themselves. For later use, one can load the object into R and impute new data using <code>impute_new(object,newdata,...)</code></p></li>
+<h2 class="pkg-version" data-toc-text="1.3.2" id="mixgb-132">mixgb 1.3.2<a class="anchor" aria-label="anchor" href="#mixgb-132"></a></h2>
+<div class="section level4">
+<h4 id="miscellaneous-1-3-2">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-1-3-2"></a></h4>
+<ul><li>Improves package documentation regarding the import of <code>xgb.save()</code> and <code>xgb.load()</code> from XGBoost.</li>
 </ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.3.1" id="mixgb-131">mixgb 1.3.1<a class="anchor" aria-label="anchor" href="#mixgb-131"></a></h2>
+<div class="section level4">
+<h4 id="compatibility-1-3-1">Compatibility<a class="anchor" aria-label="anchor" href="#compatibility-1-3-1"></a></h4>
+<ul><li>Makes the package compatible with XGBoost 2.0.0 with GPU support:
+<ul><li>Introduces a new parameter <code>device</code>.</li>
+<li>Deprecates parameters <code>gpu_id</code> and <code>predictor</code>.</li>
+<li>Sets <code>tree_method = "hist"</code> by default, aligning with XGBoost 2.0.0.</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-features-1-3-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-3-1"></a></h4>
+<ul><li>Introduces support for saving imputation models to a local directory through the parameter <code>save.models.folder</code> in <code><a href="../reference/mixgb.html">mixgb()</a></code>.
+<ul><li>Models save in JSON format using <code>xgb.save()</code>, a method recommended by XGBoost for future compatibility.</li>
+<li>When <code>save.models.folder</code> is specified, the return object of <code><a href="../reference/mixgb.html">mixgb()</a></code> includes the current imputed datasets, directories for imputation models, and relevant parameters. This object can save using <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> as it doesn’t directly contain the models. Users can later load this object into R and employ <code>impute_new(object, newdata, ...)</code> for new data imputation.</li>
+</ul></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.1" id="mixgb-121">mixgb 1.2.1<a class="anchor" aria-label="anchor" href="#mixgb-121"></a></h2>
-<ul><li>Added url of the published article</li>
+<div class="section level4">
+<h4 id="updates-1-2-1">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-1"></a></h4>
+<ul><li>Includes the URL of the published article.</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.0" id="mixgb-120">mixgb 1.2.0<a class="anchor" aria-label="anchor" href="#mixgb-120"></a></h2>
-<ul><li>Added feature</li>
-<li>Support logical variable without the need to convert it to factor. Now <code>mixgb(data,...)</code> support a dataset with the following data types:
+<div class="section level4">
+<h4 id="new-features-1-2-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0"></a></h4>
+<ul><li>Enhances <code>mixgb(data,...)</code> to support datasets with diverse data types:
 <ul><li>numeric</li>
 <li>integer</li>
 <li>factor</li>
-<li>logical Please note that variables of character type need to be manually converted to factor by the user first.</li>
-</ul></li>
+<li>logical</li>
+</ul><blockquote>
+<p>Note: Users must manually convert character variables to factors.</p>
+</blockquote>
+</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="mixgb-110">mixgb 1.1.0<a class="anchor" aria-label="anchor" href="#mixgb-110"></a></h2>
-<ul><li><p>Added feature:</p></li>
-<li><p>Added an auxiliary function <code><a href="../reference/default_params.html">default_params()</a></code> for the main function <code><a href="../reference/mixgb.html">mixgb()</a></code>. This function is designed to validate the list of XGBoost hyperparameters that are provided by the user. If users only want to modify a subset of hyperparameter, they can simply pass in those specific hyperparameters as a list in the <code>xgb_params</code> argument, without having to listing all other hyperparameters along with their default values.</p></li>
-<li><p>Bug fixes:</p></li>
-<li><p>Bugs related to PMM for multiclass variables.</p></li>
-<li>
-<p>Updates <code><a href="../reference/plot_hist.html">plot_hist()</a></code> and <code><a href="../reference/plot_bar.html">plot_bar()</a></code> because the dot-dot notation (<code>..prop..</code>) was deprecated in ggplot2 3.4.0.</p>
-<ul><li>use <code>after_stat(density)</code> instead of <code>..density..</code> in the function <code><a href="../reference/plot_hist.html">plot_hist()</a></code>
-</li>
-<li>use <code>after_stat(prop)</code> instead of <code>..prop..</code> in the function <code><a href="../reference/plot_bar.html">plot_bar()</a></code>
-</li>
+<div class="section level4">
+<h4 id="new-features-1-1-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0"></a></h4>
+<ul><li>Introduces <code><a href="../reference/default_params.html">default_params()</a></code>, an auxiliary function for <code><a href="../reference/mixgb.html">mixgb()</a></code>, to validate the list of XGBoost hyperparameters supplied by the user. It simplifies hyperparameter modifications without requiring explicit specification of all default values.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-1-1-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-1-0"></a></h4>
+<ul><li>Addresses issues related to PMM for multiclass variables.</li>
+<li>Updates <code><a href="../reference/plot_hist.html">plot_hist()</a></code> and <code><a href="../reference/plot_bar.html">plot_bar()</a></code> to align with changes in ggplot2 3.4.0:
+<ul><li>Replaces <code>..density..</code> with <code>after_stat(density)</code> in <code><a href="../reference/plot_hist.html">plot_hist()</a></code>.</li>
+<li>Replaces <code>..prop..</code> with <code>after_stat(prop)</code> in <code><a href="../reference/plot_bar.html">plot_bar()</a></code>.</li>
 </ul></li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.2" id="mixgb-102">mixgb 1.0.2<a class="anchor" aria-label="anchor" href="#mixgb-102"></a></h2><p class="text-muted">CRAN release: 2023-02-16</p>
-<ul><li>Minor change:</li>
-<li>All examples use <code>nthread = 2</code> to meet the requirement of the CRAN policy.</li>
+<div class="section level4">
+<h4 id="minor-changes-1-0-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-0-2"></a></h4>
+<ul><li>Adjusts examples to use <code>nthread = 2</code> to comply with CRAN policies.</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="mixgb-101">mixgb 1.0.1<a class="anchor" aria-label="anchor" href="#mixgb-101"></a></h2>
-<ul><li>Major change of default settings for mixgb().
-<ul><li>Our package has changed from using bootstrapping to subsampling with a default setting of <code>subsample = 0.7</code>. After further investigations, we discovered that although bootstrapping often works effectively, it can introduce bias in certain situations. As a result, we have made subsampling the default method instead of bootstrapping.</li>
-<li>
-</li></ul></li>
-<li>Current default settings for mixgb().
-<ul><li>Subsampling (<code>subsample = 0.7</code>)</li>
-<li>No bootstrapping (<code>bootstrap = FALSE</code>)</li>
+<div class="section level4">
+<h4 id="changes-in-default-settings-1-0-1">Changes in Default Settings<a class="anchor" aria-label="anchor" href="#changes-in-default-settings-1-0-1"></a></h4>
+<ul><li>Transitions from bootstrapping to subsampling. Subsampling, set at <code>subsample = 0.7</code>, becomes the default method due to identified biases with bootstrapping in certain scenarios.
+<ul><li>Default for <code><a href="../reference/mixgb.html">mixgb()</a></code>:
+<ul><li>Subsampling: <code>subsample = 0.7</code>.</li>
+<li>No bootstrapping: <code>bootstrap = FALSE</code>.</li>
+</ul></li>
 </ul></li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="mixgb-011">mixgb 0.1.1<a class="anchor" aria-label="anchor" href="#mixgb-011"></a></h2>
-<ul><li>Minor bug fix for the function createNA()</li>
-<li>Change of default settings for mixgb()
-<ul><li>ordinalAsInteger (from <code>TRUE</code> to <code>FALSE</code>)</li>
-<li>max_depth (from 6 to 3)</li>
-<li>nrounds (from 50 to 100)</li>
+<div class="section level4">
+<h4 id="minor-bug-fixes-and-updates-0-1-1">Minor Bug Fixes and Updates<a class="anchor" aria-label="anchor" href="#minor-bug-fixes-and-updates-0-1-1"></a></h4>
+<ul><li>Resolves a minor issue in the <code><a href="../reference/createNA.html">createNA()</a></code> function.</li>
+<li>Modifies default settings in <code><a href="../reference/mixgb.html">mixgb()</a></code>:
+<ul><li>
+<code>ordinalAsInteger</code>: Changes from <code>TRUE</code> to <code>FALSE</code>.</li>
 <li>
-<code>bootstrap = TRUE</code> by default.</li>
+<code>max_depth</code>: Changes from 6 to 3.</li>
+<li>
+<code>nrounds</code>: Changes from 50 to 100.</li>
+<li>
+<code>bootstrap</code>: Sets to <code>TRUE</code> by default.</li>
 </ul></li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="mixgb-010">mixgb 0.1.0<a class="anchor" aria-label="anchor" href="#mixgb-010"></a></h2><p class="text-muted">CRAN release: 2022-06-07</p>
-<div class="section level3">
-<h3 id="main-feature-0-1-0">Main feature<a class="anchor" aria-label="anchor" href="#main-feature-0-1-0"></a></h3>
-<ul><li>First release on CRAN</li>
-<li>Support single and multiple imputation</li>
-<li>Customisable settings regarding bootstrapping and predictive matching</li>
-<li>Visual diagnostics for multiply imputed data</li>
+<div class="section level4">
+<h4 id="initial-release-0-1-0">Initial Release<a class="anchor" aria-label="anchor" href="#initial-release-0-1-0"></a></h4>
+<ul><li>First version releases on CRAN.</li>
+<li>Supports both single and multiple imputation.</li>
+<li>Offers customizable settings for bootstrapping and predictive matching.</li>
+<li>Provides visual diagnostics for multiply imputed data.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="notes-0-1-0">Notes<a class="anchor" aria-label="anchor" href="#notes-0-1-0"></a></h3>
-<ul><li>Mac OSX users may not be able to use <code>mixgb</code> with multithreading. The package <code>xgboost</code> requires OpenMP to use multi-core. For more information please check <a href="https://mac.r-project.org/openmp/" class="external-link uri">https://mac.r-project.org/openmp/</a>.</li>
+<div class="section level4">
+<h4 id="notes-0-1-0">Notes<a class="anchor" aria-label="anchor" href="#notes-0-1-0"></a></h4>
+<ul><li>Mac OSX users might face challenges with multithreading in <code>mixgb</code> as <code>xgboost</code> requires OpenMP for multi-core operations. For details, please refer to <a href="https://mac.r-project.org/openmp/" class="external-link">OpenMP for Mac</a>.</li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
