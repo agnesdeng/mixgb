@@ -6,16 +6,18 @@
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
-[![](https://img.shields.io/badge/CRAN-1.0.2-9cf)](https://github.com/agnesdeng/mixgb)
+[![CRAN
+version](https://img.shields.io/cran/v/mixgb?color=9cf)](https://cran.r-project.org/package=mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github-1.3.1-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![GitHub release (latest by
+date)](https://img.shields.io/github/v/release/agnesdeng/mixgb?color=green)](https://github.com/agnesdeng/mixgb/releases)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The R package `mixgb` provides a scalable solution for multiple
-imputation that utilizes XGBoost, subsampling and predictive mean
-matching. We have shown that our framework obtains less biased estimates
-and reflects appropriate imputation variability, while achieving high
+The R package **mixgb** provides a scalable approach for multiple
+imputation by leveraging XGBoost, subsampling and predictive mean
+matching. We have shown that our method can yield less biased estimates
+and reflect appropriate imputation variability, while achieving high
 computational efficiency. For further information, please refer to our
 paper [Multiple Imputation Through
 XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
@@ -36,12 +38,14 @@ XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
 
 **Oct 2023**
 
-- Now compatible with XGBoost 2.0.0! Added new parameter `device` and
-  removed `gpu_id` and `predictor`
+- Now compatible with XGBoost 2.0.0! To align with XGBoost 2.0.0,
+  **mixgb** introduces new parameter `device` and removed
+  parameters`gpu_id` and `predictor`. Also, `tree_method="hist"` by
+  default.
 
-  - `mixgb(device="cpu", tree_method="hist,.....)`
+  - `mixgb(device="cpu", tree_method="hist",.....)`
 
-  - `mixgb(device="cuda", tree_method="hist,.....)`
+  - `mixgb(device="cuda", tree_method="hist",.....)`
 
 - Now support saving imputation models in a local directory in JSON
   format.
@@ -61,51 +65,52 @@ Now `mixgb(data,...)` support a dataset with the following data types:
 
     - logical
 
-Please note that variables of character type need to be manually
-converted to factor by the user first.
+Please note that variables of `character` type need to be manually
+converted to factor by users before imputation.
 
 **January 2023**
 
 - Major change of default settings for mixgb().
 
 Our package has changed from using bootstrapping to subsampling with a
-default setting of `subsample = 0.7`. After further investigations, we
-discovered that although bootstrapping often works effectively, it can
-introduce bias in certain situations. As a result, we have made
-subsampling the default method instead of bootstrapping.
+default setting of `subsample = 0.7`. This decision is based on the
+discovery that although bootstrapping is generally effectively, it can
+introduce bias in certain scenarios. As a result, subsampling has been
+adopted as the default approach.
 
 **May 2022**
 
-- Visual diagnostic functions of multiply imputed data
-- Use S3 instead of R6
-- Plot functions can show masked missing data (if provided)
+- Introduce visual diagnostic functions for multiply imputed data.
+- Use S3 instead of R6.
+- Plot functions can now show masked missing data (if provided).
 
 **April 2022**
 
-- User can now set different number of iterations `maxit`.
-- Both single and multiple imputation with XGBoost can do predictive
-  mean matching
-- Bootstrap data to make `m` imputations is optional. Users can set
-  `bootstrap = FALSE` to disable bootstrap. Users can also set
-  sampling-related hyperparameters of XGBoost (subsample,
-  colsample_bytree, colsample_bylevel, colsample_bynode) to be less than
-  1 to achieve a similar effect.
+- User can adjust the number of iterations with the `maxit` parameter.
+- Both single and multiple imputation with XGBoost can use predictive
+  mean matching.
+- Bootstrapping data to obtain `m` imputations is optional. Users can
+  set `bootstrap = FALSE` to disable bootstrap. Users can also set
+  sampling-related hyperparameters of XGBoost (`subsample`,
+  `colsample_bytree`, `colsample_bylevel`, `colsample_bynode`) to be
+  less than 1 to achieve a similar effect.
 - Add predicted mean matching type 0. Now the options for `pmm.type` are
   `NULL`,`0`,`1`,`2` or `"auto"` (type 2 for numeric/integer variables,
   no PMM for categorical variables).
-- Added more validation checks
-- Compatible with `data.table`
-- Cross-validation to pre-tune `nrounds`
+- Add more validation checks.
+- Compatible with `data.table`.
+- Add function `mixgb_cv()` to pre-tune `nrounds` by cross-validation.
 
 ## Under development
 
-- make m imputation parallel
-- pre-tune other hyperparameters
+- In progress: To Be Announced
+- Planned: To Be Announced
+- Under consideration: To implement PMM type 3
 
 ## Notice
 
-- Users can set XGBoost parameter `nthread` for multithreading with
-  OpenMP support. However, OpenMP support has been presently disabled on
+- For multithreading, users can set the XGBoost nthread parameter with
+  OpenMP support. Be advised, OpenMP support is currently disabled on
   MacOS.
 
 ## 1. Installation
@@ -252,9 +257,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPTR1"
+#> [1] "BMPHEAD"
 cv.results$best.nrounds
-#> [1] 11
+#> [1] 17
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -271,7 +276,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 11
+#> [1] 12
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
@@ -338,26 +343,26 @@ specified variable.
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 #>        m1   m2   m3   m4   m5
-#>   1: 43.8 43.0 45.0 42.5 43.6
-#>   2: 42.5 42.6 41.7 41.4 42.1
-#>   3: 43.9 44.0 41.1 44.3 42.0
-#>   4: 45.4 46.3 45.7 44.6 43.8
-#>   5: 47.4 46.3 46.0 46.7 46.7
+#>   1: 45.4 42.3 43.6 44.5 43.5
+#>   2: 46.2 41.0 42.5 44.3 43.9
+#>   3: 42.7 43.5 43.6 43.6 43.5
+#>   4: 46.1 44.0 47.7 46.8 45.1
+#>   5: 46.2 44.9 44.8 44.2 44.9
 #>  ---                         
-#> 120: 45.9 46.1 45.2 46.1 45.8
-#> 121: 46.5 43.8 46.0 45.0 47.7
-#> 122: 41.2 41.9 43.9 40.9 40.4
-#> 123: 44.1 42.6 42.0 42.7 43.8
-#> 124: 44.1 44.3 46.2 43.5 45.3
+#> 120: 45.2 46.4 46.2 45.6 45.2
+#> 121: 46.3 47.3 46.2 46.3 44.9
+#> 122: 41.6 40.2 42.0 41.7 41.0
+#> 123: 44.0 42.4 43.7 44.7 42.4
+#> 124: 44.4 43.4 41.8 42.9 44.5
 show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
 #>    m1 m2 m3 m4 m5
 #> 1:  2  2  2  2  2
-#> 2:  1  1  1  1  1
-#> 3:  2  2  1  2  1
-#> 4:  2  2  2  2  2
-#> 5:  1  1  1  1  1
-#> 6:  2  1  1  1  1
-#> 7:  2  1  1  1  1
+#> 2:  2  2  2  2  1
+#> 3:  2  1  2  2  2
+#> 4:  2  1  2  2  2
+#> 5:  2  2  2  1  2
+#> 6:  2  2  2  2  2
+#> 7:  2  2  2  2  2
 ```
 
 The `mixgb` package provides the following visual diagnostics functions:

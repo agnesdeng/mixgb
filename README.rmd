@@ -21,15 +21,15 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
-[![](https://img.shields.io/badge/CRAN-1.0.2-9cf)](https://github.com/agnesdeng/mixgb)
+[![CRAN version](https://img.shields.io/cran/v/mixgb?color=9cf)](https://cran.r-project.org/package=mixgb)
 [![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
-[![](https://img.shields.io/badge/github-1.3.1-brightgreen)](https://github.com/agnesdeng/mixgb)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/agnesdeng/mixgb?color=green)](https://github.com/agnesdeng/mixgb/releases)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The R package `mixgb` provides a scalable solution for multiple imputation that utilizes XGBoost, subsampling and predictive mean matching. We have shown that our framework obtains less biased estimates and reflects appropriate imputation variability, while achieving high computational efficiency. For further information, please refer to our paper  [Multiple Imputation Through XGBoost][paper-url].
+The R package **mixgb** provides a scalable approach for multiple imputation by leveraging XGBoost, subsampling and predictive mean matching. We have shown that our method can yield less biased estimates and reflect appropriate imputation variability, while achieving high computational efficiency. For further information, please refer to our paper  [Multiple Imputation Through XGBoost][paper-url].
 
-## Reference
+## References
 - Yongshi Deng & Thomas Lumley. (2023), [Multiple Imputation Through XGBoost][paper-url], Journal of Computational and Graphical Statistics, DOI: 10.1080/10618600.2023.2252501.
 
 - Tianqi Chen & Carlos Guestrin. (2016), [XGBoost: A Scalable Tree Boosting System][paper-url], In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.
@@ -38,11 +38,11 @@ The R package `mixgb` provides a scalable solution for multiple imputation that 
 
 **Oct 2023**
 
-  * Now compatible with XGBoost 2.0.0!  Added new parameter `device` and removed `gpu_id` and `predictor`
+  * Now compatible with XGBoost 2.0.0!  To align with XGBoost 2.0.0, **mixgb** introduces new parameter `device` and removed parameters`gpu_id` and `predictor`. Also, `tree_method="hist"` by default.
   
-    - `mixgb(device="cpu", tree_method="hist,.....)`
+    - `mixgb(device="cpu", tree_method="hist",.....)`
   
-    - `mixgb(device="cuda", tree_method="hist,.....)`
+    - `mixgb(device="cuda", tree_method="hist",.....)`
     
   * Now support saving imputation models in a local directory in JSON format. 
   
@@ -61,37 +61,38 @@ The R package `mixgb` provides a scalable solution for multiple imputation that 
   
     - logical
   
-  Please note that variables of character type need to be manually converted to factor by the user first. 
+  Please note that variables of `character` type need to be manually converted to factor by users before imputation. 
 
 **January 2023**
 
   * Major change of default settings for mixgb(). 
   
-   Our package has changed from using bootstrapping to subsampling with a default setting of `subsample = 0.7`. After further investigations, we discovered that although bootstrapping often works effectively, it can introduce bias in certain situations. As a result, we have made subsampling the default method instead of bootstrapping.
+   Our package has changed from using bootstrapping to subsampling with a default setting of `subsample = 0.7`. This decision is based on the discovery that although bootstrapping is generally effectively, it can introduce bias in certain scenarios. As a result, subsampling has been adopted as the default approach.
 
 
 **May 2022**
   
-  * Visual diagnostic functions of multiply imputed data
-  * Use S3 instead of R6 
-  * Plot functions can show masked missing data (if provided)
+  * Introduce visual diagnostic functions for multiply imputed data.
+  * Use S3 instead of R6.
+  * Plot functions can now show masked missing data (if provided).
 
 **April 2022**
   
-  * User can now set different number of iterations `maxit`.
-  * Both single and multiple imputation with XGBoost can do predictive mean matching
-  * Bootstrap data to make `m` imputations is optional. Users can set `bootstrap = FALSE` to disable bootstrap. Users can also set sampling-related hyperparameters of XGBoost (subsample, colsample_bytree, colsample_bylevel, colsample_bynode) to be less than 1 to achieve a similar effect.
+  * User can adjust the number of iterations with the `maxit` parameter.
+  * Both single and multiple imputation with XGBoost can use predictive mean matching.
+  * Bootstrapping data to obtain `m` imputations is optional. Users can set `bootstrap = FALSE` to disable bootstrap. Users can also set sampling-related hyperparameters of XGBoost (`subsample`, `colsample_bytree`, `colsample_bylevel`, `colsample_bynode`) to be less than 1 to achieve a similar effect.
   * Add predicted mean matching type 0. Now the options for `pmm.type` are `NULL`,`0`,`1`,`2` or `"auto"` (type 2 for numeric/integer variables, no PMM for categorical variables).
-  * Added more validation checks
-  * Compatible with `data.table`
-  * Cross-validation to pre-tune `nrounds`
+  * Add more validation checks.
+  * Compatible with `data.table`.
+  * Add function `mixgb_cv()` to pre-tune `nrounds` by cross-validation. 
 
 ## Under development
-  * make m imputation parallel 
-  * pre-tune other hyperparameters 
+  * In progress: To Be Announced
+  * Planned: To Be Announced
+  * Under consideration: To implement PMM type 3
 
 ## Notice
-  * Users can set XGBoost parameter `nthread` for multithreading with OpenMP support. However, OpenMP support has been presently disabled on MacOS.
+  * For multithreading, users can set the XGBoost nthread parameter with OpenMP support. Be advised, OpenMP support is currently disabled on MacOS.
 
 
 ## 1. Installation
