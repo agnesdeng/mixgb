@@ -38,6 +38,21 @@ The R package **mixgb** provides a scalable approach for multiple imputation by 
 
 **Oct 2023**
 
+  * Dependency Change: Starting from mixgb version 1.3.1, the package requires XGBoost version 2.0.0 or higher. As of now, this version is not available on CRAN. To get the required version with GPU support, please download it from [XGBoost GitHub Releases][xgboost-release]. Then in R, one can install XGBoost 2.0.0 and the newest version of **mixgb** as follows:
+
+```{r, eval = FALSE}
+# Change the file path where you saved the downloaded XGBoost package
+install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz", repos = NULL)
+```
+
+
+```{r, eval = FALSE}
+devtools::install_github("agnesdeng/mixgb")
+library(mixgb)
+```
+
+  * If you prefer to use the CRAN version of XGBoost, consider using an earlier version of **mixgb** (versions <1.3.1).
+ 
   * Now compatible with XGBoost 2.0.0!  To align with XGBoost 2.0.0, **mixgb** introduces new parameter `device` and removed parameters`gpu_id` and `predictor`. Also, `tree_method="hist"` by default.
   
     - `mixgb(device="cpu", tree_method="hist",.....)`
@@ -378,10 +393,11 @@ Multiple imputation can be run with GPU support for machines with NVIDIA GPUs. U
 
 # Newest Version (XGBoost >= 2.0.0, mixgb >= 1.3.1)
 
-Please download the Newest version of XGBoost with GPU support via https://github.com/dmlc/xgboost/releases 
+Please download the Newest version of XGBoost with GPU support via [XGBoost GitHub Releases][xgboost-release].
 
 ```{r, eval = FALSE}
-install.packages("C:/Users/agnes/Desktop/phd-thesis/packages backup/xgboost_r_gpu_win64_2.0.0.tar.gz", repos = NULL)
+# Change the file path where you saved the downloaded XGBoost package
+install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz", repos = NULL)
 ```
 
 Then users can install the newest version of our package `mixgb` in R. 
@@ -445,3 +461,5 @@ mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 [paper-url]:https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501
 
 [xgboost-url]:http://arxiv.org/abs/1603.02754
+
+[xgboost-release]: https://github.com/dmlc/xgboost/releases

@@ -22,7 +22,7 @@ computational efficiency. For further information, please refer to our
 paper [Multiple Imputation Through
 XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
 
-## Reference
+## References
 
 - Yongshi Deng & Thomas Lumley. (2023), [Multiple Imputation Through
   XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501),
@@ -37,6 +37,29 @@ XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
 ## New updates
 
 **Oct 2023**
+
+- Dependency Change: Starting from mixgb version 1.3.1, the package
+  requires XGBoost version 2.0.0 or higher. As of now, this version is
+  not available on CRAN. To get the required version with GPU support,
+  please download it from [XGBoost GitHub
+  Releases](https://github.com/dmlc/xgboost/releases). Then in R, one
+  can install XGBoost 2.0.0 and the newest version of **mixgb** as
+  follows:
+
+``` r
+# Change the file path where you saved the downloaded
+# XGBoost package
+install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz",
+    repos = NULL)
+```
+
+``` r
+devtools::install_github("agnesdeng/mixgb")
+library(mixgb)
+```
+
+- If you prefer to use the CRAN version of XGBoost, consider using an
+  earlier version of **mixgb** (versions \<1.3.1).
 
 - Now compatible with XGBoost 2.0.0! To align with XGBoost 2.0.0,
   **mixgb** introduces new parameter `device` and removed
@@ -257,9 +280,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPHEAD"
+#> [1] "BMPSB1"
 cv.results$best.nrounds
-#> [1] 17
+#> [1] 15
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -343,25 +366,25 @@ specified variable.
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 #>        m1   m2   m3   m4   m5
-#>   1: 45.4 42.3 43.6 44.5 43.5
-#>   2: 46.2 41.0 42.5 44.3 43.9
-#>   3: 42.7 43.5 43.6 43.6 43.5
-#>   4: 46.1 44.0 47.7 46.8 45.1
-#>   5: 46.2 44.9 44.8 44.2 44.9
+#>   1: 44.0 44.8 45.0 44.8 46.2
+#>   2: 44.0 44.0 43.8 44.3 44.0
+#>   3: 43.9 42.8 43.8 41.8 44.7
+#>   4: 45.7 47.5 45.3 45.9 46.0
+#>   5: 48.8 46.1 45.3 47.4 45.2
 #>  ---                         
-#> 120: 45.2 46.4 46.2 45.6 45.2
-#> 121: 46.3 47.3 46.2 46.3 44.9
-#> 122: 41.6 40.2 42.0 41.7 41.0
-#> 123: 44.0 42.4 43.7 44.7 42.4
-#> 124: 44.4 43.4 41.8 42.9 44.5
+#> 120: 44.7 46.9 45.3 45.0 46.2
+#> 121: 44.8 46.2 46.4 45.0 45.7
+#> 122: 40.8 39.9 41.6 39.9 41.9
+#> 123: 44.4 42.9 43.8 44.1 42.3
+#> 124: 46.3 44.6 46.1 45.1 45.1
 show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
 #>    m1 m2 m3 m4 m5
 #> 1:  2  2  2  2  2
-#> 2:  2  2  2  2  1
-#> 3:  2  1  2  2  2
-#> 4:  2  1  2  2  2
-#> 5:  2  2  2  1  2
-#> 6:  2  2  2  2  2
+#> 2:  1  1  1  2  1
+#> 3:  1  1  1  1  1
+#> 4:  2  2  2  2  2
+#> 5:  1  1  1  1  1
+#> 6:  1  1  1  1  1
 #> 7:  2  2  2  2  2
 ```
 
@@ -385,28 +408,28 @@ plot_hist(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-16-1.png" width="95%" />
 
 ``` r
 plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD",
     var.y = "BMPRECUM", original.data = withNA.df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-2.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-16-2.png" width="95%" />
 
 ``` r
 plot_2num(imputation.list = imputed.data, var.x = "HSAGEIR",
     var.y = "BMPHEAD", original.data = withNA.df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-3.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-16-3.png" width="95%" />
 
 ``` r
 plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD",
     var.fac = "HSSEX", original.data = withNA.df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-4.png" width="95%" />
+<img src="man/figures/README-unnamed-chunk-16-4.png" width="95%" />
 
 ## 4. Impute new unseen data using a saved imputer object
 
@@ -560,10 +583,12 @@ GPUs. Users must first install the R package `xgboost` with GPU support.
 # Newest Version (XGBoost \>= 2.0.0, mixgb \>= 1.3.1)
 
 Please download the Newest version of XGBoost with GPU support via
-<https://github.com/dmlc/xgboost/releases>
+[XGBoost GitHub Releases](https://github.com/dmlc/xgboost/releases).
 
 ``` r
-install.packages("C:/Users/agnes/Desktop/phd-thesis/packages backup/xgboost_r_gpu_win64_2.0.0.tar.gz",
+# Change the file path where you saved the downloaded
+# XGBoost package
+install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz",
     repos = NULL)
 ```
 

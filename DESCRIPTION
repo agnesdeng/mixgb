@@ -33,7 +33,7 @@ Imports:
     stats,
     tidyr,
     utils,
-    xgboost (>= 2.0.0)
+    xgboost
 Suggests: 
     knitr,
     rmarkdown,
