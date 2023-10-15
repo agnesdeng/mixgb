@@ -35,7 +35,7 @@ initial_imp2 <- function(data, initial.num = "normal", initial.int = "mode", ini
   missing.vars <- sorted.names[missing.idx]
   missing.types <- sorted.types[missing.idx]
   missing.method <- ifelse(missing.types == "numeric", initial.num,
-                           ifelse(missing.types == "integer", initial.int, initial.fac)
+    ifelse(missing.types == "integer", initial.int, initial.fac)
   )
 
 
@@ -69,24 +69,23 @@ initial_imp2 <- function(data, initial.num = "normal", initial.int = "mode", ini
 
     if (missing.method[[var]] == "normal") {
       # only works for numeric
-     # sorted.dt[[var]] <- imp.normal(vec = sorted.dt[[var]], na.idx = na.idx)
+      # sorted.dt[[var]] <- imp.normal(vec = sorted.dt[[var]], na.idx = na.idx)
       sorted.dt[, (var) := imp.normal(vec = .SD[[var]], na.idx = na.idx)]
-
     } else if (missing.method[[var]] == "mean") {
       # only works for numeric
-      #sorted.dt[[var]] <- imp.mean(vec = sorted.dt[[var]], na.idx = na.idx)
+      # sorted.dt[[var]] <- imp.mean(vec = sorted.dt[[var]], na.idx = na.idx)
       sorted.dt[, (var) := imp.mean(vec = .SD[[var]], na.idx = na.idx)]
     } else if (missing.method[[var]] == "median") {
       # only works for numeric
-      #sorted.dt[[var]] <- imp.median(vec = sorted.dt[[var]], na.idx = na.idx)
+      # sorted.dt[[var]] <- imp.median(vec = sorted.dt[[var]], na.idx = na.idx)
       sorted.dt[, (var) := imp.median(vec = .SD[[var]], na.idx = na.idx)]
     } else if (missing.method[[var]] == "mode") {
       # work for both numeric (only recommend for integer type) and factor
-      #sorted.dt[[var]] <- imp.mode(vec = sorted.dt[[var]], na.idx = na.idx)
+      # sorted.dt[[var]] <- imp.mode(vec = sorted.dt[[var]], na.idx = na.idx)
       sorted.dt[, (var) := imp.mode(vec = .SD[[var]], na.idx = na.idx)]
     } else if (missing.method[[var]] == "sample") {
       # work for both numeric (only recommend for integer type) and factor
-      #sorted.dt[[var]] <- imp.sample(vec = sorted.dt[[var]], na.idx = na.idx)
+      # sorted.dt[[var]] <- imp.sample(vec = sorted.dt[[var]], na.idx = na.idx)
       sorted.dt[, (var) := imp.sample(vec = .SD[[var]], na.idx = na.idx)]
     } else {
       stop("Please specify an acceptable initial imputation method.")

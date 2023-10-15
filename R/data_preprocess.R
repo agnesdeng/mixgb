@@ -38,18 +38,17 @@ feature_type <- function(data) {
 }
 
 
-feature_type2<- function(data) {
-
+feature_type2 <- function(data) {
   # Define type for each column
   Types <- sapply(data, function(var) {
     # Check primary class of the column
     var.class <- class(var)[1]
     switch(var.class,
-           numeric = "numeric",
-           integer = "numeric",
-           factor = ifelse(nlevels(var) == 2, "binary", "multiclass"),
-           ordered = ifelse(nlevels(var) == 2, "binary", "multiclass"),
-           stop(paste0("Unsupported data type: ", var.class))
+      numeric = "numeric",
+      integer = "numeric",
+      factor = ifelse(nlevels(var) == 2, "binary", "multiclass"),
+      ordered = ifelse(nlevels(var) == 2, "binary", "multiclass"),
+      stop(paste0("Unsupported data type: ", var.class))
     )
   })
 

@@ -11,7 +11,7 @@ mixgb_null <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL
     na.idx <- Na.idx[[var]]
     obs.y <- yobs.list[[var]]
 
-    cat("sparse matrix start \n")
+
 
     if (Ncol == 2) {
       obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])
@@ -19,24 +19,20 @@ mixgb_null <- function(pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL
     } else {
       obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])[, -1, drop = FALSE]
       mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])[, -1, drop = FALSE]
-
     }
-    cat("sparse matrix finish \n")
-    #Error in xgboost::xgb.DMatrix(data = sorted.dt[-na.idx, .SD, .SDcols = !var],  :
-   # xgb.DMatrix does not support construction from list
-    #obs.data<-xgboost::xgb.DMatrix(data = sorted.dt[-na.idx, .SD, .SDcols = !var], label= sorted.dt[-na.idx, ..var])
+
+
 
     # numeric or integer ---------------------------------------------------------------------------
     if (missing.types[var] == "numeric" | missing.types[var] == "integer") {
       obj.type <- "reg:squarederror"
 
-     cat("xgb fit start \n")
       xgb.fit <- xgboost(
         data = obs.data, label = obs.y, objective = obj.type,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = verbose,
         ...
       )
-      cat("xgb predict start \n")
+
       yhatmis <- predict(xgb.fit, mis.data)
       if (!is.null(pmm.type)) {
         if (pmm.type != 1) {

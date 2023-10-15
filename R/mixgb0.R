@@ -57,22 +57,22 @@
 #' # obtain m multiply imputed datasets and save models for imputing new data later on
 #' mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
 mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = FALSE,
-                  pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
-                  initial.num = "normal", initial.int = "mode", initial.fac = "mode",
-                  save.models = FALSE, save.vars = NULL, save.models.folder = NULL,
-                  verbose = F,
-                  xgb.params = list(),
-                  nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, xgboost_verbose = 0, ...) {
+                   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
+                   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
+                   save.models = FALSE, save.vars = NULL, save.models.folder = NULL,
+                   verbose = F,
+                   xgb.params = list(),
+                   nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, xgboost_verbose = 0, ...) {
   if (!(is.data.frame(data) || is.matrix(data))) {
     stop("Data need to be a data frame or a matrix.")
   }
-  
+
   if (!is.data.table(data)) {
     data <- as.data.table(data)
   }
-  
-  
-  
+
+
+
   # check whether to use xgb.save()
   if (!is.null(save.models.folder)) {
     if (!dir.exists(save.models.folder)) {
@@ -83,45 +83,45 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
   } else {
     XGB.save <- FALSE
   }
-  
-  
-  
+
+
+
   xgb.params <- do.call("default_params", xgb.params)
-  
-  
-  
+
+
+
   if (ordinalAsInteger == TRUE) {
     if (is.null(pmm.type)) {
       ordinalAsInteger <- FALSE
       warning(" `ordinalAsInteger` will be coerced to FALSE when `pmm.type = NULL`")
     }
     ord.fac <- names(Filter(is.ordered, data))
-    
+
     if (length(ord.fac) > 0) {
       data[, c(ord.fac) := lapply(.SD, fac2int), .SDcols = ord.fac]
     }
   }
-  
-  
+
+
   # initial imputation
   # initial.obj: An object including some basic data information and a pre-fill dataset after initial imputation
   initial.obj <- initial_imp(data, initial.num = initial.num, initial.int = initial.int, initial.fac = initial.fac, bootstrap = bootstrap)
   sorted.naSums <- initial.obj$sorted.naSums
   sorted.types <- initial.obj$sorted.types
   Nrow <- initial.obj$Nrow
-  
+
   stop("Test Memory.")
   # checking
   check_pmm(pmm.type = pmm.type, bootstrap = bootstrap, xgb.params = xgb.params, Nrow = Nrow, sorted.naSums = sorted.naSums, sorted.types = sorted.types, pmm.k = pmm.k)
-  
+
   imputed.data <- vector("list", m)
-  
+
   origin.names <- initial.obj$origin.names
   sorted.types <- initial.obj$sorted.types
   sorted.names <- initial.obj$sorted.names
   sorted.naSums <- initial.obj$sorted.naSums
   sorted.idx <- initial.obj$sorted.idx
-  
+
   missing.idx <- initial.obj$missing.idx
   missing.vars <- initial.obj$missing.vars
   missing.types <- initial.obj$missing.types
@@ -129,7 +129,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
   Na.idx <- initial.obj$Na.idx
   Ncol <- initial.obj$Ncol
   mp <- initial.obj$mp
-  
+
   # validate save.vars :
   if (save.models == TRUE) {
     extra.vars <- save_vars(save.vars = save.vars, origin.names = origin.names, missing.vars = missing.vars)
@@ -161,8 +161,8 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
       yobs.list[[var]] <- initial.obj$sorted.dt[[var]][-na.idx]
     }
   }
-  
-  
+
+
   yhatobs.list <- NULL
   if (isTRUE(pmm.type == 1)) {
     yhatobs.list <- save_yhatobs(
@@ -171,17 +171,17 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
       nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
     )
   }
-  
+
   # ............................................................................................................
   if (save.models == FALSE) {
     # Default: don't save any models
-    
+
     if (bootstrap == FALSE) {
       # bootstrap=FALSE--------------------------------------------------------------
       if (verbose) {
         cat("mixgb without bootstrap:", "imputing set")
       }
-      
+
       for (i in seq_len(m)) {
         if (verbose) {
           cat(" --", i)
@@ -204,7 +204,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
       if (verbose) {
         cat("mixgb with bootstrap:", "imputing set")
       }
-      
+
       for (i in seq_len(m)) {
         if (verbose) {
           cat(" --", i)
@@ -224,11 +224,11 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
         imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
       }
     } # end of if(bootstrap)
-    
+
     if (verbose) {
       cat("\n")
     }
-    
+
     return(imputed.data)
     # mixgb.obj <- list("imputed.data" = imputed.data, "XGB.models" =NULL, "params" = NULL)
     # class(mixgb.obj)<-"mixgbObj"
@@ -256,8 +256,8 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
     params$bootstrap <- bootstrap
     params$yobs.list <- yobs.list
     params$ordinalAsInteger <- ordinalAsInteger
-    
-    
+
+
     # pre-allocation for saved models: for each of m, save Nmodels
     if (isTRUE(XGB.save)) {
       # save the model dir
@@ -266,15 +266,15 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
       # save the model
       XGB.models <- vector("list", m)
     }
-    
-    
+
+
     #--------------------------------------------------------
     if (bootstrap == FALSE) {
       # bootstrap=FALSE--------------------------------------------------------------
       if (verbose) {
         cat("mixgb without bootstrap:", "saving models and imputing set")
       }
-      
+
       for (i in seq_len(m)) {
         if (verbose) {
           cat(" --", i)
@@ -311,7 +311,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
             nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
           )
         }
-        
+
         # if pmm.type=NULL
         imputed.data[[i]] <- saved.obj$sorted.dt[, origin.names, with = FALSE]
         XGB.models[[i]] <- saved.obj$xgb.models
@@ -326,7 +326,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
       if (verbose) {
         cat("mixgb with bootstrap:", "saving models and imputing set")
       }
-      
+
       for (i in seq_len(m)) {
         if (verbose) {
           cat(" --", i)
@@ -363,8 +363,8 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
             nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
           )
         }
-        
-        
+
+
         # if pmm.type=NULL
         imputed.data[[i]] <- saved.obj$sorted.dt[, origin.names, with = FALSE]
         XGB.models[[i]] <- saved.obj$xgb.models
@@ -375,18 +375,18 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
         # if pmm.type=1  (only use one set of yhatobs.list across all m, it's saved ahead)
       }
     } # end of if(bootstrap)
-    
-    
-    
+
+
+
     #---------------------------------------------------------
-    
+
     # pmm.type=NULL, yhatobs.list=NULL
     # pmm.type=1, yhatobs.list only one list with different vars
     # pmm.type=0,2,"auto" yhatlobs.list has m list with different vars
-    
+
     params$yhatobs.list <- yhatobs.list
     params$yobs.list <- yobs.list
-    
+
     if (verbose) {
       cat("\n")
     }

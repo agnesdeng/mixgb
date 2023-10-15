@@ -1,9 +1,9 @@
 # Multiple imputation using xgboost (without bootstrap)
-mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
-                       xgb.params = list(),
-                       nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
-                       ...) {
-  nthread<-xgb.params$nthread
+mixgb_null2 <- function(sparse = FALSE, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
+                        xgb.params = list(),
+                        nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
+                        ...) {
+  nthread <- xgb.params$nthread
   # param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   for (var in missing.vars) {
     features <- setdiff(sorted.names, var)
@@ -16,41 +16,38 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
     if (Ncol == 2) {
       obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])
       mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])
-      dtrain <- xgboost::xgb.DMatrix(data = obs.data, label = obs.y,nthread=nthread)
+      dtrain <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
     } else {
-      if(sparse){
+      if (sparse) {
         obs.data <- sparse.model.matrix(form, data = sorted.dt[-na.idx, ])[, -1, drop = FALSE]
         mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])[, -1, drop = FALSE]
-      }else{
-        obs.data <- as.matrix(sorted.dt[-na.idx, ..features])
-        mis.data <- as.matrix(sorted.dt[na.idx, ..features])
+      } else {
+        obs.data <- as.matrix(sorted.dt[-na.idx, features, with = FALSE])
+        mis.data <- as.matrix(sorted.dt[na.idx, features, with = FALSE])
       }
-
     }
 
 
-    #Error in xgboost::xgb.DMatrix(data = sorted.dt[-na.idx, .SD, .SDcols = !var],  :
-    # xgb.DMatrix does not support construction from list
-    #obs.data<-xgboost::xgb.DMatrix(data = sorted.dt[-na.idx, .SD, .SDcols = !var], label= sorted.dt[-na.idx, ..var])
 
     # numeric or integer ---------------------------------------------------------------------------
     if (missing.types[var] == "numeric" | missing.types[var] == "integer") {
-
-      dtrain <- xgboost::xgb.DMatrix(data = obs.data, label = obs.y, nthread=nthread)
-      dtest <- xgboost::xgb.DMatrix(data = mis.data, nthread=nthread)
-      if(is.null(early_stopping_rounds)){
+      dtrain <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+      dtest <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      if (is.null(early_stopping_rounds)) {
         watchlist <- list(train = dtrain)
-      }else{
+      } else {
         watchlist <- list(train = dtrain)
-        #to be done, have eval
-        #watchlist <- list(train = dtrain,eval=dtest)
+        # to be done, have eval
+        # watchlist <- list(train = dtrain,eval=dtest)
       }
 
 
       obj.type <- "reg:squarederror"
-      xgb.fit <- xgboost::xgb.train(data = dtrain, objective = obj.type, watchlist = watchlist,
-                                params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
-                                print_every_n = print_every_n, verbose = verbose,...)
+      xgb.fit <- xgb.train(
+        data = dtrain, objective = obj.type, watchlist = watchlist,
+        params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
+        print_every_n = print_every_n, verbose = verbose, ...
+      )
 
       yhatmis <- predict(xgb.fit, dtest)
       if (!is.null(pmm.type)) {
@@ -66,21 +63,20 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
       # update dataset
 
       sorted.dt[na.idx, (var) := yhatmis]
-
     } else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
       bin.t <- sort(table(obs.y))
 
 
-      dtrain <- xgboost::xgb.DMatrix(data = obs.data, label = obs.y, nthread=nthread)
-      dtest <- xgboost::xgb.DMatrix(data = mis.data, nthread=nthread)
-      if(is.null(early_stopping_rounds)){
+      dtrain <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+      dtest <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      if (is.null(early_stopping_rounds)) {
         watchlist <- list(train = dtrain)
-      }else{
+      } else {
         watchlist <- list(train = dtrain)
-        #to be done, have eval
-        #watchlist <- list(train = dtrain,eval=dtest)
+        # to be done, have eval
+        # watchlist <- list(train = dtrain,eval=dtest)
       }
 
       # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
@@ -100,10 +96,12 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
           # pmm by "prob" and for no pmm
           obj.type <- "binary:logistic"
         }
-        xgb.fit <- xgboost::xgb.train(data = dtrain, objective = obj.type, watchlist = watchlist,
-                                      eval_metric = "logloss",
-                                      params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
-                                      print_every_n = print_every_n, verbose = verbose,...)
+        xgb.fit <- xgb.train(
+          data = dtrain, objective = obj.type, watchlist = watchlist,
+          eval_metric = "logloss",
+          params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
+          print_every_n = print_every_n, verbose = verbose, ...
+        )
 
         yhatmis <- predict(xgb.fit, dtest)
 
@@ -127,15 +125,14 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
         }
       }
     } else if (missing.types[var] == "logical") {
-
-      dtrain <- xgboost::xgb.DMatrix(data = obs.data, label = obs.y, nthread=nthread)
-      dtest <- xgboost::xgb.DMatrix(data = mis.data, nthread=nthread)
-      if(is.null(early_stopping_rounds)){
+      dtrain <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+      dtest <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      if (is.null(early_stopping_rounds)) {
         watchlist <- list(train = dtrain)
-      }else{
+      } else {
         watchlist <- list(train = dtrain)
-        #to be done, have eval
-        #watchlist <- list(train = dtrain,eval=dtest)
+        # to be done, have eval
+        # watchlist <- list(train = dtrain,eval=dtest)
       }
 
       bin.t <- sort(table(obs.y))
@@ -157,10 +154,12 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
           obj.type <- "binary:logistic"
         }
 
-        xgb.fit <- xgboost::xgb.train(data = dtrain, objective = obj.type, watchlist = watchlist,
-                                      eval_metric = "logloss",
-                                      params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
-                                      print_every_n = print_every_n, verbose = verbose,...)
+        xgb.fit <- xgb.train(
+          data = dtrain, objective = obj.type, watchlist = watchlist,
+          eval_metric = "logloss",
+          params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
+          print_every_n = print_every_n, verbose = verbose, ...
+        )
         yhatmis <- predict(xgb.fit, dtest)
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
           # for pmm.type=NULL or "auto"
@@ -175,7 +174,7 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
             yhatobs <- predict(xgb.fit, obs.data)
           }
 
-          yhatmis<- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+          yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
           sorted.dt[na.idx, (var) := yhatmis]
         }
       }
@@ -183,14 +182,14 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
       # multiclass ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
 
-      dtrain <- xgboost::xgb.DMatrix(data = obs.data, label = obs.y, nthread=nthread)
-      dtest <- xgboost::xgb.DMatrix(data = mis.data, nthread=nthread)
-      if(is.null(early_stopping_rounds)){
+      dtrain <-xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+      dtest <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      if (is.null(early_stopping_rounds)) {
         watchlist <- list(train = dtrain)
-      }else{
+      } else {
         watchlist <- list(train = dtrain)
-        #to be done, have eval
-        #watchlist <- list(train = dtrain,eval=dtest)
+        # to be done, have eval
+        # watchlist <- list(train = dtrain,eval=dtest)
       }
 
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
@@ -202,12 +201,14 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
       N.class <- length(levels(sorted.dt[[var]]))
 
 
-      xgb.fit <- xgboost::xgb.train(data = dtrain, num_class = N.class,
-                                    objective = obj.type, watchlist = watchlist,
-                                    eval_metric = "mlogloss",
-                                    params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
-                                    print_every_n = print_every_n, verbose = verbose,...)
-      #yhatmis <- predict(xgb.fit, dtest)
+      xgb.fit <- xgb.train(
+        data = dtrain, num_class = N.class,
+        objective = obj.type, watchlist = watchlist,
+        eval_metric = "mlogloss",
+        params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
+        print_every_n = print_every_n, verbose = verbose, ...
+      )
+      # yhatmis <- predict(xgb.fit, dtest)
 
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
         # use softmax, predict returns class
@@ -217,8 +218,8 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
         sorted.dt[na.idx, (var) := yhatmis]
       } else {
         # predict returns probability matrix for each class
-        #yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
-        #hasn't tested yet
+        # yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
+        # hasn't tested yet
         yhatmis <- predict(xgb.fit, dtest, reshape = TRUE)
         if (pmm.type == 1) {
           # for pmm.type=1
@@ -226,8 +227,8 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
         } else {
           # for pmm.type=0 or 2
           # probability matrix for each class
-          #yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
-          #hasn't tested yet
+          # yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
+          # hasn't tested yet
           yhatobs <- predict(xgb.fit, dtrain, reshape = TRUE)
         }
         yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
@@ -235,8 +236,7 @@ mixgb_null2 <- function(sparse=FALSE,pmm.type, pmm.link, pmm.k, yobs.list, yhato
         sorted.dt[na.idx, (var) := yhatmis]
       }
     }
-    #for each var
-
+    # for each var
   }
   # end of for each missing variable
   sorted.dt

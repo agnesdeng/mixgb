@@ -71,7 +71,6 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
       # only works for numeric
       sorted.dt[[var]] <- imp.normal(vec = sorted.dt[[var]], na.idx = na.idx)
       sorted.dt[, (var) := imp.normal(vec = .SD[[var]], na.idx = na.idx)]
-
     } else if (missing.method[[var]] == "mean") {
       # only works for numeric
       sorted.dt[[var]] <- imp.mean(vec = sorted.dt[[var]], na.idx = na.idx)
