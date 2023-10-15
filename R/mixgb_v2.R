@@ -56,14 +56,15 @@
 #'
 #' # obtain m multiply imputed datasets and save models for imputing new data later on
 #' mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
-mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = FALSE,
+mixgb_v2 <- function(data, m = 5, maxit = 1, sparse = FALSE,ordinalAsInteger = FALSE, bootstrap = FALSE,
                   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
                   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
                   save.models = FALSE, save.vars = NULL, save.models.folder = NULL,
                   verbose = F,
                   xgb.params = list(),
-                  nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, xgboost_verbose = 0, ...) {
-  if (!(is.data.frame(data) || is.matrix(data))) {
+                  nrounds = 100, early_stopping_rounds = NULL, print_every_n = 10L, xgboost_verbose = 0, ...) {
+
+   if (!(is.data.frame(data) || is.matrix(data))) {
     stop("Data need to be a data frame or a matrix.")
   }
 
@@ -71,8 +72,6 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
     data <- as.data.table(data)
     #data <-setDT(data)
   }
-
-
 
   # check whether to use xgb.save()
   if (!is.null(save.models.folder)) {
@@ -84,7 +83,6 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
   } else {
     XGB.save <- FALSE
   }
-
 
 
   xgb.params <- do.call("default_params", xgb.params)
@@ -103,38 +101,153 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
     }
   }
 
-  cat("initial start\n")
 
   # initial imputation
-  # initial.obj: An object including some basic data information and a pre-fill dataset after initial imputation
-  initial.obj <- initial_imp(data, initial.num = initial.num, initial.int = initial.int, initial.fac = initial.fac, bootstrap = bootstrap)
+  cat("initial start\n")
+
+  # data
+  #initial.num
+ # initial.int
+  #initial.fac
+
+  Ncol <- ncol(data)
+  if (Ncol < 2) {
+    stop("Data need to have a least two columns.")
+  }
+  Nrow <- nrow(data)
+
+
+  ## Data preprocessing
+  # 1) sort the dataset with increasing NAs
+  origin.names <- colnames(data)
+
+  # Calculate the number of NAs per column directly within the data.table framework
+  na_counts <- data[, lapply(.SD, function(col) sum(is.na(col)))]
+
+  # Order columns by their NA counts
+  na_vector <- unlist(na_counts, use.names = TRUE)
+  sorted.idx <- order(na_vector)
+  # Get sorted column names
+  sorted.names <- names(na_counts)[sorted.idx]
+
+
+
+    # data.table
+    # sorted.data <- data[, ..sorted.names]
+  #sorted.data <- data[, sorted.names, with = FALSE]
+  setcolorder(data,sorted.names)
+
+  # setcolorder(data,sorted.names)
+  # will change data
+
+  #sorted.dt=data!
+  #sorted.idx
+  #sorted.names
+  sorted.types <- feature_type2(data)
+
+
+  # 2)initial imputation & data validation
+
+  #sorted.naSums <- data[, lapply(.SD, function(x) sum(is.na(x)))]
+
+  sorted.naSums <- na_counts[,..sorted.names]
+  missing.idx <- which(sorted.naSums != 0)
+  missing.vars <- sorted.names[missing.idx]
+  missing.types <- sorted.types[missing.idx]
+  missing.method <- ifelse(missing.types == "numeric", initial.num,
+                           ifelse(missing.types == "integer", initial.int, initial.fac)
+  )
+
+
+  if (all(sorted.naSums == 0)) {
+    stop("No missing values in this data frame.")
+  }
+
+  if (any(sorted.naSums == Nrow)) {
+    stop("At least one variable in the data frame has 100% missing values.")
+  }
+
+
+
+  if (any(sorted.naSums >= 0.9 * Nrow)) {
+    warning("Some variables have more than 90% miss entries.")
+  }
+
+  mp <- length(missing.vars)
+  Obs.idx <- vector("list", mp)
+  names(Obs.idx) <- missing.vars
+  Na.idx <- vector("list", mp)
+  names(Na.idx) <- missing.vars
+
+
+
+  for (var in missing.vars) {
+   na.idx<- which(is.na(data[[var]]))
+   Na.idx[[var]] <- na.idx
+
+    #Na.idx[[var]] <- data[, .I[is.na(get(var))], .SDcols = var]
+
+    if (missing.method[[var]] == "normal") {
+      # only works for numeric
+      var.mean <- mean(data[[var]], na.rm = TRUE)
+      var.sd <- sd(data[[var]], na.rm = TRUE)
+      set(data, i = na.idx, j = var, value = stats::rnorm(n = length(na.idx), mean = var.mean, sd = var.sd))
+    } else if (missing.method[[var]] == "mean") {
+      # only works for numeric
+      set(data, i = na.idx, j = var, value = mean(data[[var]], na.rm = TRUE))
+    } else if (missing.method[[var]] == "median") {
+      # only works for numeric
+      set(data, i = na.idx, j = var, value = median(data[[var]], na.rm = TRUE))
+    } else if (missing.method[[var]] == "mode") {
+      # work for both numeric (only recommend for integer type) and factor
+      unique.values <- unique(na.omit(data[[var]]))
+      tab <- tabulate(match(data[[var]], unique.values))
+      var.mode <- unique.values[tab == max(tab)]
+      set(data, i = na.idx, j = var, value = var.mode)
+    } else if (missing.method[[var]] == "sample") {
+      # work for both numeric (only recommend for integer type) and factor
+      set(data, i = na.idx, j = var, value = sample(data[[var]][!is.na(data[[var]])], size = length(na.idx), replace = TRUE))
+    } else {
+      stop("Please specify an acceptable initial imputation method.")
+    }
+
+    # To do: include initial imputation using models
+  #To do: if bootstrap, need a copy of the sorted data before initial imputation, will need more memory usage. Do it later
+   #if (bootstrap) {
+     #originally :  result$sortedNA.dt <- sort.result$sorted.dt
+   # }
+  }
+
+   #stop("test memory and time")
+
+  #initial.obj <- initial_imp2(data, initial.num = initial.num, initial.int = initial.int, initial.fac = initial.fac, bootstrap = bootstrap)
+  #sorted.naSums <- initial.obj$sorted.naSums
+  #sorted.types <- initial.obj$sorted.types
+  #Nrow <- initial.obj$Nrow
+
+  #rm(data)
+  #gc(full = TRUE)
+  # checking
 
   cat("initial end\n")
-  #stop("test memory and time")
 
-  sorted.naSums <- initial.obj$sorted.naSums
-  sorted.types <- initial.obj$sorted.types
-  Nrow <- initial.obj$Nrow
-
-
-  # checking
   check_pmm(pmm.type = pmm.type, bootstrap = bootstrap, xgb.params = xgb.params, Nrow = Nrow, sorted.naSums = sorted.naSums, sorted.types = sorted.types, pmm.k = pmm.k)
 
   imputed.data <- vector("list", m)
 
-  origin.names <- initial.obj$origin.names
-  sorted.types <- initial.obj$sorted.types
-  sorted.names <- initial.obj$sorted.names
-  sorted.naSums <- initial.obj$sorted.naSums
-  sorted.idx <- initial.obj$sorted.idx
+ # origin.names <- initial.obj$origin.names
+ # sorted.types <- initial.obj$sorted.types
+  #sorted.names <- initial.obj$sorted.names
+ # sorted.naSums <- initial.obj$sorted.naSums
+ # sorted.idx <- initial.obj$sorted.idx
 
-  missing.idx <- initial.obj$missing.idx
-  missing.vars <- initial.obj$missing.vars
-  missing.types <- initial.obj$missing.types
-  Obs.idx <- initial.obj$Obs.idx
-  Na.idx <- initial.obj$Na.idx
-  Ncol <- initial.obj$Ncol
-  mp <- initial.obj$mp
+ # missing.idx <- initial.obj$missing.idx
+ # missing.vars <- initial.obj$missing.vars
+ # missing.types <- initial.obj$missing.types
+ # Obs.idx <- initial.obj$Obs.idx
+#  Na.idx <- initial.obj$Na.idx
+#  Ncol <- initial.obj$Ncol
+ # mp <- initial.obj$mp
 
   # validate save.vars :
   if (save.models == TRUE) {
@@ -149,11 +262,11 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
     for (var in missing.vars) {
       na.idx <- Na.idx[[var]]
       # obs.y
-      yobs.list[[var]] <- initial.obj$sorted.dt[[var]][-na.idx]
+      yobs.list[[var]] <- data[[var]][-na.idx]
     }
     # variables fully observed
     for (var in extra.vars) {
-      yobs.list[[var]] <- initial.obj$sorted.dt[[var]]
+      yobs.list[[var]] <- data[[var]]
     }
   } else {
     # save.models=FALSE
@@ -164,7 +277,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
     for (var in missing.vars) {
       na.idx <- Na.idx[[var]]
       # obs.y
-      yobs.list[[var]] <- initial.obj$sorted.dt[[var]][-na.idx]
+      yobs.list[[var]] <- data[[var]][-na.idx]
     }
   }
 
@@ -172,12 +285,12 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
   yhatobs.list <- NULL
   if (isTRUE(pmm.type == 1)) {
     yhatobs.list <- save_yhatobs(
-      yobs.list = yobs.list, maxit = maxit, pmm.link = pmm.link, sorted.dt = initial.obj$sorted.dt, missing.vars = missing.vars, extra.vars = extra.vars, extra.types = extra.types, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+      yobs.list = yobs.list, maxit = maxit, pmm.link = pmm.link, sorted.dt = data, missing.vars = missing.vars, extra.vars = extra.vars, extra.types = extra.types, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
       xgb.params = xgb.params,
       nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
     )
   }
-  #stop("Test Memory.")
+
   # ............................................................................................................
   if (save.models == FALSE) {
     # Default: don't save any models
@@ -193,24 +306,26 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
           cat(" --", i)
         }
         # feed in the initial imputed dataset
-        sorted.dt <- initial.obj$sorted.dt
+        sorted.dt <- copy(data)
+        #sorted.dt <- data
+
         for (j in seq_len(maxit)) {
 
 
 
+          cat("mixgb null2 start\n")
 
-          cat("mixgb null start\n")
-
-          sorted.dt <- mixgb_null(
+          sorted.dt <- mixgb_null2(sparse=FALSE,
             pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list,
             sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
             xgb.params = xgb.params,
             nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
           )
+
         }
 
-        cat("mixgb null end\n")
+        cat("mixgb null2 end\n")
 
         imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
       }
@@ -225,7 +340,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
           cat(" --", i)
         }
         # feed in the initial imputed dataset
-        sorted.dt <- initial.obj$sorted.dt
+        sorted.dt <- data
         boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
         for (j in seq_len(maxit)) {
           sorted.dt <- mixgb_boot(
@@ -295,11 +410,11 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
           cat(" --", i)
         }
         # feed in the initial imputed dataset
-        sorted.dt <- initial.obj$sorted.dt
+        sorted.dt <- data
         if (maxit > 1) {
           for (j in seq_len(maxit - 1)) {
             # for j=1:(maxit-1)  only update the imputed dataset
-            sorted.dt <- mixgb_null(
+            sorted.dt <- mixgb_null2(sparse=FALSE,
               pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
               sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
               xgb.params = xgb.params,
@@ -347,7 +462,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = 
           cat(" --", i)
         }
         # feed in the initial imputed dataset
-        sorted.dt <- initial.obj$sorted.dt
+        sorted.dt <- data
         boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
         if (maxit > 1) {
           for (j in seq_len(maxit - 1)) {
@@ -455,6 +570,4 @@ default_params <- function(device = "cpu", tree_method = "hist", eta = 0.3, gamm
 }
 
 
-is_dir <- function(dir) {
-  return(file.info(dir)$isdir)
-}
+

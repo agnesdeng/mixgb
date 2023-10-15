@@ -36,6 +36,11 @@ The R package **mixgb** provides a scalable approach for multiple imputation by 
 
 ## New updates
 
+**Expected Release Date: Nov 2023**
+
+* Coming soon! New versions of the `mixgb()` function will greatly reduce imputation time:)
+
+
 **Oct 2023**
 
   * Dependency Change: Starting from mixgb version 1.3.1, the package requires XGBoost version 2.0.0 or higher. As of now, this version is not available on CRAN. To get the required version with GPU support, please download it from [XGBoost GitHub Releases][xgboost-release]. Then in R, one can install XGBoost 2.0.0 and the newest version of **mixgb** as follows:

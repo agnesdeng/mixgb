@@ -1,5 +1,5 @@
 # Initially impute a dataset with missing values
-initial_imp <- function(data, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = FALSE) {
+initial_imp2 <- function(data, initial.num = "normal", initial.int = "mode", initial.fac = "mode", bootstrap = FALSE) {
   # @param data A data table (with missing values NA's)
   # @param initial.num Initial imputation method for numeric type data ("normal","mean","median","mode","sample"). Default: "normal"
   # @param initial.int Initial imputation method for integer type data ("mode","sample"). Default: "mode"
@@ -35,7 +35,7 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
   missing.vars <- sorted.names[missing.idx]
   missing.types <- sorted.types[missing.idx]
   missing.method <- ifelse(missing.types == "numeric", initial.num,
-    ifelse(missing.types == "integer", initial.int, initial.fac)
+                           ifelse(missing.types == "integer", initial.int, initial.fac)
   )
 
 
@@ -69,21 +69,25 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
 
     if (missing.method[[var]] == "normal") {
       # only works for numeric
-      sorted.dt[[var]] <- imp.normal(vec = sorted.dt[[var]], na.idx = na.idx)
+     # sorted.dt[[var]] <- imp.normal(vec = sorted.dt[[var]], na.idx = na.idx)
       sorted.dt[, (var) := imp.normal(vec = .SD[[var]], na.idx = na.idx)]
 
     } else if (missing.method[[var]] == "mean") {
       # only works for numeric
-      sorted.dt[[var]] <- imp.mean(vec = sorted.dt[[var]], na.idx = na.idx)
+      #sorted.dt[[var]] <- imp.mean(vec = sorted.dt[[var]], na.idx = na.idx)
+      sorted.dt[, (var) := imp.mean(vec = .SD[[var]], na.idx = na.idx)]
     } else if (missing.method[[var]] == "median") {
       # only works for numeric
-      sorted.dt[[var]] <- imp.median(vec = sorted.dt[[var]], na.idx = na.idx)
+      #sorted.dt[[var]] <- imp.median(vec = sorted.dt[[var]], na.idx = na.idx)
+      sorted.dt[, (var) := imp.median(vec = .SD[[var]], na.idx = na.idx)]
     } else if (missing.method[[var]] == "mode") {
       # work for both numeric (only recommend for integer type) and factor
-      sorted.dt[[var]] <- imp.mode(vec = sorted.dt[[var]], na.idx = na.idx)
+      #sorted.dt[[var]] <- imp.mode(vec = sorted.dt[[var]], na.idx = na.idx)
+      sorted.dt[, (var) := imp.mode(vec = .SD[[var]], na.idx = na.idx)]
     } else if (missing.method[[var]] == "sample") {
       # work for both numeric (only recommend for integer type) and factor
-      sorted.dt[[var]] <- imp.sample(vec = sorted.dt[[var]], na.idx = na.idx)
+      #sorted.dt[[var]] <- imp.sample(vec = sorted.dt[[var]], na.idx = na.idx)
+      sorted.dt[, (var) := imp.sample(vec = .SD[[var]], na.idx = na.idx)]
     } else {
       stop("Please specify an acceptable initial imputation method.")
     }
@@ -91,21 +95,30 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
     # To do: include initial imputation using models
   }
 
-  if (bootstrap == TRUE) {
-    return(list(
-      "sortedNA.dt" = sort.result$sorted.dt, "sorted.dt" = sorted.dt, "sorted.idx" = sorted.idx, "sorted.names" = sorted.names, "sorted.types" = sorted.types, "sorted.naSums" = sorted.naSums,
-      "origin.names" = origin.names, "Nrow" = Nrow, "Ncol" = Ncol, "mp" = mp,
-      "missing.idx" = missing.idx, "missing.vars" = missing.vars, "missing.types" = missing.types, "missing.method" = missing.method,
-      "Obs.idx" = Obs.idx, "Na.idx" = Na.idx
-    ))
-  } else {
-    return(list(
-      "sorted.dt" = sorted.dt, "sorted.idx" = sorted.idx, "sorted.names" = sorted.names, "sorted.types" = sorted.types, "sorted.naSums" = sorted.naSums,
-      "origin.names" = origin.names, "Nrow" = Nrow, "Ncol" = Ncol, "mp" = mp,
-      "missing.idx" = missing.idx, "missing.vars" = missing.vars, "missing.types" = missing.types, "missing.method" = missing.method,
-      "Obs.idx" = Obs.idx, "Na.idx" = Na.idx
-    ))
+  result <- list(
+    "sorted.dt" = sorted.dt,
+    "sorted.idx" = sorted.idx,
+    "sorted.names" = sorted.names,
+    "sorted.types" = sorted.types,
+    "sorted.naSums" = sorted.naSums,
+    "origin.names" = origin.names,
+    "Nrow" = Nrow,
+    "Ncol" = Ncol,
+    "mp" = mp,
+    "missing.idx" = missing.idx,
+    "missing.vars" = missing.vars,
+    "missing.types" = missing.types,
+    "missing.method" = missing.method,
+    "Obs.idx" = Obs.idx,
+    "Na.idx" = Na.idx
+  )
+
+  # Add bootstrap related data if required
+  if (bootstrap) {
+    result$sortedNA.dt <- sort.result$sorted.dt
   }
+
+  result
 }
 
 

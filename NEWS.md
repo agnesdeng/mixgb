@@ -1,3 +1,11 @@
+# mixgb 1.4.2
+
+
+
+- Coming Soon!
+
+
+
 # mixgb 1.3.2
 ### Miscellaneous
 - Improves package documentation regarding the import of `xgb.save()` and `xgb.load()` from XGBoost.

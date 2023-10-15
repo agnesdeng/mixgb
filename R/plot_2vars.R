@@ -24,6 +24,7 @@
 #'   original.data = nhanes3
 #' )
 plot_2num <- function(imputation.list, var.x, var.y, original.data, true.data = NULL, color.pal = NULL, shape = FALSE) {
+
   Types <- feature_type(imputation.list[[1]])
 
   if (Types[var.x] != "numeric" & Types[var.x] != "integer") {
