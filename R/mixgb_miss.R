@@ -4,6 +4,7 @@ mixgb_miss <- function(sparse = FALSE, mp, pmm.type, pmm.link, pmm.k, yobs.list,
                        xgb.params = list(),
                        nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                        ...) {
+  #sorted.dt <- copy(sorted.dt)
   nthread <- xgb.params$nthread
   # param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   miss.list <- vector("list", mp)
@@ -39,11 +40,14 @@ mixgb_miss <- function(sparse = FALSE, mp, pmm.type, pmm.link, pmm.k, yobs.list,
       dtest <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
         watchlist <- list(train = dtrain)
-      } else {
+      }else{
         watchlist <- list(train = dtrain)
         # to be done, have eval
         # watchlist <- list(train = dtrain,eval=dtest)
       }
+        # to be done, have eval
+        # watchlist <- list(train = dtrain,eval=dtest)
+
 
 
       obj.type <- "reg:squarederror"
@@ -51,6 +55,12 @@ mixgb_miss <- function(sparse = FALSE, mp, pmm.type, pmm.link, pmm.k, yobs.list,
         data = dtrain, objective = obj.type, watchlist = watchlist,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
+      )
+
+      xgb.fit <- xgb.train(
+        data = dtrain, objective = obj.type, watchlist = watchlist,
+        params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
+        print_every_n = print_every_n, verbose = 1
       )
 
       yhatmis <- predict(xgb.fit, dtest)
@@ -67,6 +77,7 @@ mixgb_miss <- function(sparse = FALSE, mp, pmm.type, pmm.link, pmm.k, yobs.list,
       # update dataset
 
       miss.list[[var]] <- yhatmis
+
     } else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
@@ -105,6 +116,7 @@ mixgb_miss <- function(sparse = FALSE, mp, pmm.type, pmm.link, pmm.k, yobs.list,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
+
 
         yhatmis <- predict(xgb.fit, dtest)
 

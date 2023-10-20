@@ -3,6 +3,8 @@ mixgb_null2 <- function(sparse = FALSE, pmm.type, pmm.link, pmm.k, yobs.list, yh
                         xgb.params = list(),
                         nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                         ...) {
+
+ # sorted.dt <- copy(sorted.dt)
   nthread <- xgb.params$nthread
   # param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   for (var in missing.vars) {
