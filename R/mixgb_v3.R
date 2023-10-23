@@ -196,6 +196,10 @@ mixgb_v3 <- function(data, m = 5, maxit = 1, sparse = FALSE, ordinalAsInteger = 
       unique.values <- unique(na.omit(data[[var]]))
       tab <- tabulate(match(data[[var]], unique.values))
       var.mode <- unique.values[tab == max(tab)]
+      if (length(var.mode) != 1) {
+        # if mode is not unique, impute with randomly sampled modes
+        var.mode <- sample(var.mode, size = length(na.idx), replace = TRUE)
+      }
       set(data, i = na.idx, j = var, value = var.mode)
     } else if (missing.method[[var]] == "sample") {
       # work for both numeric (only recommend for integer type) and factor

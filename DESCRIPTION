@@ -27,6 +27,7 @@ Imports:
     ggplot2 (>= 3.4.1),
     Matrix,
     mice,
+    Rcpp,
     Rfast,
     rlang,
     scales,
@@ -42,3 +43,6 @@ Depends: R (>= 3.5.0)
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
 Config/testthat/edition: 3
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo

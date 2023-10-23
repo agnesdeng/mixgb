@@ -1,4 +1,4 @@
-#'  Multiple imputation through XGBoost Version2 for big numeric data (In development)
+#'  Multiple imputation through XGBoost Version2 for big categorical data (In development)
 #' @description This function is used to generate multiply imputed datasets using XGBoost, subsampling and predictive mean matching (PMM).
 #' @param data A data.frame or data.table with missing values
 #' @param m The number of imputed datasets. Default: 5
@@ -57,13 +57,14 @@
 #'
 #' # obtain m multiply imputed datasets and save models for imputing new data later on
 #' mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
-mixgb_v2 <- function(data, m = 5, maxit = 1, sparse = FALSE, ordinalAsInteger = FALSE, bootstrap = FALSE,
+mixgb_v4 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = FALSE,
                      pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
                      initial.num = "normal", initial.int = "mode", initial.fac = "mode",
                      save.models = FALSE, save.vars = NULL, save.models.folder = NULL,
                      verbose = F,
                      xgb.params = list(),
                      nrounds = 100, early_stopping_rounds = NULL, print_every_n = 10L, xgboost_verbose = 0, ...) {
+
   if (!(is.data.frame(data) || is.matrix(data))) {
     stop("Data need to be a data frame or a matrix.")
   }
@@ -132,6 +133,7 @@ mixgb_v2 <- function(data, m = 5, maxit = 1, sparse = FALSE, ordinalAsInteger = 
   setcolorder(data, sorted.names)
 
   sorted.types <- feature_type2(data)
+  cbind.types<-cbind_type(data)
 
 
   # 2)initial imputation & data validation
@@ -142,7 +144,7 @@ mixgb_v2 <- function(data, m = 5, maxit = 1, sparse = FALSE, ordinalAsInteger = 
   missing.vars <- sorted.names[missing.idx]
   missing.types <- sorted.types[missing.idx]
   missing.method <- ifelse(missing.types == "numeric", initial.num,
-    ifelse(missing.types == "integer", initial.int, initial.fac)
+                           ifelse(missing.types == "integer", initial.int, initial.fac)
   )
 
 
@@ -194,6 +196,7 @@ mixgb_v2 <- function(data, m = 5, maxit = 1, sparse = FALSE, ordinalAsInteger = 
         # if mode is not unique, impute with randomly sampled modes
         var.mode <- sample(var.mode, size = length(na.idx), replace = TRUE)
       }
+
       set(data, i = na.idx, j = var, value = var.mode)
     } else if (missing.method[[var]] == "sample") {
       # work for both numeric (only recommend for integer type) and factor
@@ -279,8 +282,9 @@ mixgb_v2 <- function(data, m = 5, maxit = 1, sparse = FALSE, ordinalAsInteger = 
         for (j in seq_len(maxit)) {
 
 
-          sorted.dt <- mixgb_null2(
-            sparse = sparse,
+
+          sorted.dt <- mixgb_cpp(
+            cbind.types=cbind.types,
             pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list,
             sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,

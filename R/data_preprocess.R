@@ -57,6 +57,19 @@ feature_type2 <- function(data) {
 
 
 
+cbind_type <- function(data) {
+  # Define type for each column
+  Types <- sapply(data, function(var) {
+    # Check primary class of the column
+    var.class <- class(var)[1]
+    }
+    )
+
+  Types
+}
+
+
+
 
 
 
