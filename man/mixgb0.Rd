@@ -22,7 +22,7 @@ mixgb0(
   verbose = F,
   xgb.params = list(),
   nrounds = 100,
-  early_stopping_rounds = 10,
+  early_stopping_rounds = NULL,
   print_every_n = 10L,
   xgboost_verbose = 0,
   ...

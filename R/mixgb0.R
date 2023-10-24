@@ -57,18 +57,19 @@
 #' # obtain m multiply imputed datasets and save models for imputing new data later on
 #' mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
 mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = FALSE,
-                   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
-                   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
-                   save.models = FALSE, save.vars = NULL, save.models.folder = NULL,
-                   verbose = F,
-                   xgb.params = list(),
-                   nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, xgboost_verbose = 0, ...) {
+                  pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
+                  initial.num = "normal", initial.int = "mode", initial.fac = "mode",
+                  save.models = FALSE, save.vars = NULL, save.models.folder = NULL,
+                  verbose = F,
+                  xgb.params = list(),
+                  nrounds = 100, early_stopping_rounds = NULL, print_every_n = 10L, xgboost_verbose = 0, ...) {
   if (!(is.data.frame(data) || is.matrix(data))) {
     stop("Data need to be a data frame or a matrix.")
   }
 
   if (!is.data.table(data)) {
     data <- as.data.table(data)
+    # data <-setDT(data)
   }
 
 
@@ -106,11 +107,13 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
   # initial imputation
   # initial.obj: An object including some basic data information and a pre-fill dataset after initial imputation
   initial.obj <- initial_imp(data, initial.num = initial.num, initial.int = initial.int, initial.fac = initial.fac, bootstrap = bootstrap)
+
+
   sorted.naSums <- initial.obj$sorted.naSums
   sorted.types <- initial.obj$sorted.types
   Nrow <- initial.obj$Nrow
 
-  stop("Test Memory.")
+
   # checking
   check_pmm(pmm.type = pmm.type, bootstrap = bootstrap, xgb.params = xgb.params, Nrow = Nrow, sorted.naSums = sorted.naSums, sorted.types = sorted.types, pmm.k = pmm.k)
 
@@ -172,14 +175,16 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
     )
   }
 
+
   # ............................................................................................................
+
   if (save.models == FALSE) {
     # Default: don't save any models
 
     if (bootstrap == FALSE) {
       # bootstrap=FALSE--------------------------------------------------------------
       if (verbose) {
-        cat("mixgb without bootstrap:", "imputing set")
+        cat("mixgb with subsampling:", "imputing set")
       }
 
       for (i in seq_len(m)) {
@@ -189,6 +194,8 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
         # feed in the initial imputed dataset
         sorted.dt <- initial.obj$sorted.dt
         for (j in seq_len(maxit)) {
+
+
           sorted.dt <- mixgb_null(
             pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list,
             sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
@@ -197,12 +204,14 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
             nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
           )
         }
+
+
         imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
       }
     } else {
       # bootstrap=TRUE--------------------------------------------------------------
       if (verbose) {
-        cat("mixgb with bootstrap:", "imputing set")
+        cat("mixgb with bootstrapping:", "imputing set")
       }
 
       for (i in seq_len(m)) {
@@ -272,7 +281,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
     if (bootstrap == FALSE) {
       # bootstrap=FALSE--------------------------------------------------------------
       if (verbose) {
-        cat("mixgb without bootstrap:", "saving models and imputing set")
+        cat("mixgb with subsampling:", "saving models and imputing set")
       }
 
       for (i in seq_len(m)) {
@@ -324,7 +333,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
     } else {
       # bootstrap=TRUE--------------------------------------------------------------
       if (verbose) {
-        cat("mixgb with bootstrap:", "saving models and imputing set")
+        cat("mixgb with bootstrapping:", "saving models and imputing set")
       }
 
       for (i in seq_len(m)) {

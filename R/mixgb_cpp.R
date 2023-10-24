@@ -1,6 +1,6 @@
 # Multiple imputation using xgboost (without bootstrap)
 
-mixgb_cpp <- function(cbind.types,  pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
+mixgb_cpp <- function(matrix.method, cbind.types,  pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
                         xgb.params = list(),
                         nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
                         ...) {
@@ -16,61 +16,54 @@ mixgb_cpp <- function(cbind.types,  pmm.type, pmm.link, pmm.k, yobs.list, yhatob
     na.idx <- Na.idx[[var]]
     obs.y <- yobs.list[[var]]
 
+   if(matrix.method=="as.matrix"){
 
-    #method 1: in order
-    all.list<-vector("list",length(features))
-    names(all.list)<-features
+     obs.data <- as.matrix(sorted.dt[-na.idx, features, with = FALSE])
+     mis.data <- as.matrix(sorted.dt[na.idx, features, with = FALSE])
 
-    if(length(features) == 1){
-      all.list <- list(
-        if(cbind.types[features] %in% c("numeric","integer")){
-          sorted.dt[[features]]
-        } else if(cbind.types[features] == "ordered"){
-          t(fac2Sparse(sorted.dt[[features]], factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
-        } else {
-          t(fac2sparse(sorted.dt[[features]]))[, -1, drop = FALSE]
-        }
-      )
-    } else {
+   }else{
+     all.list<-vector("list",length(features))
+     names(all.list)<-features
 
-      all.list <- lapply(features, function(feature){
+     if(length(features) == 1){
+       all.list <- list(
+         if(cbind.types[features] %in% c("numeric","integer")){
+           sorted.dt[[features]]
+         } else if(cbind.types[features] == "ordered"){
+           t(fac2Sparse(sorted.dt[[features]], factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
+         } else {
+           t(fac2sparse(sorted.dt[[features]]))[, -1, drop = FALSE]
+         }
+       )
+     } else {
 
-        if(cbind.types[feature] %in% c("numeric","integer")){
-          sorted.dt[[feature]]
-        } else if(cbind.types[feature] == "ordered"){
-          Matrix::t(fac2Sparse(sorted.dt[[feature]], factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
-        } else {
-          Matrix::t(fac2sparse(sorted.dt[[feature]]))[, -1, drop = FALSE]
-        }
-      })
-    }
+       all.list <- lapply(features, function(feature){
 
-
-
-
-
-
-
-    all.m<-cbind_combo(all.list)
-
-
-    #fac2sparse(sorted.dt[["HSSEX"]])
-   # all.equal(all.m[-na.idx,],
-  # sparse.model.matrix(form, data = sorted.dt[-na.idx, ])[, -1, drop = FALSE],
-   #tolerance = 0, check.attributes=F)
-
-
-      #mis.data0
-    obs.data<-all.m[-na.idx, , drop = FALSE]
-    mis.data<-all.m[na.idx, , drop = FALSE]
-
-    #dtrain <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+         if(cbind.types[feature] %in% c("numeric","integer")){
+           sorted.dt[[feature]]
+         } else if(cbind.types[feature] == "ordered"){
+           Matrix::t(fac2Sparse(sorted.dt[[feature]], factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
+         } else {
+           Matrix::t(fac2sparse(sorted.dt[[feature]]))[, -1, drop = FALSE]
+         }
+       })
+     }
 
 
 
-    #method 2 : num+fac
-    #fac.list <- lapply(features, function(feature) t(fac2sparse(full.df[[feature]]))[, -1, drop = FALSE])
-   # cpp.M <-  cbind_sparse_matrix(matrices_list = fac.list)
+     if(matrix.method=="cpp.combo"){
+       all.m<-cbind_combo(all.list)
+     }else if(matrix.method=="cpp.factor"){
+       all.m<-cbind_sparse_matrix(all.list)
+     }
+
+
+
+     #mis.data0
+     obs.data<-all.m[-na.idx, , drop = FALSE]
+     mis.data<-all.m[na.idx, , drop = FALSE]
+
+   }
 
 
 

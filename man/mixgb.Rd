@@ -2,7 +2,7 @@
 % Please edit documentation in R/mixgb.R
 \name{mixgb}
 \alias{mixgb}
-\title{Multiple imputation through XGBoost}
+\title{Multiple imputation through XGBoost Version2 for big categorical data (In development)}
 \usage{
 mixgb(
   data,
