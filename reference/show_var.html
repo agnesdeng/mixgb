@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,31 +92,31 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># obtain m multiply datasets</span></span></span>
 <span class="r-in"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">3</span>, subsample <span class="op">=</span> <span class="fl">1</span>, nthread <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mixgb.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, m <span class="op">=</span> <span class="fl">3</span>, xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:22] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:22] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:23] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:23] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:23] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:23] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:23] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:23] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20:36:28] WARNING: src/learner.cc:767: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [09:47:23] WARNING: src/learner.cc:767: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
@@ -125,40 +125,40 @@
 <span class="r-in"><span>  original.data <span class="op">=</span> <span class="va">nhanes3</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">imputed.BMPHEAD</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       m1   m2   m3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1: 42.2 42.5 42.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2: 44.3 43.2 43.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3: 45.7 45.7 45.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4: 46.9 46.3 47.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5: 40.7 40.2 40.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6: 42.4 41.9 43.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7: 45.5 44.7 45.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8: 46.2 47.0 45.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9: 46.4 44.1 42.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10: 43.3 44.9 46.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11: 45.9 44.1 44.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12: 43.7 44.7 42.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13: 40.7 40.9 40.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14: 46.3 47.4 46.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15: 42.0 42.4 46.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16: 46.2 46.5 46.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17: 42.0 42.4 42.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18: 44.8 46.0 45.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19: 42.2 40.7 42.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20: 42.9 44.6 40.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21: 43.2 44.4 42.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22: 42.2 42.0 42.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23: 44.1 44.7 44.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24: 42.2 42.8 43.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25: 42.6 41.8 42.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26: 41.6 41.3 40.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27: 44.9 44.7 44.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28: 44.0 44.9 42.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29: 44.9 45.6 43.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30: 42.7 41.3 40.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31: 45.9 42.5 42.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32: 45.2 45.6 45.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       m1   m2   m3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           m1       m2       m3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1: 41.58686 41.58686 41.58686</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2: 43.95104 43.95104 43.95104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3: 45.60160 45.60160 45.60160</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4: 44.79435 44.79435 44.79435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5: 40.94370 40.94370 40.94370</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6: 42.08001 42.08001 42.08001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7: 45.47968 45.47968 45.47968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8: 44.74797 44.74797 44.74797</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9: 45.85563 45.85563 45.85563</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10: 43.97232 43.97232 43.97232</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11: 44.77294 44.77294 44.77294</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12: 42.89972 42.89972 42.89972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13: 41.50062 41.50062 41.50062</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14: 45.32392 45.32392 45.32392</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15: 42.72989 42.72989 42.72989</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16: 46.17781 46.17781 46.17781</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17: 43.48616 43.48616 43.48616</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18: 44.34007 44.34007 44.34007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19: 42.35450 42.35450 42.35450</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20: 41.60730 41.60730 41.60730</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21: 43.02985 43.02985 43.02985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22: 44.12750 44.12750 44.12750</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23: 44.35923 44.35923 44.35923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24: 42.14824 42.14824 42.14824</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25: 43.31292 43.31292 43.31292</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26: 41.21716 41.21716 41.21716</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27: 43.72111 43.72111 43.72111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28: 43.43150 43.43150 43.43150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29: 44.68991 44.68991 44.68991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30: 42.01548 42.01548 42.01548</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31: 43.37074 43.37074 43.37074</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32: 44.68328 44.68328 44.68328</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           m1       m2       m3</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

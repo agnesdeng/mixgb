@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,8 +53,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4.2" id="mixgb-142">mixgb 1.4.2<a class="anchor" aria-label="anchor" href="#mixgb-142"></a></h2>
-<ul><li>Coming Soon!</li>
+<h2 class="pkg-version" data-toc-text="1.4.0" id="mixgb-140">mixgb 1.4.0<a class="anchor" aria-label="anchor" href="#mixgb-140"></a></h2>
+<ul><li>Optimized <code><a href="../reference/mixgb.html">mixgb()</a></code> for large datasets:
+<ul><li>Significantly faster imputation by optimizing data preprocessing and the use of <strong>RcppArmadillo</strong>
+</li>
+<li>Enhanced memory efficiency with in-place modifications using <strong>data.table</strong>
+</li>
+<li>Bootstrapping option removed from <code><a href="../reference/mixgb.html">mixgb()</a></code>. Users can still use bootstrap in the archived function <code><a href="../reference/mixgb0.html">mixgb0()</a></code>.</li>
+<li>
+<code>PMM</code> is now set to <code>NULL</code> by default.</li>
+</ul></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.2" id="mixgb-132">mixgb 1.3.2<a class="anchor" aria-label="anchor" href="#mixgb-132"></a></h2>

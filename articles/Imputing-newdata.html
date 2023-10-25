@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@
                         <h4 data-toc-skip class="author">Yongshi
 Deng</h4>
             
-            <h4 data-toc-skip class="date">2023-10-23</h4>
+            <h4 data-toc-skip class="date">2023-10-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/Imputing-newdata.Rmd" class="external-link"><code>vignettes/Imputing-newdata.Rmd</code></a></small>
       <div class="d-none name"><code>Imputing-newdata.Rmd</code></div>
@@ -88,9 +88,56 @@ Deng</h4>
 <div class="section level2">
 <h2 id="impute-new-unseen-data-using-a-saved-imputer-object">Impute new unseen data using a saved imputer object<a class="anchor" aria-label="anchor" href="#impute-new-unseen-data-using-a-saved-imputer-object"></a>
 </h2>
+<p>Users need to specify a local directory in the parameter
+<code>save.models.folder</code> in the main function
+<code><a href="../reference/mixgb.html">mixgb()</a></code>. Models will be save as JSON format by calling
+<code>xgb.save()</code> internally. Saving XGBoost models in this way
+instead of using <code>saveRDS</code> in R is recommended by XGBoost.
+This can ensure that the imputation models can still be used in later
+release of XGBoost.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># obtain m imputed datasets for train.data and save imputation models</span></span>
+<span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.models.folder <span class="op">=</span> <span class="st">"C:/Users/....."</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, file <span class="op">=</span> <span class="st">"C:/Users/.../mixgbimputer.rds"</span><span class="op">)</span></span></code></pre></div>
+<p>If users specify the <code>save.models.folder</code>, the return
+object will include the following:</p>
+<ul>
+<li><p><code>imputed.data</code>: a list of <code>m</code> imputed
+datasets for training data</p></li>
+<li><p><code>XGB.models</code>: a list of directories of <code>m</code>
+sets of XGBoost models for variables specified in
+<code>save.vars</code>.</p></li>
+<li><p><code>params</code>: a list of parameters that are required for
+imputing new data using <code><a href="../reference/impute_new.html">impute_new()</a></code> later on.</p></li>
+<li><p><code>XGB.save</code> : a parameter indicates whether
+<code>XGB.models</code> are the saved models or the directories for the
+saved models.</p></li>
+</ul>
+<p>As the <code>mixgb.obj</code> does not contain the models themselves,
+users need not worry about saving this object via
+<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>. For later use, one can load the object into R
+and impute new data.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"C:/Users/.../mixgbimputer.rds"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nhanes3</span><span class="op">)</span></span>
+<span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.7</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
+<span><span class="va">test.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span>
+<span><span class="va">test.imputed</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="depreciated">Depreciated<a class="anchor" aria-label="anchor" href="#depreciated"></a>
+</h3>
+<p><strong>Warning</strong>: In previous versions, users can save models
+without specifying the local directory. This is not recommended but
+users can still do this using the old version <code><a href="../reference/mixgb0.html">mixgb0()</a></code>.
+Note that this function will be depreciated in the near future.</p>
 <p>First, let us split the <code>nhanes3_newborn</code> dataset into
 training data and test data.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/agnesdeng/mixgb" class="external-link">mixgb</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"nhanes3_newborn"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
@@ -111,148 +158,142 @@ variable. In cases where users are confident that only certain variables
 will have missing values in the new data, it is advisable to specify the
 names or indices of these variables in <code>save.vars</code> rather
 than saving models for all variables.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  max_depth <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  subsample <span class="op">=</span> <span class="fl">0.7</span>,</span>
-<span>  nthread <span class="op">=</span> <span class="fl">2</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># obtain m imputed datasets for train.data and save imputation models</span></span>
-<span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, xgb.params <span class="op">=</span> <span class="va">params</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.vars <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># obtain m imputed datasets for train.data and save imputation models</span></span>
+<span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb0.html">mixgb0</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.vars <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [09:47:27] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:28] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:28] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:28] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:28] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:28] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:28] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:28] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:33] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:29] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:34] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:30] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:35] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:31] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:36] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:37] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:37] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:32] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [20:36:37] WARNING: src/learner.cc:767: </span></span>
+<span><span class="co">#&gt; [09:47:33] WARNING: src/learner.cc:767: </span></span>
 <span><span class="co">#&gt; Parameters: { "device" } are not used.</span></span></code></pre></div>
 <p>When <code>save.models = TRUE</code>, <code><a href="../reference/mixgb.html">mixgb()</a></code> will
 return an object containing the following:</p>
@@ -266,7 +307,7 @@ imputing new data using <code><a href="../reference/impute_new.html">impute_new(
 </ul>
 <p>We can access the <code>m</code> imputed datasets from the saved
 imputer object by using <code>$imputed.data</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">train.imputed</span> <span class="op">&lt;-</span> <span class="va">mixgb.obj</span><span class="op">$</span><span class="va">imputed.data</span></span>
 <span><span class="co"># the 5th imputed dataset</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">train.imputed</span><span class="op">[[</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
@@ -292,7 +333,7 @@ data is used to initially impute the missing data in the new dataset
 in the new dataset will be imputed using the saved models from the
 imputer object. This process will be considerably faster because it will
 not involve rebuilding the imputation models.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span></code></pre></div>
 <p>If PMM is used in <code><a href="../reference/mixgb.html">mixgb()</a></code>, predicted values of missing
 entries in the new dataset will be matched with donors from the training
@@ -304,48 +345,9 @@ indicates that the same setting as the training object will be used.</p>
 be less than or equal to the <code>m</code> value specified in
 <code><a href="../reference/mixgb.html">mixgb()</a></code>. If this value is not specified, the function will
 use the same <code>m</code> value as the saved object.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span>, initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p>Users can also specify a local directory in the parameter
-<code>save.models.folder</code> in the main function
-<code><a href="../reference/mixgb.html">mixgb()</a></code>. Models will be save as JSON format by calling
-<code>xgb.save()</code> internally. Saving XGBoost models in this way
-instead of using <code>saveRDS</code> in R is recommended by XGBoost.
-This can ensure that the imputation models can still be used in later
-release of XGBoost.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># obtain m imputed datasets for train.data and save imputation models</span></span>
-<span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.models.folder <span class="op">=</span> <span class="st">"C:/Users/....."</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, file <span class="op">=</span> <span class="st">"C:/Users/.../mixgbimputer.rds"</span><span class="op">)</span></span></code></pre></div>
-<p>If users specify the <code>save.models.folder</code>, the return
-object will include the following:</p>
-<ul>
-<li><p><code>imputed.data</code>: a list of <code>m</code> imputed
-datasets for training data</p></li>
-<li><p><code>XGB.models</code>: a list of directories of <code>m</code>
-sets of XGBoost models for variables specified in
-<code>save.vars</code>.</p></li>
-<li><p><code>params</code>: a list of parameters that are required for
-imputing new data using <code><a href="../reference/impute_new.html">impute_new()</a></code> later on.</p></li>
-<li><p><code>XGB.save</code> : a parameter indicates whether
-<code>XGB.models</code> are the saved models or the directories for the
-saved models.</p></li>
-</ul>
-<p>As the <code>mixgb.obj</code> does not contain the models themselves,
-users need not worry about saving this object via
-<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>. For later use, one can load the object into R
-and impute new data.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"C:/Users/.../mixgbimputer.rds"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
-<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nhanes3</span><span class="op">)</span></span>
-<span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.7</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
-<span><span class="va">test.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span>
-<span></span>
-<span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span>
-<span><span class="va">test.imputed</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span>, initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
