@@ -2,15 +2,14 @@
 % Please edit documentation in R/mixgb.R
 \name{mixgb}
 \alias{mixgb}
-\title{Multiple imputation through XGBoost Version2 for big categorical data (In development)}
+\title{Multiple imputation through XGBoost (Optimized version)}
 \usage{
 mixgb(
   data,
   m = 5,
   maxit = 1,
   ordinalAsInteger = FALSE,
-  bootstrap = FALSE,
-  pmm.type = "auto",
+  pmm.type = NULL,
   pmm.k = 5,
   pmm.link = "prob",
   initial.num = "normal",
@@ -36,8 +35,6 @@ mixgb(
 \item{maxit}{The number of imputation iterations. Default: 1}
 
 \item{ordinalAsInteger}{Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.}
-
-\item{bootstrap}{Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = FALSE}. Setting \code{bootstrap = TRUE} can improve imputation variability if sampling-related hyperparameters of XGBoost are set to 1.}
 
 \item{pmm.type}{The type of predictive mean matching (PMM). Possible values:
 \itemize{
@@ -109,5 +106,6 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 mixgb.data <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
 
 # obtain m multiply imputed datasets and save models for imputing new data later on
-mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
+mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10,
+                   save.models = TRUE, save.models.folder = tempdir())
 }

@@ -1,4 +1,4 @@
-#' Multiple imputation through XGBoost
+#' Multiple imputation through XGBoost (Original version)
 #' @description This function is used to generate multiply imputed datasets using XGBoost, subsampling and predictive mean matching (PMM).
 #' @param data A data.frame or data.table with missing values
 #' @param m The number of imputed datasets. Default: 5
@@ -52,10 +52,10 @@
 #' @examples
 #' # obtain m multiply datasets without saving models
 #' params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
-#' mixgb.data <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
+#' mixgb.data <- mixgb0(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
 #'
 #' # obtain m multiply imputed datasets and save models for imputing new data later on
-#' mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
+#' mixgb.obj <- mixgb0(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
 mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = FALSE,
                   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
                   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
@@ -196,7 +196,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
         for (j in seq_len(maxit)) {
 
 
-          sorted.dt <- mixgb_null(
+          sorted.dt <- mixgb_null0(
             pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list,
             sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
@@ -293,7 +293,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
         if (maxit > 1) {
           for (j in seq_len(maxit - 1)) {
             # for j=1:(maxit-1)  only update the imputed dataset
-            sorted.dt <- mixgb_null(
+            sorted.dt <- mixgb_null0(
               pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
               sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
               xgb.params = xgb.params,
@@ -303,7 +303,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
         }
         # the last iteration, update the imputed dataset, also save models
         if (isTRUE(XGB.save)) {
-          saved.obj <- mixgb_xgb_save(
+          saved.obj <- mixgb_xgb_save0(
             save.models.folder = save.models.folder, i = i,
             save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
             yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
@@ -312,7 +312,7 @@ mixgb0 <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap =
             nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
           )
         } else {
-          saved.obj <- mixgb_save(
+          saved.obj <- mixgb_save0(
             save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
             yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,

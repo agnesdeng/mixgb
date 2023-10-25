@@ -15,7 +15,8 @@
 #' test.data <- nhanes3[-idx, ]
 #'
 #' params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
-#' mixgb.obj <- mixgb(data = train.data, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
+#' mixgb.obj <- mixgb(data = train.data, m = 2, xgb.params = params, nrounds = 10,
+#'                    save.models = TRUE, save.models.folder = tempdir())
 #'
 #' # obtain m imputed datasets for train.data
 #' train.imputed <- mixgb.obj$imputed.data

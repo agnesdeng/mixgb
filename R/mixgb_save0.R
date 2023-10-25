@@ -1,5 +1,5 @@
 # Multiple imputation using xgboost (save models and imputations)
-mixgb_save <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt,
+mixgb_save0 <- function(save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt,
                        missing.vars, sorted.names, Na.idx, missing.types, Ncol,
                        xgb.params = list(),
                        nrounds, early_stopping_rounds, print_every_n, verbose = 0,

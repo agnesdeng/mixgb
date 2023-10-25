@@ -5,6 +5,10 @@ cbind_combo <- function(list_items) {
     .Call('_mixgb_cbind_combo', PACKAGE = 'mixgb', list_items)
 }
 
+cbind_combo0 <- function(list_items) {
+    .Call('_mixgb_cbind_combo0', PACKAGE = 'mixgb', list_items)
+}
+
 cbind_sparse_matrix <- function(matrices_list) {
     .Call('_mixgb_cbind_sparse_matrix', PACKAGE = 'mixgb', matrices_list)
 }

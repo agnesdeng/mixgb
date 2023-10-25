@@ -13,31 +13,19 @@ arma::sp_mat cbind_combo(const Rcpp::List& list_items) {
     if (Rf_inherits(item, "dgCMatrix")) {
       arma::sp_mat matrix = Rcpp::as<arma::sp_mat>(item);
       matrices.push_back(matrix);
-
     }
-    // Check if the current item is a numeric vector
-    else if (Rcpp::is<Rcpp::NumericVector>(item)) {
-      Rcpp::NumericVector vec = Rcpp::as<Rcpp::NumericVector>(item);
-      arma::sp_mat colMatrix(vec.size(), 1);
-      for (int j = 0; j < vec.size(); ++j) {
-        if (vec[j] != 0) {  // Only store non-zero entries in sparse matrix
-          colMatrix(j, 0) = vec[j];
-        }
-      }
-      matrices.push_back(colMatrix);
-
+    // Check if the current item is a numeric matrix or vector
+    else if (Rcpp::is<Rcpp::NumericMatrix>(item) || Rcpp::is<Rcpp::NumericVector>(item)) {
+      arma::mat denseMatrix = Rcpp::as<arma::mat>(item);
+      arma::sp_mat spMatrix(denseMatrix);
+      matrices.push_back(spMatrix);
     }
-    // Check if the current item is an integer vector
-    else if (Rcpp::is<Rcpp::IntegerVector>(item)) {
-      Rcpp::IntegerVector vec = Rcpp::as<Rcpp::IntegerVector>(item);
-      arma::sp_mat colMatrix(vec.size(), 1);
-      for (int j = 0; j < vec.size(); ++j) {
-        if (vec[j] != 0) {  // Only store non-zero entries in sparse matrix
-          colMatrix(j, 0) = vec[j];
-        }
-      }
-      matrices.push_back(colMatrix);
-
+    // Check if the current item is an integer matrix or vector
+    else if (Rcpp::is<Rcpp::IntegerMatrix>(item) || Rcpp::is<Rcpp::IntegerVector>(item)) {
+      // Convert integer matrix/vector to numeric and then to sparse
+      arma::mat denseMatrix = Rcpp::as<arma::mat>(Rcpp::as<Rcpp::NumericMatrix>(item));
+      arma::sp_mat spMatrix(denseMatrix);
+      matrices.push_back(spMatrix);
     }
   }
 
@@ -56,3 +44,4 @@ arma::sp_mat cbind_combo(const Rcpp::List& list_items) {
 
   return result;
 }
+

@@ -22,6 +22,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cbind_combo0
+arma::sp_mat cbind_combo0(const Rcpp::List& list_items);
+RcppExport SEXP _mixgb_cbind_combo0(SEXP list_itemsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type list_items(list_itemsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cbind_combo0(list_items));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cbind_sparse_matrix
 arma::sp_mat cbind_sparse_matrix(const Rcpp::List& matrices_list);
 RcppExport SEXP _mixgb_cbind_sparse_matrix(SEXP matrices_listSEXP) {
@@ -36,6 +47,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_mixgb_cbind_combo", (DL_FUNC) &_mixgb_cbind_combo, 1},
+    {"_mixgb_cbind_combo0", (DL_FUNC) &_mixgb_cbind_combo0, 1},
     {"_mixgb_cbind_sparse_matrix", (DL_FUNC) &_mixgb_cbind_sparse_matrix, 1},
     {NULL, NULL, 0}
 };

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mixgb0.R
 \name{mixgb0}
 \alias{mixgb0}
-\title{Multiple imputation through XGBoost}
+\title{Multiple imputation through XGBoost (Original version)}
 \usage{
 mixgb0(
   data,
@@ -106,8 +106,8 @@ This function is used to generate multiply imputed datasets using XGBoost, subsa
 \examples{
 # obtain m multiply datasets without saving models
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
-mixgb.data <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
+mixgb.data <- mixgb0(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
 
 # obtain m multiply imputed datasets and save models for imputing new data later on
-mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
+mixgb.obj <- mixgb0(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
 }

@@ -1,10 +1,9 @@
-#'  Multiple imputation through XGBoost Version2 for big categorical data (In development)
+#'  Multiple imputation through XGBoost (Optimized version)
 #' @description This function is used to generate multiply imputed datasets using XGBoost, subsampling and predictive mean matching (PMM).
 #' @param data A data.frame or data.table with missing values
 #' @param m The number of imputed datasets. Default: 5
 #' @param maxit The number of imputation iterations. Default: 1
 #' @param ordinalAsInteger Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.
-#' @param bootstrap Whether to use bootstrapping for multiple imputation. By default, \code{bootstrap = FALSE}. Setting \code{bootstrap = TRUE} can improve imputation variability if sampling-related hyperparameters of XGBoost are set to 1.
 #' @param pmm.type The type of predictive mean matching (PMM). Possible values:
 #' \itemize{
 #'  \item \code{NULL}: Imputations without PMM;
@@ -55,9 +54,10 @@
 #' mixgb.data <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
 #'
 #' # obtain m multiply imputed datasets and save models for imputing new data later on
-#' mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10, save.models = TRUE)
-mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = FALSE,
-                     pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
+#' mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10,
+#'                    save.models = TRUE, save.models.folder = tempdir())
+mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
+                     pmm.type = NULL, pmm.k = 5, pmm.link = "prob",
                      initial.num = "normal", initial.int = "mode", initial.fac = "mode",
                      save.models = FALSE, save.vars = NULL, save.models.folder = NULL,
                      verbose = F,
@@ -80,8 +80,8 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
     }
     save.models <- TRUE
     XGB.save <- TRUE
-  } else {
-    XGB.save <- FALSE
+  } else if(save.models) {
+    stop("Please specify the directory in save.models.folder")
   }
 
 
@@ -124,6 +124,8 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
   # Get sorted column names
   sorted.names <- names(na_counts)[sorted.idx]
 
+  all.idx<-1:Ncol
+  names(all.idx)<-sorted.names
 
 
   # data.table
@@ -149,6 +151,11 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
   sorted.naSums <- na_counts[, sorted.names, with = FALSE]
   missing.idx <- which(sorted.naSums != 0)
   missing.vars <- sorted.names[missing.idx]
+
+  names(missing.idx)<-missing.vars
+
+  obs.vars<-sorted.names[-missing.idx]
+
   missing.types <- sorted.types[missing.idx]
   missing.method <- ifelse(missing.types == "numeric", initial.num,
                            ifelse(missing.types == "integer", initial.int, initial.fac)
@@ -221,7 +228,7 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
 
 
 
-  check_pmm(pmm.type = pmm.type, bootstrap = bootstrap, xgb.params = xgb.params, Nrow = Nrow, sorted.naSums = sorted.naSums, sorted.types = sorted.types, pmm.k = pmm.k)
+  check_pmm(pmm.type = pmm.type, xgb.params = xgb.params, Nrow = Nrow, sorted.naSums = sorted.naSums, sorted.types = sorted.types, pmm.k = pmm.k)
 
   imputed.data <- vector("list", m)
 
@@ -268,12 +275,48 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
     )
   }
 
+
+  if(length(obs.vars)==0){
+    Obs.m<-NULL
+  }else{
+    if(matrix.method=="as.matrix"){
+
+      Obs.m<-as.matrix(data[,!missing.vars,with = FALSE])
+
+
+    }else{
+
+      Obs.list <- lapply(obs.vars, function(feature){
+
+        if(cbind.types[feature] %in% c("numeric","integer")){
+          as.matrix(data[[feature]])
+        } else if(cbind.types[feature] == "ordered"){
+          Matrix::t(fac2Sparse(data[[feature]], factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
+        } else {
+          Matrix::t(fac2sparse(data[[feature]]))[, -1, drop = FALSE]
+        }
+      })
+
+
+      if(matrix.method=="cpp.combo"){
+        Obs.m<-cbind_combo(Obs.list )
+      }else if(matrix.method=="cpp.factor"){
+        Obs.m<-cbind_sparse_matrix(Obs.list )
+      }
+
+
+    }
+  }
+
+
+
+
+
   # ............................................................................................................
   if (save.models == FALSE) {
     # Default: don't save any models
 
-    if (bootstrap == FALSE) {
-      # bootstrap=FALSE--------------------------------------------------------------
+
       if (verbose) {
         cat("mixgb with subsampling:", "imputing set")
       }
@@ -288,56 +331,29 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
 
         for (j in seq_len(maxit)) {
 
-
-
-          sorted.dt <- mixgb_cpp(matrix.method,
-            cbind.types=cbind.types,
+          sorted.dt <- mixgb_null(Obs.m=Obs.m, matrix.method=matrix.method, cbind.types=cbind.types,
             pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list,
             sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
             xgb.params = xgb.params,
-            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
+            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose,...
           )
+          #check
+          #sorted.dt[8]
         }
 
 
 
         imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
       }
-    } else {
-      # bootstrap=TRUE--------------------------------------------------------------
-      if (verbose) {
-        cat("mixgb with bootstrapping:", "imputing set")
-      }
 
-      for (i in seq_len(m)) {
-        if (verbose) {
-          cat(" --", i)
-        }
-        # feed in the initial imputed dataset
-        sorted.dt <- data
-        boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
-        for (j in seq_len(maxit)) {
-          sorted.dt <- mixgb_boot(
-            BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
-            yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
-            sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
-            xgb.params = xgb.params,
-            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
-          )
-        }
-        imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
-      }
-    } # end of if(bootstrap)
 
     if (verbose) {
       cat("\n")
     }
 
     return(imputed.data)
-    # mixgb.obj <- list("imputed.data" = imputed.data, "XGB.models" =NULL, "params" = NULL)
-    # class(mixgb.obj)<-"mixgbObj"
-    # return(mixgb.obj)
+
   } else {
     # save.models=TRUE, save models for imputing new data..........................................................................................
     # save params of this imputer for impute.new().....................................................
@@ -358,7 +374,6 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
     params$Na.idx <- Na.idx
     params$sorted.idx <- sorted.idx
     params$Obs.idx <- Obs.idx
-    params$bootstrap <- bootstrap
     params$yobs.list <- yobs.list
     params$ordinalAsInteger <- ordinalAsInteger
 
@@ -367,15 +382,9 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
     if (isTRUE(XGB.save)) {
       # save the model dir
       XGB.models <- vector("list", m)
-    } else {
-      # save the model
-      XGB.models <- vector("list", m)
     }
 
 
-    #--------------------------------------------------------
-    if (bootstrap == FALSE) {
-      # bootstrap=FALSE--------------------------------------------------------------
       if (verbose) {
         cat("mixgb with subsampling:", "saving models and imputing set")
       }
@@ -385,30 +394,24 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
           cat(" --", i)
         }
         # feed in the initial imputed dataset
-        sorted.dt <- data
+        sorted.dt <- copy(data)
         if (maxit > 1) {
           for (j in seq_len(maxit - 1)) {
             # for j=1:(maxit-1)  only update the imputed dataset
-            sorted.dt <- mixgb_null2(
-              pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
-              sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
-              xgb.params = xgb.params,
-              nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
+            sorted.dt <- mixgb_null(Obs.m=Obs.m, matrix.method=matrix.method, cbind.types=cbind.types,
+                                    pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list,
+                                    sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
+                                    Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+                                    xgb.params = xgb.params,
+                                    nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose,...
             )
+
           }
         }
         # the last iteration, update the imputed dataset, also save models
         if (isTRUE(XGB.save)) {
-          saved.obj <- mixgb_xgb_save(
+          saved.obj <- mixgb_xgb_save(Obs.m=Obs.m, matrix.method=matrix.method, cbind.types=cbind.types, all.idx,
             save.models.folder = save.models.folder, i = i,
-            save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
-            yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
-            Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
-            xgb.params = xgb.params,
-            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
-          )
-        } else {
-          saved.obj <- mixgb_save(
             save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
             yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
@@ -426,60 +429,7 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
         }
         # if pmm.type=1  (only use one set of yhatobs.list across all m, it's saved ahead)
       }
-    } else {
-      # bootstrap=TRUE--------------------------------------------------------------
-      if (verbose) {
-        cat("mixgb with bootstrapping:", "saving models and imputing set")
-      }
 
-      for (i in seq_len(m)) {
-        if (verbose) {
-          cat(" --", i)
-        }
-        # feed in the initial imputed dataset
-        sorted.dt <- data
-        boot.result <- boot(Nrow = Nrow, sorted.dt = sorted.dt, sortedNA.dt = initial.obj$sortedNA.dt, missing.vars = missing.vars, mp = mp)
-        if (maxit > 1) {
-          for (j in seq_len(maxit - 1)) {
-            sorted.dt <- mixgb_boot(
-              BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
-              yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars,
-              sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
-              xgb.params = xgb.params,
-              nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
-            )
-          }
-        }
-        if (isTRUE(XGB.save)) {
-          saved.obj <- mixgb_boot_xgb_save(
-            save.models.folder = save.models.folder, i = i,
-            BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
-            yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
-            Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
-            xgb.params = xgb.params,
-            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
-          )
-        } else {
-          saved.obj <- mixgb_bootsave(
-            BNa.idx = boot.result$BNa.idx, boot.dt = boot.result$boot.dt, save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
-            yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
-            Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
-            xgb.params = xgb.params,
-            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
-          )
-        }
-
-
-        # if pmm.type=NULL
-        imputed.data[[i]] <- saved.obj$sorted.dt[, origin.names, with = FALSE]
-        XGB.models[[i]] <- saved.obj$xgb.models
-        # if pmm.type=0,2,auto
-        if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
-          yhatobs.list[[i]] <- saved.obj$yhatobs.list
-        }
-        # if pmm.type=1  (only use one set of yhatobs.list across all m, it's saved ahead)
-      }
-    } # end of if(bootstrap)
 
 
 
@@ -501,4 +451,52 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE, bootstrap = F
   }
 } # end of impute function
 
+
+
+
+#' Auxiliary function for validating xgb.params
+#' @description Auxiliary function for setting up the default XGBoost-related hyperparameters for mixgb and checking the \code{xgb.params} argument in \code{mixgb()}. For more details on XGBoost hyperparameters, please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
+#' @param device Can be either "cpu" or "cuda". For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.
+#' @param tree_method Options: "auto", "exact", "approx", and "hist". Default: "hist".
+#' @param eta Step size shrinkage. Default: 0.3.
+#' @param gamma Minimum loss reduction required to make a further partition on a leaf node of the tree. Default: 0
+#' @param max_depth Maximum depth of a tree. Default: 3.
+#' @param min_child_weight Minimum sum of instance weight needed in a child. Default: 1.
+#' @param max_delta_step Maximum delta step. Default: 0.
+#' @param subsample Subsampling ratio of the data. Default: 0.7.
+#' @param sampling_method The method used to sample the data. Default: "uniform".
+#' @param colsample_bytree Subsampling ratio of columns when constructing each tree. Default: 1.
+#' @param colsample_bylevel Subsampling ratio of columns for each level. Default: 1.
+#' @param colsample_bynode Subsampling ratio of columns for each node. Default: 1.
+#' @param lambda L2 regularization term on weights. Default: 1.
+#' @param alpha L1 regularization term on weights. Default: 0.
+#' @param max_leaves Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.
+#' @param max_bin Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.
+#' @param num_parallel_tree The number of parallel trees used for boosted random forests. Default: 1.
+#' @param nthread The number of CPU threads to be used. Default: -1 (all available threads).
+#' @return A list of hyperparameters.
+#' @export
+#' @examples
+#' default_params()
+#'
+#' xgb.params <- list(subsample = 0.9, nthread = 2)
+#' default_params(subsample = xgb.params$subsample, nthread = xgb.params$nthread)
+#'
+#' xgb.params <- do.call("default_params", xgb.params)
+#' xgb.params
+default_params <- function(device = "cpu", tree_method = "hist", eta = 0.3, gamma = 0, max_depth = 3, min_child_weight = 1, max_delta_step = 0,
+                           subsample = 0.7, sampling_method = "uniform", colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, lambda = 1, alpha = 0,
+                           max_leaves = 0, max_bin = 256, num_parallel_tree = 1, nthread = -1) {
+  list(
+    device = device, tree_method = tree_method, eta = eta, gamma = gamma, max_depth = max_depth, min_child_weight = min_child_weight,
+    subsample = subsample, sampling_method = sampling_method, colsample_bytree = colsample_bytree, colsample_bylevel = colsample_bylevel,
+    colsample_bynode = colsample_bynode, lambda = lambda, alpha = alpha,
+    max_leaves = max_leaves, max_bin = max_bin, num_parallel_tree = num_parallel_tree, nthread = nthread
+  )
+}
+
+
+is_dir <- function(dir) {
+  return(file.info(dir)$isdir)
+}
 

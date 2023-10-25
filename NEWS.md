@@ -1,10 +1,10 @@
-# mixgb 1.4.2
+# mixgb 1.4.0
 
-
-
-- Coming Soon!
-
-
+- Optimized `mixgb()` for large datasets: 
+  * Significantly faster imputation by optimizing data preprocessing and the use of **RcppArmadillo**
+  * Enhanced memory efficiency with in-place modifications using **data.table**
+  * Bootstrapping option removed from `mixgb()`. Users can still use bootstrap in the archived function `mixgb0()`.
+  * `PMM` is now set to `NULL` by default.
 
 # mixgb 1.3.2
 ### Miscellaneous
