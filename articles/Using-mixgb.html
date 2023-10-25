@@ -211,39 +211,37 @@ recommend using <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code>
 <span><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb_cv.html">mixgb_cv</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3_newborn</span>, nrounds <span class="op">=</span> <span class="fl">100</span>, xgb.params <span class="op">=</span> <span class="va">params</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">evaluation.log</span></span>
 <span><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
-<span><span class="co">#&gt;  1:    1       47.928386     0.05765235      47.893637     0.2742141</span></span>
-<span><span class="co">#&gt;  2:    2       33.669176     0.04017746      33.656289     0.2600205</span></span>
-<span><span class="co">#&gt;  3:    3       23.706263     0.03437946      23.713015     0.2354072</span></span>
-<span><span class="co">#&gt;  4:    4       16.750802     0.03357190      16.768281     0.2122685</span></span>
-<span><span class="co">#&gt;  5:    5       11.913630     0.02144026      11.944357     0.2214237</span></span>
-<span><span class="co">#&gt;  6:    6        8.579834     0.02214015       8.631617     0.2090169</span></span>
-<span><span class="co">#&gt;  7:    7        6.289354     0.02567792       6.365912     0.2116119</span></span>
-<span><span class="co">#&gt;  8:    8        4.772707     0.03062650       4.889483     0.1924279</span></span>
-<span><span class="co">#&gt;  9:    9        3.791760     0.03880157       3.950421     0.1791396</span></span>
-<span><span class="co">#&gt; 10:   10        3.186254     0.03148498       3.394083     0.1715129</span></span>
-<span><span class="co">#&gt; 11:   11        2.821097     0.02864928       3.082670     0.1541570</span></span>
-<span><span class="co">#&gt; 12:   12        2.605434     0.03714366       2.915595     0.1393359</span></span>
-<span><span class="co">#&gt; 13:   13        2.491506     0.03575222       2.827459     0.1360427</span></span>
-<span><span class="co">#&gt; 14:   14        2.413274     0.03014140       2.790676     0.1287440</span></span>
-<span><span class="co">#&gt; 15:   15        2.368397     0.03019740       2.763245     0.1276276</span></span>
-<span><span class="co">#&gt; 16:   16        2.340611     0.03073901       2.748675     0.1262067</span></span>
-<span><span class="co">#&gt; 17:   17        2.311590     0.03494310       2.744348     0.1272600</span></span>
-<span><span class="co">#&gt; 18:   18        2.285319     0.03208456       2.736342     0.1354727</span></span>
-<span><span class="co">#&gt; 19:   19        2.270355     0.03421842       2.737648     0.1378141</span></span>
-<span><span class="co">#&gt; 20:   20        2.253839     0.03469693       2.746079     0.1336550</span></span>
-<span><span class="co">#&gt; 21:   21        2.238118     0.03278285       2.742742     0.1327660</span></span>
-<span><span class="co">#&gt; 22:   22        2.217111     0.03222008       2.750150     0.1418150</span></span>
-<span><span class="co">#&gt; 23:   23        2.202446     0.03434223       2.744632     0.1396592</span></span>
-<span><span class="co">#&gt; 24:   24        2.189723     0.03487263       2.749883     0.1350597</span></span>
-<span><span class="co">#&gt; 25:   25        2.175129     0.03854888       2.749676     0.1368039</span></span>
-<span><span class="co">#&gt; 26:   26        2.167755     0.03906372       2.745298     0.1430364</span></span>
-<span><span class="co">#&gt; 27:   27        2.159274     0.04139352       2.746996     0.1432443</span></span>
-<span><span class="co">#&gt; 28:   28        2.151324     0.04306231       2.750616     0.1386813</span></span>
+<span><span class="co">#&gt;  1:    1       5.6258795    0.016350940      5.6255058    0.06500660</span></span>
+<span><span class="co">#&gt;  2:    2       3.9851729    0.009204248      3.9867588    0.06555707</span></span>
+<span><span class="co">#&gt;  3:    3       2.8452808    0.007573533      2.8505750    0.06347996</span></span>
+<span><span class="co">#&gt;  4:    4       2.0579935    0.009291434      2.0699495    0.06489777</span></span>
+<span><span class="co">#&gt;  5:    5       1.5197473    0.011885473      1.5356429    0.06240986</span></span>
+<span><span class="co">#&gt;  6:    6       1.1572326    0.014863343      1.1861306    0.06461837</span></span>
+<span><span class="co">#&gt;  7:    7       0.9218011    0.015829874      0.9587670    0.07235742</span></span>
+<span><span class="co">#&gt;  8:    8       0.7758916    0.019141417      0.8247158    0.07314419</span></span>
+<span><span class="co">#&gt;  9:    9       0.6883708    0.021048597      0.7483271    0.07532088</span></span>
+<span><span class="co">#&gt; 10:   10       0.6342460    0.022591119      0.7055877    0.07835500</span></span>
+<span><span class="co">#&gt; 11:   11       0.6019488    0.020786338      0.6802873    0.07667897</span></span>
+<span><span class="co">#&gt; 12:   12       0.5832551    0.021909716      0.6660474    0.07782409</span></span>
+<span><span class="co">#&gt; 13:   13       0.5725880    0.022562795      0.6596805    0.07736093</span></span>
+<span><span class="co">#&gt; 14:   14       0.5649371    0.022024394      0.6544056    0.07945875</span></span>
+<span><span class="co">#&gt; 15:   15       0.5561077    0.021008640      0.6529868    0.08071871</span></span>
+<span><span class="co">#&gt; 16:   16       0.5487366    0.019029806      0.6511003    0.08200589</span></span>
+<span><span class="co">#&gt; 17:   17       0.5444404    0.018659125      0.6514667    0.08258482</span></span>
+<span><span class="co">#&gt; 18:   18       0.5395714    0.018741264      0.6518797    0.08249702</span></span>
+<span><span class="co">#&gt; 19:   19       0.5369785    0.018567383      0.6532496    0.08179858</span></span>
+<span><span class="co">#&gt; 20:   20       0.5334972    0.017741869      0.6528236    0.08275652</span></span>
+<span><span class="co">#&gt; 21:   21       0.5274188    0.016315363      0.6548573    0.08366951</span></span>
+<span><span class="co">#&gt; 22:   22       0.5242419    0.015608085      0.6538474    0.08422815</span></span>
+<span><span class="co">#&gt; 23:   23       0.5200162    0.013863529      0.6543742    0.08539052</span></span>
+<span><span class="co">#&gt; 24:   24       0.5181309    0.013576737      0.6552059    0.08477343</span></span>
+<span><span class="co">#&gt; 25:   25       0.5153972    0.013460279      0.6555911    0.08493309</span></span>
+<span><span class="co">#&gt; 26:   26       0.5104595    0.013441316      0.6562273    0.08540980</span></span>
 <span><span class="co">#&gt;     iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std</span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">response</span></span>
-<span><span class="co">#&gt; [1] "BMPRECUM"</span></span>
+<span><span class="co">#&gt; [1] "BMPWT"</span></span>
 <span><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span>
-<span><span class="co">#&gt; [1] 18</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 16</span></span></code></pre></div>
 <p>By default, <code><a href="../reference/mixgb_cv.html">mixgb_cv()</a></code> will randomly choose an
 incomplete variable as the response and build an XGBoost model with
 other variables as explanatory variables using the complete cases of the
