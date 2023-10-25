@@ -36,6 +36,11 @@ XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
 
 ## New updates
 
+**Expected Release Date: Nov 2023**
+
+- Coming soon! New version of the `mixgb()` function will greatly reduce
+  imputation time for large datasets.
+
 **Oct 2023**
 
 - Dependency Change: Starting from mixgb version 1.3.1, the package
@@ -280,9 +285,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPSB1"
+#> [1] "BMPTR1"
 cv.results$best.nrounds
-#> [1] 15
+#> [1] 11
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -299,7 +304,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 12
+#> [1] 14
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
@@ -365,27 +370,27 @@ specified variable.
 ``` r
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
-#>        m1   m2   m3   m4   m5
-#>   1: 44.0 44.8 45.0 44.8 46.2
-#>   2: 44.0 44.0 43.8 44.3 44.0
-#>   3: 43.9 42.8 43.8 41.8 44.7
-#>   4: 45.7 47.5 45.3 45.9 46.0
-#>   5: 48.8 46.1 45.3 47.4 45.2
-#>  ---                         
-#> 120: 44.7 46.9 45.3 45.0 46.2
-#> 121: 44.8 46.2 46.4 45.0 45.7
-#> 122: 40.8 39.9 41.6 39.9 41.9
-#> 123: 44.4 42.9 43.8 44.1 42.3
-#> 124: 46.3 44.6 46.1 45.1 45.1
+#>            m1       m2       m3       m4       m5
+#>   1: 44.55964 44.58959 44.15152 44.56411 44.46418
+#>   2: 44.36407 43.74577 43.64571 44.14404 44.13693
+#>   3: 43.40415 43.47594 42.91505 43.28848 43.28136
+#>   4: 42.95826 43.18346 42.72605 43.14680 43.04770
+#>   5: 45.09745 45.47606 45.19949 45.18177 44.89433
+#>  ---                                             
+#> 120: 45.64759 45.64001 45.26391 45.41525 45.55229
+#> 121: 43.32446 43.72506 43.58517 42.73930 43.50102
+#> 122: 40.95664 41.39137 41.42779 41.40689 41.29398
+#> 123: 41.56052 40.35720 41.86611 41.06014 40.78917
+#> 124: 46.61265 46.47099 46.05222 46.48701 46.70708
 show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
 #>    m1 m2 m3 m4 m5
 #> 1:  2  2  2  2  2
 #> 2:  1  1  1  2  1
-#> 3:  1  1  1  1  1
+#> 3:  2  2  2  2  2
 #> 4:  2  2  2  2  2
-#> 5:  1  1  1  1  1
-#> 6:  1  1  1  1  1
-#> 7:  2  2  2  2  2
+#> 5:  2  2  2  2  2
+#> 6:  2  2  2  2  2
+#> 7:  2  1  2  2  2
 ```
 
 The `mixgb` package provides the following visual diagnostics functions:
@@ -433,103 +438,7 @@ plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD",
 
 ## 4. Impute new unseen data using a saved imputer object
 
-First, let us split the `nhanes3_newborn` dataset into training data and
-test data.
-
-``` r
-library(mixgb)
-data("nhanes3_newborn")
-set.seed(2022)
-n <- nrow(nhanes3_newborn)
-idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
-train.data <- nhanes3_newborn[idx, ]
-test.data <- nhanes3_newborn[-idx, ]
-```
-
-We can use the training data to generate `m` imputed datasets and save
-their imputation models. To achieve this, users need to set
-`save.models = TRUE`. By default, imputation models for all variables
-with missing values in the training data will be saved
-(`save.vars = NULL`). However, it is possible that unseen data may have
-missing values in other variables. To be thorough, users can save models
-for all variables by setting `save.vars = colnames(train.data)`. Note
-that this may take significantly longer as it requires training and
-saving a model for each variable. In cases where users are confident
-that only certain variables will have missing values in the new data, it
-is advisable to specify the names or indices of these variables in
-`save.vars` rather than saving models for all variables.
-
-``` r
-# obtain m imputed datasets for train.data and save
-# imputation models
-mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE,
-    save.vars = NULL)
-```
-
-When `save.models = TRUE`, `mixgb()` will return an object containing
-the following:
-
-- `imputed.data`: a list of `m` imputed datasets for training data
-
-- `XGB.models`: a list of `m` sets of XGBoost models for variables
-  specified in `save.vars`.
-
-- `params`: a list of parameters that are required for imputing new data
-  using `impute_new()` later on.
-
-We can access the `m` imputed datasets from the saved imputer object by
-using `$imputed.data`.
-
-``` r
-train.imputed <- mixgb.obj$imputed.data
-# the 5th imputed dataset
-head(train.imputed[[5]])
-#>    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1
-#> 1:        7       2     1        1        1        3    42.8     66.0    7.2
-#> 2:        4       3     2        2        3        2    42.6     67.1    8.8
-#> 3:        3       9     2        2        3        2    46.5     64.3    8.6
-#> 4:        3       9     2        1        3        1    46.2     68.5   10.8
-#> 5:        5       4     1        1        3        1    44.7     63.0    6.0
-#> 6:        5      10     1        1        3        1    45.2     72.0    5.4
-#>    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1
-#> 1:    6.8    8.2    8.2  7.60  1.701    2    1
-#> 2:    8.8   13.3   12.2  8.70  0.102    2    1
-#> 3:    8.0   10.4    9.2  8.00  0.359    1    3
-#> 4:   10.0   16.6   16.0  8.98  0.561    1    3
-#> 5:    5.8    9.0    9.0  7.60  2.379    2    1
-#> 6:    5.4    9.2    9.4  9.00  2.173    2    2
-```
-
-To impute new data with this saved imputer object, we can use the
-`impute_new()` function. Users can choose whether to use new data for
-initial imputation. By default, the information of training data is used
-to initially impute the missing data in the new dataset
-(`initial.newdata = FALSE`). After this, the missing values in the new
-dataset will be imputed using the saved models from the imputer object.
-This process will be considerably faster because it will not involve
-rebuilding the imputation models.
-
-``` r
-test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
-```
-
-If PMM is used in `mixgb()`, predicted values of missing entries in the
-new dataset will be matched with donors from the training data.
-Additionally, users can set the number of donors to be used in PMM when
-imputing new data. The default setting `pmm.k = NULL` indicates that the
-same setting as the training object will be used.
-
-Similarly, users can set the number of imputed datasets `m` in
-`impute_new()`. Note that this value has to be less than or equal to the
-`m` value specified in `mixgb()`. If this value is not specified, the
-function will use the same `m` value as the saved object.
-
-``` r
-test.imputed <- impute_new(object = mixgb.obj, newdata = test.data,
-    initial.newdata = FALSE, pmm.k = 3, m = 4)
-```
-
-Users can also specify a local directory in the parameter
+Users need to specify a local directory in the parameter
 `save.models.folder` in the main function `mixgb()`. Models will be save
 as JSON format by calling `xgb.save()` internally. Saving XGBoost models
 in this way instead of using `saveRDS` in R is recommended by XGBoost.
@@ -573,6 +482,109 @@ test.data <- nhanes3[-idx, ]
 
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
 test.imputed
+```
+
+### Depreciated
+
+**Warning**: In previous versions, users can save models without
+specifying the local directory. This is not recommended but users can
+still do this using the old version `mixgb0()`. Note that this function
+will be depreciated in the near future.
+
+First, let us split the `nhanes3_newborn` dataset into training data and
+test data.
+
+``` r
+library(mixgb)
+data("nhanes3_newborn")
+set.seed(2022)
+n <- nrow(nhanes3_newborn)
+idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
+train.data <- nhanes3_newborn[idx, ]
+test.data <- nhanes3_newborn[-idx, ]
+```
+
+We can use the training data to generate `m` imputed datasets and save
+their imputation models. To achieve this, users need to set
+`save.models = TRUE`. By default, imputation models for all variables
+with missing values in the training data will be saved
+(`save.vars = NULL`). However, it is possible that unseen data may have
+missing values in other variables. To be thorough, users can save models
+for all variables by setting `save.vars = colnames(train.data)`. Note
+that this may take significantly longer as it requires training and
+saving a model for each variable. In cases where users are confident
+that only certain variables will have missing values in the new data, it
+is advisable to specify the names or indices of these variables in
+`save.vars` rather than saving models for all variables.
+
+``` r
+# obtain m imputed datasets for train.data and save
+# imputation models
+mixgb.obj <- mixgb0(data = train.data, m = 5, save.models = TRUE,
+    save.vars = NULL)
+```
+
+When `save.models = TRUE`, `mixgb()` will return an object containing
+the following:
+
+- `imputed.data`: a list of `m` imputed datasets for training data
+
+- `XGB.models`: a list of `m` sets of XGBoost models for variables
+  specified in `save.vars`.
+
+- `params`: a list of parameters that are required for imputing new data
+  using `impute_new()` later on.
+
+We can access the `m` imputed datasets from the saved imputer object by
+using `$imputed.data`.
+
+``` r
+train.imputed <- mixgb.obj$imputed.data
+# the 5th imputed dataset
+head(train.imputed[[5]])
+#>    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1
+#> 1:        7       2     1        1        1        3    44.5     68.7    9.0
+#> 2:        4       3     2        2        3        2    42.6     67.1    8.8
+#> 3:        3       9     2        2        3        2    46.5     64.3    8.6
+#> 4:        3       9     2        1        3        1    46.2     68.5   10.8
+#> 5:        5       4     1        1        3        1    44.7     63.0    6.0
+#> 6:        5      10     1        1        3        1    45.2     72.0    5.4
+#>    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1
+#> 1:   10.4   13.6   12.6  8.05  1.701    2    1
+#> 2:    8.8   13.3   12.2  8.70  0.102    2    1
+#> 3:    8.0   10.4    9.2  8.00  0.359    1    3
+#> 4:   10.0   16.6   16.0  8.98  0.561    1    3
+#> 5:    5.8    9.0    9.0  7.60  2.379    2    1
+#> 6:    5.4    9.2    9.4  9.00  2.173    2    2
+```
+
+To impute new data with this saved imputer object, we can use the
+`impute_new()` function. Users can choose whether to use new data for
+initial imputation. By default, the information of training data is used
+to initially impute the missing data in the new dataset
+(`initial.newdata = FALSE`). After this, the missing values in the new
+dataset will be imputed using the saved models from the imputer object.
+This process will be considerably faster because it will not involve
+rebuilding the imputation models.
+
+``` r
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
+```
+
+If PMM is used in `mixgb()`, predicted values of missing entries in the
+new dataset will be matched with donors from the training data.
+Additionally, users can set the number of donors to be used in PMM when
+imputing new data. The default setting `pmm.k = NULL` indicates that the
+same setting as the training object will be used.
+
+Similarly, users can set the number of imputed datasets `m` in
+`impute_new()`. Note that this value has to be less than or equal to the
+`m` value specified in `mixgb()`. If this value is not specified, the
+function will use the same `m` value as the saved object.
+
+``` r
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data,
+    initial.newdata = FALSE, pmm.k = 3, m = 4)
 ```
 
 ## 5. Install `mixgb` with GPU support
