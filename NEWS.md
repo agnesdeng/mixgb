@@ -1,3 +1,18 @@
+# mixgb 1.4.2
+### Bug fix
+- Set `drop.unused.levels = FALSE` in `fac2sparse()` to prevent dropping unused levels in factor or ordinal factor.
+    - Ensure the feature matrix has the same number of columns to feed in XGBoost  
+
+
+# mixgb 1.4.1
+### Compatibility
+- Compatible with both XGBoost >=2.0.0  or CRAN version of XGBoost (=1.7.5.1)
+
+### Bug fix
+- Correct feature type for numeric and integer variable for initial imputation
+- Update `save_yhatobs()` for Type 1 pmm.
+
+
 # mixgb 1.4.0
 
 - Optimized `mixgb()` for large datasets: 

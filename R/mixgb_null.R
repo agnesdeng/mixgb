@@ -1,7 +1,7 @@
 # Multiple imputation using xgboost (without bootstrap) updated version
 mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
                       xgb.params = list(),
-                      nrounds = 100, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0,
+                      nrounds, early_stopping_rounds, print_every_n, verbose,
                       ...) {
 
 
@@ -28,9 +28,9 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
         if(cbind.types[feature] %in% c("numeric","integer")){
           as.matrix(sorted.dt[[feature]])
         } else if(cbind.types[feature] == "ordered"){
-          Matrix::t(fac2Sparse(sorted.dt[[feature]], factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
+          Matrix::t(fac2Sparse(sorted.dt[[feature]], drop.unused.levels = FALSE, factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
         } else {
-          Matrix::t(fac2sparse(sorted.dt[[feature]]))[, -1, drop = FALSE]
+          Matrix::t(fac2sparse(sorted.dt[[feature]], drop.unused.levels = FALSE))[, -1, drop = FALSE]
         }
       })
 
@@ -55,7 +55,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
 
 
     # numeric or integer ---------------------------------------------------------------------------
-    if (missing.types[var] == "numeric" | missing.types[var] == "integer") {
+    if (missing.types[var] == "numeric") {
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
@@ -75,10 +75,12 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
       )
 
       yhatmis <- predict(xgb.fit, dmis)
+
+
       if (!is.null(pmm.type)) {
         if (pmm.type != 1) {
           # for pmm.type=0 or 2 or auto (type 2 for numeric or integer)
-          yhatobs <- predict(xgb.fit, obs.data)
+          yhatobs <- predict(xgb.fit, dobs)
         } else {
           # for pmm.type=1
           yhatobs <- yhatobs.list[[var]]
@@ -88,11 +90,48 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
       # update dataset
 
       sorted.dt[na.idx, (var) := yhatmis]
+
+    }else if (missing.types[var] == "integer") {
+      dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+      dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      if (is.null(early_stopping_rounds)) {
+        watchlist <- list(train = dobs)
+      } else {
+        watchlist <- list(train = dobs)
+        # to be done, have eval
+        # watchlist <- list(train = dobs,eval=dmis)
+      }
+
+      obj.type <- "reg:squarederror"
+      xgb.fit <- xgb.train(
+        data = dobs, objective = obj.type, watchlist = watchlist,
+        params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
+        print_every_n = print_every_n, verbose = verbose, ...
+      )
+
+      yhatmis <- predict(xgb.fit, dmis)
+      if (!is.null(pmm.type)) {
+        if (pmm.type != 1) {
+          # for pmm.type=0 or 2 or auto (type 2 for numeric or integer)
+          yhatobs <- predict(xgb.fit, dobs)
+        } else {
+          # for pmm.type=1
+          yhatobs <- yhatobs.list[[var]]
+        }
+        yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = obs.y, k = pmm.k)
+        sorted.dt[na.idx, (var) := yhatmis]
+
+      }else{
+        # round to integer when PMM is not used
+        sorted.dt[na.idx, (var) := round(yhatmis)]
+      }
+
+
+
     } else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
       bin.t <- sort(table(obs.y))
-
 
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
@@ -114,8 +153,8 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
         msg <- paste("The binary variable", var, "in the data only have single class. Imputation models can't be built.")
         stop(msg)
       } else {
-        if (!is.null(pmm) & pmm.link == "logit") {
-          # pmm by "logit" value
+        if (!is.null(pmm.type) & isFALSE(pmm.type=="auto") & pmm.link == "logit") {
+          # pmm by "logit" value, only when pmm.type is not null and not "auto"
           obj.type <- "binary:logitraw"
         } else {
           # pmm by "prob" and for no pmm
@@ -131,7 +170,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
         yhatmis <- predict(xgb.fit, dmis)
 
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
-          # for pmm.type=NULL or "auto"
+          # for pmm.type=NULL or "auto": no pmm is used, obj.type="binary:logistic
           yhatmis <- ifelse(yhatmis >= 0.5, 1, 0)
           yhatmis <- levels(sorted.dt[[var]])[yhatmis + 1]
           sorted.dt[na.idx, (var) := yhatmis]
@@ -141,7 +180,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
             yhatobs <- yhatobs.list[[var]]
           } else {
             # for pmm.type=0 or 2
-            yhatobs <- predict(xgb.fit, obs.data)
+            yhatobs <- predict(xgb.fit, dobs)
           }
 
 
@@ -233,7 +272,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
       )
-      # yhatmis <- predict(xgb.fit, dmis)
+
 
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
         # use softmax, predict returns class
@@ -244,7 +283,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
       } else {
         # predict returns probability matrix for each class
         # yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
-        # hasn't tested yet
+
         yhatmis <- predict(xgb.fit, dmis, reshape = TRUE)
         if (pmm.type == 1) {
           # for pmm.type=1
@@ -253,7 +292,6 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
           # for pmm.type=0 or 2
           # probability matrix for each class
           # yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
-          # hasn't tested yet
           yhatobs <- predict(xgb.fit, dobs, reshape = TRUE)
         }
         yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)

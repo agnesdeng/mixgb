@@ -1,10 +1,10 @@
 # Multiple imputation using xgboost (save models using xgb.save() and imputations)
-mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
+mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
                            save.models.folder, i = i, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt,
-                            missing.vars, sorted.names, Na.idx, missing.types, Ncol,
-                            xgb.params = list(),
-                            nrounds, early_stopping_rounds, print_every_n, verbose,
-                            ...) {
+                           missing.vars, sorted.names, Na.idx, missing.types, Ncol,
+                           xgb.params = list(),
+                           nrounds, early_stopping_rounds, print_every_n, verbose,
+                           ...) {
   # yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   # pre-allocation for models
   xgb.models <- vector("list", save.p)
@@ -101,10 +101,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
       # update dataset
       sorted.dt[na.idx, (var) := yhatmis]
       # save models
-      filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-      filedir <- paste(filedir, ".json", sep = "")
-      xgb.save(model = xgb.fit, fname = filedir)
-      xgb.models[[var]] <- filedir
+      xgb.models[[var]] <- xgb.fit
 
     } else if (missing.types[var] == "integer"){
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
@@ -143,10 +140,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
       # round to integer when PMM is not used
       sorted.dt[na.idx, (var) := round(yhatmis)]
       # save models
-      filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-      filedir <- paste(filedir, ".json", sep = "")
-      xgb.save(model = xgb.fit, fname = filedir)
-      xgb.models[[var]] <- filedir
+      xgb.models[[var]] <- xgb.fit
 
     }else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
@@ -194,10 +188,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         yhatmis <- predict(xgb.fit, dmis)
 
         # save models
-        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-        filedir <- paste(filedir, ".json", sep = "")
-        xgb.save(model = xgb.fit, fname = filedir)
-        xgb.models[[var]] <- filedir
+        xgb.models[[var]] <- xgb.fit
 
 
 
@@ -263,10 +254,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         )
         yhatmis <- predict(xgb.fit, dmis)
         # save models
-        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-        filedir <- paste(filedir, ".json", sep = "")
-        xgb.save(model = xgb.fit, fname = filedir)
-        xgb.models[[var]] <- filedir
+        xgb.models[[var]] <- xgb.fit
 
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
           # for pmm.type=NULL or "auto"
@@ -316,10 +304,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         print_every_n = print_every_n, verbose = verbose, ...
       )
       # save models
-      filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-      filedir <- paste(filedir, ".json", sep = "")
-      xgb.save(model = xgb.fit, fname = filedir)
-      xgb.models[[var]] <- filedir
+      xgb.models[[var]] <- xgb.fit
 
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
         # use softmax, predict returns class
@@ -424,10 +409,8 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           print_every_n = print_every_n, verbose = verbose, ...
         )
 
-        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-        filedir <- paste(filedir, ".json", sep = "")
-        xgb.save(model = xgb.fit, fname = filedir)
-        xgb.models[[var]] <- filedir
+
+        xgb.models[[var]] <- xgb.fit
 
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
           yhatobs.list[[var]] <- predict(xgb.fit, dobs)
@@ -467,10 +450,8 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
             print_every_n = print_every_n, verbose = verbose, ...
           )
 
-          filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-          filedir <- paste(filedir, ".json", sep = "")
-          xgb.save(model = xgb.fit, fname = filedir)
-          xgb.models[[var]] <- filedir
+
+          xgb.models[[var]] <- xgb.fit
           # if pmm.link="logit", these would be logit values, otherwise would be probability values
           if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
             yhatobs.list[[var]] <- predict(xgb.fit, dobs)
@@ -513,10 +494,8 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
             print_every_n = print_every_n, verbose = verbose, ...
           )
 
-          filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-          filedir <- paste(filedir, ".json", sep = "")
-          xgb.save(model = xgb.fit, fname = filedir)
-          xgb.models[[var]] <- filedir
+
+          xgb.models[[var]] <- xgb.fit
           # if pmm.link="logit", these would be logit values, otherwise would be probability values
           if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
             yhatobs.list[[var]] <- predict(xgb.fit, dobs)
@@ -551,10 +530,8 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           print_every_n = print_every_n, verbose = verbose, ...
         )
 
-        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-        filedir <- paste(filedir, ".json", sep = "")
-        xgb.save(model = xgb.fit, fname = filedir)
-        xgb.models[[var]] <- filedir
+
+        xgb.models[[var]] <- xgb.fit
 
         # prediction returns probability for matching: probability matrix for each class
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {

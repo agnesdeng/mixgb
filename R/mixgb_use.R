@@ -1,6 +1,9 @@
-# Multiple imputation using xgboost (through saved models)
-mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL,
-                      sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol) {
+# Multiple imputation using xgboost (through saved models in local dir)
+mixgb_use <- function(nthread,Obs.m, matrix.method, cbind.types,
+                           m.set, xgb.models, save.vars, save.p, extra.vars = NULL,
+                           extra.types = NULL,
+                           pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL,
+                           sorted.dt, missing.vars, new.missing.vars, sorted.names, new.Na.idx, new.missing.types, Ncol) {
   # param m.set the ith imputation
   # param yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   # param yobs.list  observed values in the original training data
@@ -11,20 +14,54 @@ mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, e
   # param sorted.names all names of variables in sorted order
   # param Ncol number of columns in new data
 
-  for (var in missing.vars) {
-    features <- setdiff(sorted.names, var)
-    form <- reformulate(termlabels = features, response = var)
+  for (var in new.missing.vars) {
 
-    na.idx <- Na.idx[[var]]
+    #features <- setdiff(sorted.names, var)
+    #form <- reformulate(termlabels = features, response = var)
 
-    if (Ncol == 2) {
-      mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])
-    } else {
-      mis.data <- sparse.model.matrix(form, data = sorted.dt[na.idx, ])[, -1, drop = FALSE]
+    na.idx <- new.Na.idx[[var]]
+
+    #originally missing variables in the original training dataset
+    Mis.vars<-missing.vars[missing.vars != var]
+
+
+    if(matrix.method=="as.matrix"){
+
+      Mis.m<-as.matrix(sorted.dt[,Mis.vars,with = FALSE])
+
+
+    }else{
+
+      Mis.list <- lapply(Mis.vars, function(feature){
+
+        if(cbind.types[feature] %in% c("numeric","integer")){
+          as.matrix(sorted.dt[[feature]])
+        } else if(cbind.types[feature] == "ordered"){
+          Matrix::t(fac2Sparse(sorted.dt[[feature]], drop.unused.levels = FALSE, factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
+        } else {
+          Matrix::t(fac2sparse(sorted.dt[[feature]], drop.unused.levels = FALSE))[, -1, drop = FALSE]
+        }
+      })
+
+
+      if(matrix.method=="cpp.combo"){
+        Mis.m<-cbind_combo(Mis.list )
+      }else if(matrix.method=="cpp.factor"){
+        Mis.m<-cbind_sparse_matrix(Mis.list )
+      }
+
+
     }
+
+    All.m<-cbind2(Mis.m,Obs.m)
+
+    mis.data<-All.m[na.idx, , drop = FALSE]
+
+
     # numeric or integer ---------------------------------------------------------------------------
-    if (missing.types[var] == "numeric" | missing.types[var] == "integer") {
-      yhatmis <- predict(xgb.models[[var]], mis.data)
+    if (new.missing.types[var] == "numeric") {
+      dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      yhatmis <- predict(xgb.models[[var]], dmis)
 
       if (!is.null(pmm.type)) {
         if (isTRUE(pmm.type == 1)) {
@@ -34,62 +71,90 @@ mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, e
         }
       }
       # update dataset
-      sorted.dt[[var]][na.idx] <- yhatmis
-    } else if (missing.types[var] == "binary") {
+      #sorted.dt[[var]][na.idx] <- yhatmis
+      sorted.dt[na.idx, (var) := yhatmis]
+    }else if (new.missing.types[var] == "integer") {
+      dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      yhatmis <- predict(xgb.models[[var]], dmis)
+
+      if (!is.null(pmm.type)) {
+        if (isTRUE(pmm.type == 1)) {
+          yhatmis <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        } else {
+          yhatmis <- pmm(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+        }
+      }
+      # update dataset
+      #sorted.dt[[var]][na.idx] <- yhatmis
+      sorted.dt[na.idx, (var) := round(yhatmis)]
+
+    } else if (new.missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
-      if (length(xgb.models[[var]]) == 1) {
-        sorted.dt[[var]][na.idx] <- xgb.models[[var]]
-        msg <- paste("Imputation for variable", var, "use the only existent class in the bootstrap sample. May not be reliable.")
-        warning(msg)
-      } else {
-        yhatmis <- predict(xgb.models[[var]], mis.data)
+      dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      if (length(xgb.models[[var]]) != 1) {
+        # load model
+        yhatmis <- predict(xgb.models[[var]], dmis)
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
           # for pmm.type=NULL or "auto"
           yhatmis <- ifelse(yhatmis >= 0.5, 1, 0)
-          sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis + 1]
+          yhatmis <- levels(sorted.dt[[var]])[yhatmis + 1]
+          sorted.dt[na.idx, (var) := yhatmis]
         } else {
           if (pmm.type == 1) {
             # for pmm.type=1
-            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+            yhatmis <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
           } else {
             # for pmm.type=0 or 2
-            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+            yhatmis <- pmm(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
           }
+          sorted.dt[na.idx, (var) := yhatmis]
         }
-      }
-    } else if (missing.types[var] == "logical") {
-      # binary ---------------------------------------------------------------------------
-      if (length(xgb.models[[var]]) == 1) {
-        sorted.dt[[var]][na.idx] <- xgb.models[[var]]
+      } else {
+        # load majority class
+        #sorted.dt[[var]][na.idx] <- xgb.models[[var]]
+        yhatmis<- xgb.models[[var]]
+        sorted.dt[na.idx, (var) := yhatmis]
         msg <- paste("Imputation for variable", var, "use the only existent class in the bootstrap sample. May not be reliable.")
         warning(msg)
-      } else {
-        yhatmis <- predict(xgb.models[[var]], mis.data)
+      }
+    } else if (new.missing.types[var] == "logical") {
+      # logical ---------------------------------------------------------------------------
+      dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
+      if (length(xgb.models[[var]]) != 1) {
+        yhatmis <- predict(xgb.models[[var]], dmis)
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
           # for pmm.type=NULL or "auto"
           yhatmis <- ifelse(yhatmis >= 0.5, T, F)
-          sorted.dt[[var]][na.idx] <- yhatmis
+          sorted.dt[na.idx, (var) := yhatmis]
         } else {
           if (pmm.type == 1) {
             # for pmm.type=1
-            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+            yhatmis <- pmm(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
           } else {
             # for pmm.type=0 or 2
-            sorted.dt[[var]][na.idx] <- pmm(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
+            yhatmis <- pmm(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
           }
+          sorted.dt[na.idx, (var) := yhatmis]
         }
+      } else {
+        yhatmis <- xgb.models[[var]]
+        sorted.dt[na.idx, (var) := yhatmis]
+        msg <- paste("Imputation for variable", var, "use the only existent class in the bootstrap sample. May not be reliable.")
+        warning(msg)
       }
     } else {
       # multiclass ---------------------------------------------------------------------------
-
+      dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
         # use softmax, predict returns class
         # for pmm.type=NULL or "auto"
-        yhatmis <- predict(xgb.models[[var]], mis.data)
-        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis + 1]
+        yhatmis <- predict(xgb.models[[var]], dmis)
+        yhatmis <- levels(sorted.dt[[var]])[yhatmis + 1]
+        sorted.dt[na.idx, (var) := yhatmis]
+
       } else {
         # predict returns probability matrix for each class
-        yhatmis <- predict(xgb.models[[var]], mis.data, reshape = TRUE)
+        yhatmis <- predict(xgb.models[[var]], dmis, reshape = TRUE)
         if (pmm.type == 1) {
           # for pmm.type=1
           yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
@@ -97,7 +162,8 @@ mixgb_use <- function(m.set, xgb.models, save.vars, save.p, extra.vars = NULL, e
           # for pmm.type=0 or 2
           yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[m.set]][[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         }
-        sorted.dt[[var]][na.idx] <- levels(sorted.dt[[var]])[yhatmis]
+        yhatmis <- levels(sorted.dt[[var]])[yhatmis]
+        sorted.dt[na.idx, (var) := yhatmis]
       }
     }
   } # end of for each missing variable

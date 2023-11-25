@@ -29,6 +29,10 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   # extract params from the training object
   params <- object$params
 
+  nthread<-params$nthread
+
+  matrix.method<-params$matrix.method
+  cbind.types<-params$cbind.types
 
 
   if (is.null(pmm.k)) {
@@ -53,15 +57,20 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   # need to use the order of sorted variables in the original training data: otherwise xgboost has errors
   sorted.names <- params$sorted.names
   sorted.types <- params$sorted.types
+
   # missing.vars in original data
-  omissing.vars <- params$missing.vars
+  missing.vars <- params$missing.vars
+  #observed variables in the original training dataset
+  obs.vars<-params$obs.vars
+
   Na.idx <- params$Na.idx
   # vars saved from imputer
   save.vars <- params$save.vars
   # initial imputation methods should be the same as the training imputer
   initial.num <- params$initial.num
+  initial.int<- params$initial.int
   initial.fac <- params$initial.fac
-  bootstrap <- params$bootstrap
+  #bootstrap <- params$bootstrap
 
   # for PMM
   yhatobs.list <- params$yhatobs.list
@@ -112,7 +121,7 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
     train.dt <- object$imputed.data[[1]]
     # initial imputation.......................................................................................................
     trainNA.dt <- train.dt
-    for (var in omissing.vars) {
+    for (var in missing.vars) {
       na.idx <- Na.idx[[var]]
       trainNA.dt[[var]][na.idx] <- NA
     }
@@ -127,12 +136,12 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
     stop("No missing values in new data.")
   }
 
-  missing.vars <- names(which(naSums != 0))
+  new.missing.vars <- names(which(naSums != 0))
 
-  if (!all(missing.vars %in% save.vars)) {
+  if (!all(new.missing.vars %in% save.vars)) {
     stop("Some variables in the new data has missing values but their models are not saved. Please re-specify save.vars and re-train the imputer.")
     # more detail information....................................
-    unsaved <- missing.vars[which(!missing.vars %in% save.vars)]
+    unsaved <- new.missing.vars[which(!new.missing.vars %in% save.vars)]
     msg1 <- paste("There exists at least one missing value in the following variable(s): ", paste(unsaved, collapse = ";"),
       ".",
       sep = ""
@@ -145,16 +154,27 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
 
 
 
-  initial.obj <- initial_impnew(initial.newdata = initial.newdata, new.sorted = sortedNA.dt, traindata = trainNA.dt, sorted.names = sorted.names, sorted.types = sorted.types, initial.num = initial.num, initial.fac = initial.fac)
+
+
+
+  initial.obj <- initial_impnew(initial.newdata = initial.newdata,
+                                new.sorted = sortedNA.dt,
+                                traindata = trainNA.dt,
+                                sorted.names = sorted.names,
+                                sorted.types = sorted.types,
+                                initial.num = initial.num,
+                                initial.fac = initial.fac)
+
+
   # if initial.newdata=TRUE use newdata information to initially impute newdata
   # if initial.newdata=FALSE use training data information to initially impute newdata
 
 
   # After initial imputation of newdata
-  missing.vars <- initial.obj$missing.vars
-  missing.types <- initial.obj$missing.types
-  Na.idx <- initial.obj$Na.idx
-  sorted.dt <- initial.obj$sorted.dt
+  new.missing.vars <- initial.obj$missing.vars
+  new.missing.types <- initial.obj$missing.types
+  new.Na.idx <- initial.obj$Na.idx
+  data <- initial.obj$sorted.dt
 
   imputed.data <- vector("list", m)
 
@@ -163,22 +183,56 @@ impute_new <- function(object, newdata, initial.newdata = FALSE, pmm.k = NULL, m
   }
 
 
+  if(length(obs.vars)==0){
+    Obs.m<-NULL
+  }else{
+    if(matrix.method=="as.matrix"){
+
+      Obs.m<-as.matrix(data[,!missing.vars,with = FALSE])
+
+
+    }else{
+
+      Obs.list <- lapply(obs.vars, function(feature){
+
+        if(cbind.types[feature] %in% c("numeric","integer")){
+          as.matrix(data[[feature]])
+        } else if(cbind.types[feature] == "ordered"){
+          Matrix::t(fac2Sparse(data[[feature]], factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
+        } else {
+          Matrix::t(fac2sparse(data[[feature]]))[, -1, drop = FALSE]
+        }
+      })
+
+
+      if(matrix.method=="cpp.combo"){
+        Obs.m<-cbind_combo(Obs.list )
+      }else if(matrix.method=="cpp.factor"){
+        Obs.m<-cbind_sparse_matrix(Obs.list )
+      }
+
+
+    }
+  }
+
+
   for (i in seq_len(m)) {
     if (verbose) {
       cat(" --", i)
     }
     # feed in the initial imputed dataset
-    sorted.dt <- initial.obj$sorted.dt
+    #sorted.dt <- initial.obj$sorted.dt
+    sorted.dt <- copy(data)
 
     if (isTRUE(object$XGB.save)) {
-      sorted.dt <- mixgb_load_use(
+      sorted.dt <- mixgb_load_use(nthread=nthread,Obs.m=Obs.m, matrix.method=matrix.method, cbind.types=cbind.types,
         m.set = i, xgb.models = XGB.models[[i]], pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt,
-        missing.vars = missing.vars, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol
+        missing.vars = missing.vars,  new.missing.vars = new.missing.vars, sorted.names = sorted.names, new.Na.idx = new.Na.idx, new.missing.types = new.missing.types, Ncol = Ncol
       )
     } else {
-      sorted.dt <- mixgb_use(
-        m.set = i, xgb.models = XGB.models[[i]], pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt,
-        missing.vars = missing.vars, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol
+      sorted.dt <- mixgb_use(nthread=nthread,Obs.m=Obs.m, matrix.method=matrix.method, cbind.types=cbind.types,
+                             m.set = i, xgb.models = XGB.models[[i]], pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k, yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt,
+                             missing.vars = missing.vars,  new.missing.vars = new.missing.vars, sorted.names = sorted.names, new.Na.idx = new.Na.idx, new.missing.types = new.missing.types, Ncol = Ncol
       )
     }
 

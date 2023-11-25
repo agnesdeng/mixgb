@@ -3,6 +3,7 @@
 export(createNA)
 export(data_clean)
 export(default_params)
+export(default_params_cran)
 export(impute_new)
 export(mixgb)
 export(mixgb0)

@@ -81,11 +81,26 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
     save.models <- TRUE
     XGB.save <- TRUE
   } else if(save.models) {
-    stop("Please specify the directory in save.models.folder")
+    warnings("Models are saved in the environment. Suggest specifing the directory in save.models.folder")
+    XGB.save<-FALSE
+  }
+
+  # Get the current version of XGBoost as a 'package_version' object
+  xgboost.version <- packageVersion("xgboost")
+
+  # Define the minimum required version as a 'package_version' object
+  required.version <- package_version("2.0.0")
+
+  # Use relational operators to compare version objects
+  if (xgboost.version >= required.version) {
+    # for XGBoost 2.0.0 or newer
+    xgb.params <- do.call("default_params", xgb.params)
+  } else {
+    # Code for older versions of XGBoost
+    xgb.params <- do.call("default_params_cran", xgb.params)
   }
 
 
-  xgb.params <- do.call("default_params", xgb.params)
 
 
 
@@ -266,16 +281,6 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
   }
 
 
-  yhatobs.list <- NULL
-  if (isTRUE(pmm.type == 1)) {
-    yhatobs.list <- save_yhatobs(
-      yobs.list = yobs.list, maxit = maxit, pmm.link = pmm.link, sorted.dt = data, missing.vars = missing.vars, extra.vars = extra.vars, extra.types = extra.types, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
-      xgb.params = xgb.params,
-      nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
-    )
-  }
-
-
   if(length(obs.vars)==0){
     Obs.m<-NULL
   }else{
@@ -310,6 +315,16 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
 
 
 
+  yhatobs.list <- NULL
+  if (isTRUE(pmm.type == 1)) {
+    sorted.dt <- copy(data)
+    yhatobs.list <- save_yhatobs(Obs.m=Obs.m, matrix.method=matrix.method, cbind.types=cbind.types, all.idx=all.idx,
+      yobs.list = yobs.list, maxit = maxit, pmm.link = pmm.link, sorted.dt = sorted.dt, missing.vars = missing.vars, extra.vars = extra.vars, extra.types = extra.types, sorted.names = sorted.names, Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+      xgb.params = xgb.params,
+      nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
+    )
+  }
+
 
 
   # ............................................................................................................
@@ -336,13 +351,12 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
             sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
             xgb.params = xgb.params,
-            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose,...
+            nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
+            print_every_n = print_every_n, verbose = xgboost_verbose
+            ,...
           )
-          #check
-          #sorted.dt[8]
+
         }
-
-
 
         imputed.data[[i]] <- sorted.dt[, origin.names, with = FALSE]
       }
@@ -359,6 +373,7 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
     # save params of this imputer for impute.new().....................................................
     params <- list()
     params$initial.num <- initial.num
+    params$initial.int<-initial.int
     params$initial.fac <- initial.fac
     params$pmm.k <- pmm.k
     params$pmm.type <- pmm.type
@@ -370,16 +385,20 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
     params$sorted.naSums <- sorted.naSums
     params$save.vars <- save.vars
     params$missing.vars <- missing.vars
+    params$obs.vars<-obs.vars
     params$extra.vars <- extra.vars
     params$Na.idx <- Na.idx
     params$sorted.idx <- sorted.idx
     params$Obs.idx <- Obs.idx
     params$yobs.list <- yobs.list
     params$ordinalAsInteger <- ordinalAsInteger
+    params$nthread<-xgb.params$nthread
+    params$matrix.method<-matrix.method
+    params$cbind.types<-cbind.types
 
 
     # pre-allocation for saved models: for each of m, save Nmodels
-    if (isTRUE(XGB.save)) {
+    if (isTRUE(save.models)) {
       # save the model dir
       XGB.models <- vector("list", m)
     }
@@ -417,6 +436,15 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
             Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
             xgb.params = xgb.params,
             nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
+          )
+        }else{
+          saved.obj <- mixgb_save(Obs.m=Obs.m, matrix.method=matrix.method, cbind.types=cbind.types, all.idx,
+                                      save.models.folder = save.models.folder, i = i,
+                                      save.vars = save.vars, save.p = save.p, extra.vars = extra.vars, extra.types = extra.types, pmm.type = pmm.type, pmm.link = pmm.link, pmm.k = pmm.k,
+                                      yobs.list = yobs.list, yhatobs.list = yhatobs.list, sorted.dt = sorted.dt, missing.vars = missing.vars, sorted.names = sorted.names,
+                                      Na.idx = Na.idx, missing.types = missing.types, Ncol = Ncol,
+                                      xgb.params = xgb.params,
+                                      nrounds = nrounds, early_stopping_rounds = early_stopping_rounds, print_every_n = print_every_n, verbose = xgboost_verbose, ...
           )
         }
 
@@ -499,4 +527,41 @@ default_params <- function(device = "cpu", tree_method = "hist", eta = 0.3, gamm
 is_dir <- function(dir) {
   return(file.info(dir)$isdir)
 }
+
+
+
+#' Auxiliary function for validating xgb.params compatible with XGBoost CRAN version
+#' @description Auxiliary function for setting up the default XGBoost-related hyperparameters for mixgb and checking the \code{xgb.params} argument in \code{mixgb()}. For more details on XGBoost hyperparameters, please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
+#' @param device Can be either "cpu" or "cuda". For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.
+#' @param tree_method Options: "auto", "exact", "approx", and "hist". Default: "hist".
+#' @param eta Step size shrinkage. Default: 0.3.
+#' @param gamma Minimum loss reduction required to make a further partition on a leaf node of the tree. Default: 0
+#' @param max_depth Maximum depth of a tree. Default: 3.
+#' @param min_child_weight Minimum sum of instance weight needed in a child. Default: 1.
+#' @param max_delta_step Maximum delta step. Default: 0.
+#' @param subsample Subsampling ratio of the data. Default: 0.7.
+#' @param sampling_method The method used to sample the data. Default: "uniform".
+#' @param colsample_bytree Subsampling ratio of columns when constructing each tree. Default: 1.
+#' @param colsample_bylevel Subsampling ratio of columns for each level. Default: 1.
+#' @param colsample_bynode Subsampling ratio of columns for each node. Default: 1.
+#' @param lambda L2 regularization term on weights. Default: 1.
+#' @param alpha L1 regularization term on weights. Default: 0.
+#' @param max_leaves Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.
+#' @param max_bin Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.
+#' @param num_parallel_tree The number of parallel trees used for boosted random forests. Default: 1.
+#' @param nthread The number of CPU threads to be used. Default: -1 (all available threads).
+#' @return A list of hyperparameters.
+#' @export
+#' @examples
+#' default_params_cran()
+#'
+#' xgb.params <- list(subsample = 0.9, nthread = 2)
+#' default_params(subsample = xgb.params$subsample, nthread = xgb.params$nthread)
+#'
+#' xgb.params <- do.call("default_params", xgb.params)
+#' xgb.params
+default_params_cran <- function(eta = 0.3, gamma = 0, max_depth = 3, min_child_weight = 1, max_delta_step, subsample = 0.7, sampling_method = "uniform", colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, lambda = 1, alpha = 0, tree_method = "auto", max_leaves = 0, max_bin = 256, predictor = "auto", num_parallel_tree = 1, gpu_id = 0, nthread = -1) {
+  list(eta = eta, gamma = gamma, max_depth = max_depth, min_child_weight = min_child_weight, subsample = subsample, sampling_method = sampling_method, colsample_bytree = colsample_bytree, colsample_bylevel = colsample_bylevel, colsample_bynode = colsample_bynode, lambda = lambda, alpha = alpha, tree_method = tree_method, max_leaves = max_leaves, max_bin = max_bin, predictor = predictor, num_parallel_tree = num_parallel_tree, gpu_id = gpu_id, nthread = nthread)
+}
+
 

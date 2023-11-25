@@ -1,6 +1,6 @@
 Package: mixgb
 Title: Multiple Imputation Through 'XGBoost'
-Version: 1.4.0
+Version: 1.4.2
 Authors@R: c(
     person(given = "Yongshi", family ="Deng", email = "yongshi.deng@auckland.ac.nz",
            role = c("aut","cre"),comment =c(ORCID = "0000-0001-5845-859X")),
@@ -34,7 +34,7 @@ Imports:
     stats,
     tidyr,
     utils,
-    xgboost
+    xgboost (>= 1.7.5.1)
 Suggests: 
     knitr,
     rmarkdown,
