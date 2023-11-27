@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,27 @@
       <small>Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.4.2" id="mixgb-142">mixgb 1.4.2<a class="anchor" aria-label="anchor" href="#mixgb-142"></a></h2>
+<div class="section level4">
+<h4 id="bug-fix-1-4-2">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-1-4-2"></a></h4>
+<ul><li>Set <code>drop.unused.levels = FALSE</code> in <code>fac2sparse()</code> to prevent dropping unused levels in factor or ordinal factor.
+<ul><li>Ensure the feature matrix has the same number of columns to feed in XGBoost</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.4.1" id="mixgb-141">mixgb 1.4.1<a class="anchor" aria-label="anchor" href="#mixgb-141"></a></h2>
+<div class="section level4">
+<h4 id="compatibility-1-4-1">Compatibility<a class="anchor" aria-label="anchor" href="#compatibility-1-4-1"></a></h4>
+<ul><li>Compatible with both XGBoost &gt;=2.0.0 or CRAN version of XGBoost (=1.7.5.1)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fix-1-4-1">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-1-4-1"></a></h4>
+<ul><li>Correct feature type for numeric and integer variable for initial imputation</li>
+<li>Update <code>save_yhatobs()</code> for Type 1 pmm.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.4.0" id="mixgb-140">mixgb 1.4.0<a class="anchor" aria-label="anchor" href="#mixgb-140"></a></h2>
 <ul><li>Optimized <code><a href="../reference/mixgb.html">mixgb()</a></code> for large datasets:

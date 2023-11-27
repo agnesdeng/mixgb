@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,70 +126,44 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max_depth <span class="op">=</span> <span class="fl">3</span>, subsample <span class="op">=</span> <span class="fl">0.7</span>, nthread <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cv.results</span> <span class="op">&lt;-</span> <span class="fu">mixgb_cv</span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, xgb.params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:48.047493+0.054800	test-rmse:48.044933+0.265557 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:48.076607+0.057642	test-rmse:48.104235+0.281055 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Multiple eval metrics are present. Will use test_rmse for early stopping.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Will train until test_rmse hasn't improved in 10 rounds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:33.833802+0.046725	test-rmse:33.828949+0.256029 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:23.883589+0.057568	test-rmse:23.885119+0.222381 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:16.875303+0.031136	test-rmse:16.865156+0.227565 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:11.989348+0.027219	test-rmse:11.983589+0.193722 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:8.602900+0.024068	test-rmse:8.620285+0.213323 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:6.318057+0.039819	test-rmse:6.349021+0.205483 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:4.767132+0.058275	test-rmse:4.828217+0.242521 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:3.735081+0.080073	test-rmse:3.821958+0.263720 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:3.082369+0.081551	test-rmse:3.204180+0.317821 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11]	train-rmse:2.681145+0.092277	test-rmse:2.838888+0.338994 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12]	train-rmse:2.443909+0.118695	test-rmse:2.644939+0.344166 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13]	train-rmse:2.278741+0.100157	test-rmse:2.527272+0.357208 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14]	train-rmse:2.167684+0.105267	test-rmse:2.463161+0.367606 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15]	train-rmse:2.115940+0.112029	test-rmse:2.434437+0.351928 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16]	train-rmse:2.051696+0.102995	test-rmse:2.427401+0.359221 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:2.012435+0.116992	test-rmse:2.423716+0.368338 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18]	train-rmse:1.972100+0.112071	test-rmse:2.425176+0.373164 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19]	train-rmse:1.945170+0.114026	test-rmse:2.427609+0.374697 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20]	train-rmse:1.918739+0.103149	test-rmse:2.437101+0.376199 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21]	train-rmse:1.899270+0.107978	test-rmse:2.443714+0.390700 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22]	train-rmse:1.876973+0.109602	test-rmse:2.449617+0.377283 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23]	train-rmse:1.848990+0.122146	test-rmse:2.455512+0.392349 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [24]	train-rmse:1.836281+0.121900	test-rmse:2.454935+0.395930 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25]	train-rmse:1.802396+0.114323	test-rmse:2.454192+0.385353 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [26]	train-rmse:1.776762+0.111440	test-rmse:2.461951+0.389652 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27]	train-rmse:1.750575+0.115860	test-rmse:2.467403+0.384088 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:33.883465+0.067183	test-rmse:33.881648+0.256251 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:23.927855+0.041960	test-rmse:23.947425+0.284434 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:16.920347+0.052635	test-rmse:16.937598+0.294499 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:12.043112+0.057752	test-rmse:12.089042+0.293432 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:8.664317+0.063218	test-rmse:8.727653+0.320710 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:6.348849+0.045646	test-rmse:6.422782+0.382683 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:4.784457+0.058809	test-rmse:4.890129+0.439278 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:3.764482+0.070585	test-rmse:3.919752+0.478493 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:3.090149+0.089520	test-rmse:3.283148+0.508359 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11]	train-rmse:2.682340+0.104265	test-rmse:2.930222+0.537279 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12]	train-rmse:2.415356+0.103885	test-rmse:2.713623+0.562085 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13]	train-rmse:2.278572+0.114202	test-rmse:2.619390+0.555772 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14]	train-rmse:2.190517+0.134924	test-rmse:2.579914+0.536981 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15]	train-rmse:2.112429+0.119367	test-rmse:2.538028+0.539973 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16]	train-rmse:2.064155+0.111288	test-rmse:2.526319+0.538636 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:2.024054+0.123361	test-rmse:2.510380+0.546990 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18]	train-rmse:1.993375+0.111570	test-rmse:2.502675+0.546324 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19]	train-rmse:1.963972+0.100305	test-rmse:2.507824+0.543798 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20]	train-rmse:1.931319+0.097409	test-rmse:2.511840+0.537009 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21]	train-rmse:1.905979+0.091477	test-rmse:2.524172+0.528898 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22]	train-rmse:1.869336+0.091676	test-rmse:2.517119+0.523485 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23]	train-rmse:1.840289+0.096952	test-rmse:2.520033+0.512642 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24]	train-rmse:1.814250+0.085057	test-rmse:2.516780+0.511387 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25]	train-rmse:1.799222+0.089272	test-rmse:2.522677+0.517764 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26]	train-rmse:1.778484+0.084601	test-rmse:2.522758+0.509422 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27]	train-rmse:1.752968+0.088190	test-rmse:2.536694+0.505922 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28]	train-rmse:1.735900+0.098270	test-rmse:2.529148+0.507148 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stopping. Best iteration:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17]	train-rmse:2.012435+0.116992	test-rmse:2.423716+0.368338</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18]	train-rmse:1.993375+0.111570	test-rmse:2.502675+0.546324</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 18</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">imputed.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nhanes3</span>, m <span class="op">=</span> <span class="fl">3</span>, xgb.params <span class="op">=</span> <span class="va">params</span>, nrounds <span class="op">=</span> <span class="va">cv.results</span><span class="op">$</span><span class="va">best.nrounds</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23:47:34] WARNING: src/learner.cc:767: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters: { "device" } are not used.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
