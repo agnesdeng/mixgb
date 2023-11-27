@@ -36,10 +36,13 @@ XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
 
 ## New updates
 
-**Expected Release Date: Nov 2023**
+**New Release: Nov 2023**
 
-- Coming soon! New version of the `mixgb()` function will greatly reduce
-  imputation time for large datasets.
+- New version of the `mixgb()` function has been optimized to greatly
+  reduce imputation time for large datasets.
+
+- **mixgb**(\>=1.4.2) is compatible with both XGBoost(\>=2.0.0) and
+  XGBoost(CRAN version).
 
 **Oct 2023**
 
@@ -285,9 +288,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPTR1"
+#> [1] "HFF1"
 cv.results$best.nrounds
-#> [1] 11
+#> [1] 9
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -304,7 +307,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 14
+#> [1] 13
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
@@ -371,26 +374,26 @@ specified variable.
 show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
     original.data = withNA.df)
 #>            m1       m2       m3       m4       m5
-#>   1: 44.55964 44.58959 44.15152 44.56411 44.46418
-#>   2: 44.36407 43.74577 43.64571 44.14404 44.13693
-#>   3: 43.40415 43.47594 42.91505 43.28848 43.28136
-#>   4: 42.95826 43.18346 42.72605 43.14680 43.04770
-#>   5: 45.09745 45.47606 45.19949 45.18177 44.89433
+#>   1: 44.48437 42.40263 44.81512 44.23953 43.26088
+#>   2: 42.27523 41.39620 42.05612 42.56915 42.26706
+#>   3: 43.38593 42.90775 43.08914 42.24798 43.07787
+#>   4: 44.14684 43.17070 43.51343 43.59421 43.96187
+#>   5: 41.42059 40.60042 40.84894 41.08277 41.09366
 #>  ---                                             
-#> 120: 45.64759 45.64001 45.26391 45.41525 45.55229
-#> 121: 43.32446 43.72506 43.58517 42.73930 43.50102
-#> 122: 40.95664 41.39137 41.42779 41.40689 41.29398
-#> 123: 41.56052 40.35720 41.86611 41.06014 40.78917
-#> 124: 46.61265 46.47099 46.05222 46.48701 46.70708
+#> 120: 45.84540 45.73336 45.61261 45.63473 45.36967
+#> 121: 44.82779 45.72536 45.70374 44.93923 44.94569
+#> 122: 41.58113 41.92926 41.42997 41.95879 42.23804
+#> 123: 43.82690 44.91631 43.63697 43.93151 44.76704
+#> 124: 45.74449 43.57767 45.24529 43.95994 44.38604
 show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
 #>    m1 m2 m3 m4 m5
 #> 1:  2  2  2  2  2
-#> 2:  1  1  1  2  1
-#> 3:  2  2  2  2  2
-#> 4:  2  2  2  2  2
-#> 5:  2  2  2  2  2
-#> 6:  2  2  2  2  2
-#> 7:  2  1  2  2  2
+#> 2:  2  2  2  2  2
+#> 3:  2  1  2  2  2
+#> 4:  2  2  2  1  2
+#> 5:  1  1  1  2  1
+#> 6:  1  1  2  1  2
+#> 7:  2  2  1  2  2
 ```
 
 The `mixgb` package provides the following visual diagnostics functions:

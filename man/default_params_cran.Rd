@@ -57,11 +57,13 @@ default_params_cran(
 
 \item{max_bin}{Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.}
 
+\item{predictor}{Default: "auto"}
+
 \item{num_parallel_tree}{The number of parallel trees used for boosted random forests. Default: 1.}
 
-\item{nthread}{The number of CPU threads to be used. Default: -1 (all available threads).}
+\item{gpu_id}{Which GPU device should be used. Default: 0.}
 
-\item{device}{Can be either "cpu" or "cuda". For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.}
+\item{nthread}{The number of CPU threads to be used. Default: -1 (all available threads).}
 }
 \value{
 A list of hyperparameters.

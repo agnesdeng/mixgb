@@ -8,6 +8,7 @@
 #' @importFrom stats median rnorm sd complete.cases na.omit reformulate predict quantile rbinom
 #' @useDynLib mixgb
 #' @importFrom Rcpp sourceCpp
+#' @importFrom utils packageVersion
 #' @references
 #' Deng, Y., & Lumley, T. (2023), Multiple Imputation Through XGBoost, Journal of Computational and Graphical Statistics, DOI: 10.1080/10618600.2023.2252501.
 #'
