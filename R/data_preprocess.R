@@ -46,8 +46,10 @@ feature_type2 <- function(data) {
     switch(var.class,
       numeric = "numeric",
       integer = "integer",
+      logical = "logical",
       factor = ifelse(nlevels(var) == 2, "binary", "multiclass"),
       ordered = ifelse(nlevels(var) == 2, "binary", "multiclass"),
+      character = stop("Data contains variables of character type. Please change them into factor."),
       stop(paste0("Unsupported data type: ", var.class))
     )
   })
