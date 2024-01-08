@@ -315,6 +315,14 @@ plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD", var.fac = "HS
 Users need to specify a local directory in the parameter `save.models.folder` in the main function `mixgb()`. Models will be save as JSON format by calling `xgb.save()` internally. Saving XGBoost models in this way instead of using `saveRDS` in R is recommended by XGBoost. This can ensure that the imputation models can still be used in later release of XGBoost.
 
 ```{r,eval = FALSE}
+set.seed(2022)
+n <- nrow(nhanes3)
+idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
+train.data <- nhanes3[idx, ]
+test.data <- nhanes3[-idx, ]
+```
+
+```{r,eval = FALSE}
 # obtain m imputed datasets for train.data and save imputation models
 mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE, save.models.folder = "C:/Users/.....")
 saveRDS(object = mixgb.obj, file = "C:/Users/.../mixgbimputer.rds")
@@ -335,14 +343,8 @@ As the `mixgb.obj` does not contain the models themselves, users need not worry 
 ```{r,eval = FALSE}
 mixgb.obj <- readRDS(file = "C:/Users/.../mixgbimputer.rds")
 
-set.seed(2022)
-n <- nrow(nhanes3)
-idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
-train.data <- nhanes3[idx, ]
-test.data <- nhanes3[-idx, ]
-
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
-test.imputed
+
 ```
 
 

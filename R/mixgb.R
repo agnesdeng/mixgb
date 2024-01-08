@@ -1,26 +1,26 @@
-#'  Multiple imputation through XGBoost (Optimized version)
-#' @description This function is used to generate multiply imputed datasets using XGBoost, subsampling and predictive mean matching (PMM).
+#'  Multiple imputation through XGBoost
+#' @description This function is used to generate multiply-imputed datasets using XGBoost, subsampling and predictive mean matching (PMM).
 #' @param data A data.frame or data.table with missing values
 #' @param m The number of imputed datasets. Default: 5
 #' @param maxit The number of imputation iterations. Default: 1
 #' @param ordinalAsInteger Whether to convert ordinal factors to integers. By default, \code{ordinalAsInteger = FALSE}. Setting \code{ordinalAsInteger = TRUE} may speed up the imputation process for large datasets.
 #' @param pmm.type The type of predictive mean matching (PMM). Possible values:
 #' \itemize{
-#'  \item \code{NULL}: Imputations without PMM;
+#'  \item \code{NULL} (default): Imputations without PMM;
 #'  \item \code{0}: Imputations with PMM type 0;
 #'  \item \code{1}: Imputations with PMM type 1;
 #'  \item \code{2}: Imputations with PMM type 2;
-#'  \item \code{"auto"} (Default): Imputations with PMM type 2 for numeric/integer variables; imputations without PMM for categorical variables.
+#'  \item \code{"auto"}: Imputations with PMM type 2 for numeric/integer variables; imputations without PMM for categorical variables.
 #' }
 #' @param pmm.k The number of donors for predictive mean matching. Default: 5
 #' @param pmm.link The link for predictive mean matching in binary variables
 #' \itemize{
-#'  \item \code{"prob"} (Default): use probabilities;
+#'  \item \code{"prob"} (default): use probabilities;
 #'  \item \code{"logit"}: use logit values.
 #' }
 #' @param initial.num Initial imputation method for numeric type data:
 #' \itemize{
-#'  \item \code{"normal"} (Default);
+#'  \item \code{"normal"} (default);
 #'  \item \code{"mean"};
 #'  \item \code{"median"};
 #'  \item \code{"mode"};
@@ -28,17 +28,17 @@
 #' }
 #' @param initial.int Initial imputation method for integer type data:
 #' \itemize{
-#'  \item \code{"mode"} (Default);
+#'  \item \code{"mode"} (default);
 #'  \item \code{"sample"}.
 #' }
 #' @param initial.fac Initial imputation method for factor type data:
 #' \itemize{
-#'  \item \code{"mode"} (Default);
+#'  \item \code{"mode"} (default);
 #'  \item \code{"sample"}.
 #' }
 #' @param save.models Whether to save imputation models for imputing new data later on. Default: \code{FALSE}
-#' @param save.vars For the purpose of imputing new data, the imputation models for response variables specified in \code{save.vars} will be saved. The values in \code{save.vars} can be a vector of names or indices. By default, only the imputation models for variables with missing values in the original data will be saved (\code{save.vars = NULL}). To save imputation models for all variables, users can specify it with \code{save.vars = colnames(data)}.
-#' @param save.models.folder Users can specify a folder directory to save all imputation models. Models will be saved as JSON format by internally calling \code{xgb.save()}, which is recommended by XGBoost.
+#' @param save.vars For the purpose of imputing new data, the imputation models for response variables specified in \code{save.vars} will be saved. The values in \code{save.vars} can be a vector of names or indices. By default, only the imputation models for variables with missing values in the original data will be saved (\code{save.vars = NULL}). To save imputation models for all variables, users can specify \code{save.vars = colnames(data)}.
+#' @param save.models.folder Users can specify a directory to save all imputation models. Models will be saved in JSON format by internally calling \code{xgb.save()}, which is recommended by XGBoost.
 #' @param verbose Verbose setting for mixgb. If \code{TRUE}, will print out the progress of imputation. Default: \code{FALSE}.
 #' @param xgb.params A list of XGBoost parameters. For more details, please check \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
 #' @param nrounds The maximum number of boosting iterations for XGBoost. Default: 100
@@ -484,22 +484,22 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
 
 #' Auxiliary function for validating xgb.params
 #' @description Auxiliary function for setting up the default XGBoost-related hyperparameters for mixgb and checking the \code{xgb.params} argument in \code{mixgb()}. For more details on XGBoost hyperparameters, please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
-#' @param device Can be either "cpu" or "cuda". For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.
-#' @param tree_method Options: "auto", "exact", "approx", and "hist". Default: "hist".
+#' @param device Can be either \code{"cpu"} or \code{"cuda"}. For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.
+#' @param tree_method Options: \code{"auto"}, \code{"exact"}, \code{"approx"}, and \code{"hist"}. Default: \code{"hist"}.
 #' @param eta Step size shrinkage. Default: 0.3.
 #' @param gamma Minimum loss reduction required to make a further partition on a leaf node of the tree. Default: 0
 #' @param max_depth Maximum depth of a tree. Default: 3.
 #' @param min_child_weight Minimum sum of instance weight needed in a child. Default: 1.
 #' @param max_delta_step Maximum delta step. Default: 0.
 #' @param subsample Subsampling ratio of the data. Default: 0.7.
-#' @param sampling_method The method used to sample the data. Default: "uniform".
+#' @param sampling_method The method used to sample the data. Default: \code{"uniform"}.
 #' @param colsample_bytree Subsampling ratio of columns when constructing each tree. Default: 1.
 #' @param colsample_bylevel Subsampling ratio of columns for each level. Default: 1.
 #' @param colsample_bynode Subsampling ratio of columns for each node. Default: 1.
 #' @param lambda L2 regularization term on weights. Default: 1.
 #' @param alpha L1 regularization term on weights. Default: 0.
-#' @param max_leaves Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.
-#' @param max_bin Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.
+#' @param max_leaves Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}). Default: 0.
+#' @param max_bin Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{"hist"}, \code{"approx"} or \code{"gpu_hist"}). Default: 256.
 #' @param num_parallel_tree The number of parallel trees used for boosted random forests. Default: 1.
 #' @param nthread The number of CPU threads to be used. Default: -1 (all available threads).
 #' @return A list of hyperparameters.
@@ -507,8 +507,8 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
 #' @examples
 #' default_params()
 #'
-#' xgb.params <- list(subsample = 0.9, nthread = 2)
-#' default_params(subsample = xgb.params$subsample, nthread = xgb.params$nthread)
+#' xgb.params <- list(device = "cuda", subsample = 0.9, nthread = 2)
+#' default_params(device = xgb.params$device, subsample = xgb.params$subsample, nthread = xgb.params$nthread)
 #'
 #' xgb.params <- do.call("default_params", xgb.params)
 #' xgb.params
@@ -532,22 +532,22 @@ is_dir <- function(dir) {
 
 #' Auxiliary function for validating xgb.params compatible with XGBoost CRAN version
 #' @description Auxiliary function for setting up the default XGBoost-related hyperparameters for mixgb and checking the \code{xgb.params} argument in \code{mixgb()}. For more details on XGBoost hyperparameters, please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
-#' @param tree_method Options: "auto", "exact", "approx", and "hist". Default: "hist".
+#' @param tree_method Options: \code{"auto"}, \code{"exact"}, \code{"approx"}, and \code{"hist"}. Default: \code{"hist"}.
 #' @param eta Step size shrinkage. Default: 0.3.
 #' @param gamma Minimum loss reduction required to make a further partition on a leaf node of the tree. Default: 0
 #' @param max_depth Maximum depth of a tree. Default: 3.
 #' @param min_child_weight Minimum sum of instance weight needed in a child. Default: 1.
 #' @param max_delta_step Maximum delta step. Default: 0.
 #' @param subsample Subsampling ratio of the data. Default: 0.7.
-#' @param sampling_method The method used to sample the data. Default: "uniform".
+#' @param sampling_method The method used to sample the data. Default: \code{"uniform"}.
 #' @param colsample_bytree Subsampling ratio of columns when constructing each tree. Default: 1.
 #' @param colsample_bylevel Subsampling ratio of columns for each level. Default: 1.
 #' @param colsample_bynode Subsampling ratio of columns for each node. Default: 1.
 #' @param lambda L2 regularization term on weights. Default: 1.
 #' @param alpha L1 regularization term on weights. Default: 0.
-#' @param max_leaves Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.
-#' @param max_bin Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.
-#' @param predictor Default: "auto"
+#' @param max_leaves Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}). Default: 0.
+#' @param max_bin Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{"hist"}, \code{"approx"} or \code{"gpu_hist"}). Default: 256.
+#' @param predictor Default: \code{"auto"}
 #' @param num_parallel_tree The number of parallel trees used for boosted random forests. Default: 1.
 #' @param gpu_id Which GPU device should be used. Default: 0.
 #' @param nthread The number of CPU threads to be used. Default: -1 (all available threads).
@@ -556,10 +556,10 @@ is_dir <- function(dir) {
 #' @examples
 #' default_params_cran()
 #'
-#' xgb.params <- list(subsample = 0.9, nthread = 2)
-#' default_params(subsample = xgb.params$subsample, nthread = xgb.params$nthread)
+#' xgb.params <- list(subsample = 0.9, gpu_id = 1)
+#' default_params_cran(subsample = xgb.params$subsample, gpu_id = xgb.params$gpu_id)
 #'
-#' xgb.params <- do.call("default_params", xgb.params)
+#' xgb.params <- do.call("default_params_cran", xgb.params)
 #' xgb.params
 default_params_cran <- function(eta = 0.3, gamma = 0, max_depth = 3, min_child_weight = 1, max_delta_step, subsample = 0.7, sampling_method = "uniform",
                                 colsample_bytree = 1, colsample_bylevel = 1, colsample_bynode = 1, lambda = 1, alpha = 0, tree_method = "auto", max_leaves = 0, max_bin = 256,

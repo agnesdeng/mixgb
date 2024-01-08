@@ -39,7 +39,7 @@ default_params_cran(
 
 \item{subsample}{Subsampling ratio of the data. Default: 0.7.}
 
-\item{sampling_method}{The method used to sample the data. Default: "uniform".}
+\item{sampling_method}{The method used to sample the data. Default: \code{"uniform"}.}
 
 \item{colsample_bytree}{Subsampling ratio of columns when constructing each tree. Default: 1.}
 
@@ -51,13 +51,13 @@ default_params_cran(
 
 \item{alpha}{L1 regularization term on weights. Default: 0.}
 
-\item{tree_method}{Options: "auto", "exact", "approx", and "hist". Default: "hist".}
+\item{tree_method}{Options: \code{"auto"}, \code{"exact"}, \code{"approx"}, and \code{"hist"}. Default: \code{"hist"}.}
 
-\item{max_leaves}{Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.}
+\item{max_leaves}{Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}). Default: 0.}
 
-\item{max_bin}{Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.}
+\item{max_bin}{Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{"hist"}, \code{"approx"} or \code{"gpu_hist"}). Default: 256.}
 
-\item{predictor}{Default: "auto"}
+\item{predictor}{Default: \code{"auto"}}
 
 \item{num_parallel_tree}{The number of parallel trees used for boosted random forests. Default: 1.}
 
@@ -74,9 +74,9 @@ Auxiliary function for setting up the default XGBoost-related hyperparameters fo
 \examples{
 default_params_cran()
 
-xgb.params <- list(subsample = 0.9, nthread = 2)
-default_params(subsample = xgb.params$subsample, nthread = xgb.params$nthread)
+xgb.params <- list(subsample = 0.9, gpu_id = 1)
+default_params_cran(subsample = xgb.params$subsample, gpu_id = xgb.params$gpu_id)
 
-xgb.params <- do.call("default_params", xgb.params)
+xgb.params <- do.call("default_params_cran", xgb.params)
 xgb.params
 }

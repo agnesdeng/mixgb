@@ -26,9 +26,9 @@ default_params(
 )
 }
 \arguments{
-\item{device}{Can be either "cpu" or "cuda". For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.}
+\item{device}{Can be either \code{"cpu"} or \code{"cuda"}. For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.}
 
-\item{tree_method}{Options: "auto", "exact", "approx", and "hist". Default: "hist".}
+\item{tree_method}{Options: \code{"auto"}, \code{"exact"}, \code{"approx"}, and \code{"hist"}. Default: \code{"hist"}.}
 
 \item{eta}{Step size shrinkage. Default: 0.3.}
 
@@ -42,7 +42,7 @@ default_params(
 
 \item{subsample}{Subsampling ratio of the data. Default: 0.7.}
 
-\item{sampling_method}{The method used to sample the data. Default: "uniform".}
+\item{sampling_method}{The method used to sample the data. Default: \code{"uniform"}.}
 
 \item{colsample_bytree}{Subsampling ratio of columns when constructing each tree. Default: 1.}
 
@@ -54,9 +54,9 @@ default_params(
 
 \item{alpha}{L1 regularization term on weights. Default: 0.}
 
-\item{max_leaves}{Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}. Default: 0.}
+\item{max_leaves}{Maximum number of nodes to be added (Not used when \code{tree_method = "exact"}). Default: 0.}
 
-\item{max_bin}{Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{hist}, \code{approx} or \code{gpu_hist}. Default: 256.}
+\item{max_bin}{Maximum number of discrete bins to bucket continuous features (Only used when \code{tree_method} is either \code{"hist"}, \code{"approx"} or \code{"gpu_hist"}). Default: 256.}
 
 \item{num_parallel_tree}{The number of parallel trees used for boosted random forests. Default: 1.}
 
@@ -71,8 +71,8 @@ Auxiliary function for setting up the default XGBoost-related hyperparameters fo
 \examples{
 default_params()
 
-xgb.params <- list(subsample = 0.9, nthread = 2)
-default_params(subsample = xgb.params$subsample, nthread = xgb.params$nthread)
+xgb.params <- list(device = "cuda", subsample = 0.9, nthread = 2)
+default_params(device = xgb.params$device, subsample = xgb.params$subsample, nthread = xgb.params$nthread)
 
 xgb.params <- do.call("default_params", xgb.params)
 xgb.params
