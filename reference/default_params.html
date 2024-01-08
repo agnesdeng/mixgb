@@ -84,11 +84,11 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>device</dt>
-<dd><p>Can be either "cpu" or "cuda". For ther options please refer to <a href="https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters" class="external-link">XGBoost documentation on parameters</a>.</p></dd>
+<dd><p>Can be either <code>"cpu"</code> or <code>"cuda"</code>. For ther options please refer to <a href="https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters" class="external-link">XGBoost documentation on parameters</a>.</p></dd>
 
 
 <dt>tree_method</dt>
-<dd><p>Options: "auto", "exact", "approx", and "hist". Default: "hist".</p></dd>
+<dd><p>Options: <code>"auto"</code>, <code>"exact"</code>, <code>"approx"</code>, and <code>"hist"</code>. Default: <code>"hist"</code>.</p></dd>
 
 
 <dt>eta</dt>
@@ -116,7 +116,7 @@
 
 
 <dt>sampling_method</dt>
-<dd><p>The method used to sample the data. Default: "uniform".</p></dd>
+<dd><p>The method used to sample the data. Default: <code>"uniform"</code>.</p></dd>
 
 
 <dt>colsample_bytree</dt>
@@ -140,11 +140,11 @@
 
 
 <dt>max_leaves</dt>
-<dd><p>Maximum number of nodes to be added (Not used when <code>tree_method = "exact"</code>. Default: 0.</p></dd>
+<dd><p>Maximum number of nodes to be added (Not used when <code>tree_method = "exact"</code>). Default: 0.</p></dd>
 
 
 <dt>max_bin</dt>
-<dd><p>Maximum number of discrete bins to bucket continuous features (Only used when <code>tree_method</code> is either <code>hist</code>, <code>approx</code> or <code>gpu_hist</code>. Default: 256.</p></dd>
+<dd><p>Maximum number of discrete bins to bucket continuous features (Only used when <code>tree_method</code> is either <code>"hist"</code>, <code>"approx"</code> or <code>"gpu_hist"</code>). Default: 256.</p></dd>
 
 
 <dt>num_parallel_tree</dt>
@@ -217,10 +217,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">xgb.params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>subsample <span class="op">=</span> <span class="fl">0.9</span>, nthread <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">default_params</span><span class="op">(</span>subsample <span class="op">=</span> <span class="va">xgb.params</span><span class="op">$</span><span class="va">subsample</span>, nthread <span class="op">=</span> <span class="va">xgb.params</span><span class="op">$</span><span class="va">nthread</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">xgb.params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>device <span class="op">=</span> <span class="st">"cuda"</span>, subsample <span class="op">=</span> <span class="fl">0.9</span>, nthread <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">default_params</span><span class="op">(</span>device <span class="op">=</span> <span class="va">xgb.params</span><span class="op">$</span><span class="va">device</span>, subsample <span class="op">=</span> <span class="va">xgb.params</span><span class="op">$</span><span class="va">subsample</span>, nthread <span class="op">=</span> <span class="va">xgb.params</span><span class="op">$</span><span class="va">nthread</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $device</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cpu"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cuda"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tree_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hist"</span>
@@ -274,7 +274,7 @@
 <span class="r-in"><span><span class="va">xgb.params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="st">"default_params"</span>, <span class="va">xgb.params</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">xgb.params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $device</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cpu"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cuda"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tree_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hist"</span>
