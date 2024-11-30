@@ -27,12 +27,12 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The R package **mixgb** provides a scalable approach for multiple imputation by leveraging XGBoost, subsampling and predictive mean matching. We have shown that our method can yield less biased estimates and reflect appropriate imputation variability, while achieving high computational efficiency. For further information, please refer to our paper  [Multiple Imputation Through XGBoost][paper-url].
+The R package **mixgb** provides a scalable approach for multiple imputation by leveraging XGBoost, subsampling and predictive mean matching. We have shown that our method can yield less biased estimates and reflect appropriate imputation variability, while achieving high computational efficiency. For further information, please refer to our paper  [Multiple Imputation Through XGBoost][mixgb-url].
 
 ## References
-- Yongshi Deng & Thomas Lumley. (2023), [Multiple Imputation Through XGBoost][paper-url], Journal of Computational and Graphical Statistics, 33(2), 352-363. DOI: 10.1080/10618600.2023.2252501.
+- Yongshi Deng & Thomas Lumley. (2023), [Multiple Imputation Through XGBoost][mixgb-url], Journal of Computational and Graphical Statistics, 33(2), 352-363. DOI: 10.1080/10618600.2023.2252501.
 
-- Tianqi Chen & Carlos Guestrin. (2016), [XGBoost: A Scalable Tree Boosting System][paper-url], In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.
+- Tianqi Chen & Carlos Guestrin. (2016), [XGBoost: A Scalable Tree Boosting System][xgboost-url], In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.
 
 ## New updates
 **New Release: Nov 2024**
@@ -386,7 +386,7 @@ devtools::install_github("agnesdeng/mixgb")
 library(mixgb)
 ```
 
-To utilize the GPU version of mixgb(), users can simply specify ` tree_method = "gpu_hist"` in the params list which will then be passed to the `xgb.params` argument in the function `mixgb()`. Other adjustable GPU-realted arguments include `gpu_id` and `predictor`. By default, `gpu_id = 0` and `predictor = "auto"`.
+To utilize the GPU version of mixgb(), users can simply specify ` tree_method = "gpu_hist"` in the params list which will then be passed to the `xgb.params` argument in the function `mixgb()`. Other adjustable GPU-related arguments include `gpu_id` and `predictor`. By default, `gpu_id = 0` and `predictor = "auto"`.
 
 ```{r, eval = FALSE}
 params <- list(
@@ -404,8 +404,8 @@ mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 
 
 
-[paper-url]:https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501
+[mixgb-url]: https://yongshideng.com/journal-article/mixgb/
 
-[xgboost-url]:http://arxiv.org/abs/1603.02754
+[xgboost-url]: http://arxiv.org/abs/1603.02754
 
 [xgboost-release]: https://github.com/dmlc/xgboost/releases

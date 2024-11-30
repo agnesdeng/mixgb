@@ -5,13 +5,12 @@
 \alias{mixgb-package}
 \title{mixgb: Multiple Imputation Through 'XGBoost'}
 \description{
-Multiple imputation using 'XGBoost', subsampling, and predictive mean matching as described in Deng and Lumley (2023) \doi{10.1080/10618600.2023.2252501}. The package supports various types of variables, offers flexible settings, and enables saving an imputer to impute new data. Data processing and memory usage have been optimized to speed up the imputation process.
+Multiple imputation using 'XGBoost', subsampling, and predictive mean matching as described in Deng and Lumley (2023) \doi{10.1080/10618600.2023.2252501}. The package supports various types of variables, offers flexible settings, and enables saving an imputation model to impute new data. Data processing and memory usage have been optimised to speed up the imputation process.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://github.com/agnesdeng/mixgb}
-  \item \url{https://agnesdeng.github.io/mixgb/}
   \item Report bugs at \url{https://github.com/agnesdeng/mixgb/issues}
 }
 

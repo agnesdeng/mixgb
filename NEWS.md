@@ -1,6 +1,6 @@
 # mixgb 1.5.2
 ### For CRAN Submission
-- Significantly faster imputation by optimizing data preprocessing and the use of **RcppArmadillo**
+- Significantly faster imputation by optimising data preprocessing and the use of **RcppArmadillo**
 - Visual diagnostic functions have been move to the `vismi` package
 - Documentation
 
@@ -22,8 +22,8 @@
 
 # mixgb 1.4.0
 
-- Optimized `mixgb()` for large datasets: 
-  * Significantly faster imputation by optimizing data preprocessing and the use of **RcppArmadillo**
+- Optimised `mixgb()` for large datasets: 
+  * Significantly faster imputation by optimising data preprocessing and the use of **RcppArmadillo**
   * Enhanced memory efficiency with in-place modifications using **data.table**
   * Bootstrapping option removed from `mixgb()`. Users can still use bootstrap in the archived function `mixgb0()`.
   * `PMM` is now set to `NULL` by default.
@@ -92,7 +92,7 @@
 ### Initial Release
 - First version releases on CRAN.
 - Supports both single and multiple imputation.
-- Offers customizable settings for bootstrapping and predictive matching.
+- Offers customisable settings for bootstrapping and predictive matching.
 - Provides visual diagnostics for multiply imputed data.
 
 ### Notes

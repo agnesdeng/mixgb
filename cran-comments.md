@@ -2,7 +2,7 @@
 
 ## R CMD check results 
 mixgb 1.5.2 ────
-Duration: 49.9s
+Duration: 41.4s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 

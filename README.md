@@ -22,19 +22,18 @@ matching. We have shown that our method can yield less biased estimates
 and reflect appropriate imputation variability, while achieving high
 computational efficiency. For further information, please refer to our
 paper [Multiple Imputation Through
-XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
+XGBoost](https://yongshideng.com/journal-article/mixgb/).
 
 ## References
 
 - Yongshi Deng & Thomas Lumley. (2023), [Multiple Imputation Through
-  XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501),
-  Journal of Computational and Graphical Statistics, 33(2), 352-363.
-  DOI: 10.1080/10618600.2023.2252501.
+  XGBoost](https://yongshideng.com/journal-article/mixgb/), Journal of
+  Computational and Graphical Statistics, 33(2), 352-363. DOI:
+  10.1080/10618600.2023.2252501.
 
 - Tianqi Chen & Carlos Guestrin. (2016), [XGBoost: A Scalable Tree
-  Boosting
-  System](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501),
-  In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.
+  Boosting System](http://arxiv.org/abs/1603.02754), In 22nd SIGKDD
+  Conference on Knowledge Discovery and Data Mining.
 
 ## New updates
 
@@ -304,9 +303,9 @@ optimal `nrounds` first.
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPTR1"
+#> [1] "BMPWT"
 cv.results$best.nrounds
-#> [1] 14
+#> [1] 19
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -323,7 +322,7 @@ cv.results <- mixgb_cv(
 )
 
 cv.results$best.nrounds
-#> [1] 21
+#> [1] 23
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
@@ -500,7 +499,7 @@ library(mixgb)
 To utilize the GPU version of mixgb(), users can simply specify
 `tree_method = "gpu_hist"` in the params list which will then be passed
 to the `xgb.params` argument in the function `mixgb()`. Other adjustable
-GPU-realted arguments include `gpu_id` and `predictor`. By default,
+GPU-related arguments include `gpu_id` and `predictor`. By default,
 `gpu_id = 0` and `predictor = "auto"`.
 
 ``` r
