@@ -1,4 +1,13 @@
-## mixgb 1.0.2
+# mixgb 1.5.2
+
+## R CMD check results 
+mixgb 1.5.2 ────
+Duration: 49.9s
+
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+
+
+# mixgb 1.0.2
 * Minor change: 
 - All examples now use `nthread = 2 ` to meet the reuirement of the CRAN policy. 
 
@@ -12,11 +21,11 @@ In addition, the CRAN maintainer of binary packages for Windows notified me that
 
 
 
-## mixgb 1.0.1
+# mixgb 1.0.1
 This is a new submission. We submit a new version because we have made a major change to our package by using subsampling instead of bootstrapping with our method by default. In addition, we have fixed some minor bugs.
 
 ## R CMD check results
-── R CMD check results ─────────────────────────────────────────────────────────────────────────────────────────────────── mixgb 1.0.1 ────
+mixgb 1.0.1 ────
 Duration: 1m 16.5s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔

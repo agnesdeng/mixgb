@@ -508,7 +508,9 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
 #' default_params()
 #'
 #' xgb.params <- list(device = "cuda", subsample = 0.9, nthread = 2)
-#' default_params(device = xgb.params$device, subsample = xgb.params$subsample, nthread = xgb.params$nthread)
+#' default_params(device = xgb.params$device,
+#'                subsample = xgb.params$subsample,
+#'                nthread = xgb.params$nthread)
 #'
 #' xgb.params <- do.call("default_params", xgb.params)
 #' xgb.params

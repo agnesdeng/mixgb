@@ -143,17 +143,6 @@ imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.n
 
 ## Inspect multiply imputed values
 
-The `mixgb` package provides the following visual diagnostics functions:
+The `mixgb` package used to provide a few visual diagnostics functions. However, we have moved these functions to the `vismi` package, which provides a wide range of visualisation tools for multiple imputation.
 
-(i) Single variable: `plot_hist()`, `plot_box()`, `plot_bar()` ;
-
-(ii) Two variables: `plot_2num()`, `plot_2fac()`, `plot_1num1fac()` ;
-
-(iii) Three variables: `plot_2num1fac()`, `plot_1num2fac()`.
-
-Each function will return `m+1` panels to compare the observed data with
-`m` sets of actual imputed values.
-
-For more details, please check the vignette on GitHub [Visual diagnostics
-for multiply imputed
-values](https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html).
+For more details, please check the `vismi` package on GitHub [Visualisation Tools for Multiple Imputation](https://github.com/agnesdeng/vismi).

@@ -5,10 +5,12 @@
 
 <!-- badges: start -->
 
-[![](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
+[![Made with
+R](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![CRAN
 version](https://img.shields.io/cran/v/mixgb?color=9cf)](https://cran.r-project.org/package=mixgb)
-[![](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
 [![GitHub release (latest by
 date)](https://img.shields.io/github/v/release/agnesdeng/mixgb?color=green)](https://github.com/agnesdeng/mixgb/releases)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
@@ -26,8 +28,8 @@ XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
 
 - Yongshi Deng & Thomas Lumley. (2023), [Multiple Imputation Through
   XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501),
-  Journal of Computational and Graphical Statistics, DOI:
-  10.1080/10618600.2023.2252501.
+  Journal of Computational and Graphical Statistics, 33(2), 352-363.
+  DOI: 10.1080/10618600.2023.2252501.
 
 - Tianqi Chen & Carlos Guestrin. (2016), [XGBoost: A Scalable Tree
   Boosting
@@ -36,7 +38,17 @@ XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
 
 ## New updates
 
-**New Release: Nov 2023**
+**New Release: Nov 2024**
+
+- New CRAN version 1.5.2. A lot faster than 1.0.2!
+
+- Some visual diagnostic functions have been moved to the `vismi`
+  package, which provides a wide range of visualisation tools for
+  multiple imputation. For more details, please check the `vismi`
+  package on GitHub [Visualisation Tools for Multiple
+  Imputation](https://github.com/agnesdeng/vismi).
+
+**Nov 2023**
 
 - New version of the `mixgb()` function has been optimized to greatly
   reduce imputation time for large datasets.
@@ -55,10 +67,8 @@ XGBoost](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2252501).
   follows:
 
 ``` r
-# Change the file path where you saved the downloaded
-# XGBoost package
-install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz",
-    repos = NULL)
+# Change the file path where you saved the downloaded XGBoost package
+install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz", repos = NULL)
 ```
 
 ``` r
@@ -261,14 +271,21 @@ We can also customize imputation settings:
 
 ``` r
 # Use mixgb with chosen settings
-params <- list(max_depth = 5, subsample = 0.9, nthread = 2, tree_method = "hist")
+params <- list(
+  max_depth = 5,
+  subsample = 0.9,
+  nthread = 2,
+  tree_method = "hist"
+)
 
-imputed.data <- mixgb(data = nhanes3_newborn, m = 10, maxit = 2,
-    ordinalAsInteger = FALSE, bootstrap = FALSE, pmm.type = "auto",
-    pmm.k = 5, pmm.link = "prob", initial.num = "normal", initial.int = "mode",
-    initial.fac = "mode", save.models = FALSE, save.vars = NULL,
-    xgb.params = params, nrounds = 200, early_stopping_rounds = 10,
-    print_every_n = 10L, verbose = 0)
+imputed.data <- mixgb(
+  data = nhanes3_newborn, m = 10, maxit = 2,
+  ordinalAsInteger = FALSE, bootstrap = FALSE,
+  pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
+  initial.num = "normal", initial.int = "mode", initial.fac = "mode",
+  save.models = FALSE, save.vars = NULL,
+  xgb.params = params, nrounds = 200, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
+)
 ```
 
 ### 2.2 Tune hyperparameters
@@ -285,12 +302,11 @@ optimal `nrounds` first.
 
 ``` r
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
-cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
-    xgb.params = params, verbose = FALSE)
+cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "HFF1"
+#> [1] "BMPTR1"
 cv.results$best.nrounds
-#> [1] 9
+#> [1] 14
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -301,13 +317,13 @@ results. Users can also specify the response and covariates in the
 argument `response` and `select_features` respectively.
 
 ``` r
-cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
-    early_stopping_rounds = 1, response = "BMPHEAD", select_features = c("HSAGEIR",
-        "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2",
-        "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
+cv.results <- mixgb_cv(
+  data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
+  response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE
+)
 
 cv.results$best.nrounds
-#> [1] 13
+#> [1] 21
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
@@ -320,139 +336,53 @@ imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.n
 ## 3. Visualize multiply imputed values
 
 It is crucial to assess the plausibility of imputations before doing an
-analysis. The `mixgb` package provides several visual diagnostic
-functions using `ggplot2` to compare multiply imputed values versus
-observed data.
+analysis.
 
-We will demonstrate these functions using the `nhanes3_newborn` dataset.
-In the original data, almost all missing values occurred in numeric
-variables. Only seven observations are missing in the binary factor
-variable `HFF1`.
+The `mixgb` package used to provide a few visual diagnostics functions.
+However, we have moved these functions to the `vismi` package, which
+provides a wide range of visualisation tools for multiple imputation.
 
-``` r
-library(mixgb)
-colSums(is.na(nhanes3_newborn))
-#> HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM 
-#>        0        0        0        0        0        0      124      114 
-#>   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 
-#>      161      169      124      167      117      192        7        0
-```
-
-In order to visualize some imputed values for other types of variables,
-we create some extra missing values in `HSHSIZER` (integer), `HSAGEIR`
-(integer), `HSSEX` (binary factor), `DMARETHN` (multiclass factor) and
-`HYD1` (Ordinal factor) under the missing completely at random (MCAR)
-mechanism.
-
-``` r
-withNA.df <- createNA(data = nhanes3_newborn, var.names = c("HSHSIZER",
-    "HSAGEIR", "HSSEX", "DMARETHN", "HYD1"), p = 0.1)
-colSums(is.na(withNA.df))
-#> HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM 
-#>      211      211      211        0        0      211      124      114 
-#>   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 
-#>      161      169      124      167      117      192        7      211
-```
-
-We then impute this dataset using `mixgb()` with default settings. After
-completion, a list of five imputed datasets is assigned to
-`imputed.data`. Each imputed dataset will have the same dimension as the
-original data.
-
-``` r
-imputed.data <- mixgb(data = withNA.df, m = 5)
-```
-
-By using the function `show_var()`, we can see the multiply imputed
-values of the missing data for a given variable. The function returns a
-data.table of `m` columns, each of which represents a set of imputed
-values for the variable of interest. Note that the output of this
-function only includes the imputed values of missing entries in the
-specified variable.
-
-``` r
-show_var(imputation.list = imputed.data, var.name = "BMPHEAD",
-    original.data = withNA.df)
-#>            m1       m2       m3       m4       m5
-#>   1: 44.48437 42.40263 44.81512 44.23953 43.26088
-#>   2: 42.27523 41.39620 42.05612 42.56915 42.26706
-#>   3: 43.38593 42.90775 43.08914 42.24798 43.07787
-#>   4: 44.14684 43.17070 43.51343 43.59421 43.96187
-#>   5: 41.42059 40.60042 40.84894 41.08277 41.09366
-#>  ---                                             
-#> 120: 45.84540 45.73336 45.61261 45.63473 45.36967
-#> 121: 44.82779 45.72536 45.70374 44.93923 44.94569
-#> 122: 41.58113 41.92926 41.42997 41.95879 42.23804
-#> 123: 43.82690 44.91631 43.63697 43.93151 44.76704
-#> 124: 45.74449 43.57767 45.24529 43.95994 44.38604
-show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = withNA.df)
-#>    m1 m2 m3 m4 m5
-#> 1:  2  2  2  2  2
-#> 2:  2  2  2  2  2
-#> 3:  2  1  2  2  2
-#> 4:  2  2  2  1  2
-#> 5:  1  1  1  2  1
-#> 6:  1  1  2  1  2
-#> 7:  2  2  1  2  2
-```
-
-The `mixgb` package provides the following visual diagnostics functions:
-
-1)  Single variable: `plot_hist()`, `plot_box()`, `plot_bar()` ;
-
-2)  Two variables: `plot_2num()`, `plot_2fac()`, `plot_1num1fac()` ;
-
-3)  Three variables: `plot_2num1fac()`, `plot_1num2fac()`.
-
-Each function returns `m+1` panels that enable a comparison between the
-observed data and `m` sets of imputed values for the missing data.
-
-Here are some examples. For more details, please check the vignette on
-GitHub [Visual diagnostics for multiply imputed
-values](https://agnesdeng.github.io/mixgb/articles/web/Visual-diagnostics.html).
-
-``` r
-plot_hist(imputation.list = imputed.data, var.name = "BMPHEAD",
-    original.data = withNA.df)
-```
-
-<img src="man/figures/README-unnamed-chunk-16-1.png" width="95%" />
-
-``` r
-plot_2num(imputation.list = imputed.data, var.x = "BMPHEAD",
-    var.y = "BMPRECUM", original.data = withNA.df)
-```
-
-<img src="man/figures/README-unnamed-chunk-16-2.png" width="95%" />
-
-``` r
-plot_2num(imputation.list = imputed.data, var.x = "HSAGEIR",
-    var.y = "BMPHEAD", original.data = withNA.df)
-```
-
-<img src="man/figures/README-unnamed-chunk-16-3.png" width="95%" />
-
-``` r
-plot_1num1fac(imputation.list = imputed.data, var.num = "BMPHEAD",
-    var.fac = "HSSEX", original.data = withNA.df)
-```
-
-<img src="man/figures/README-unnamed-chunk-16-4.png" width="95%" />
+For more details, please check the `vismi` package on GitHub
+[Visualisation Tools for Multiple
+Imputation](https://github.com/agnesdeng/vismi).
 
 ## 4. Impute new unseen data using a saved imputer object
 
-Users need to specify a local directory in the parameter
-`save.models.folder` in the main function `mixgb()`. Models will be save
-as JSON format by calling `xgb.save()` internally. Saving XGBoost models
-in this way instead of using `saveRDS` in R is recommended by XGBoost.
-This can ensure that the imputation models can still be used in later
-release of XGBoost.
+To demonstrate how to impute new data using a saved imputer, we first
+split the `nhanes3_newborn` dataset into training data and test data.
 
 ``` r
-# obtain m imputed datasets for train.data and save
-# imputation models
-mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE,
-    save.models.folder = "C:/Users/.....")
+set.seed(2022)
+n <- nrow(nhanes3)
+idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
+train.data <- nhanes3[idx, ]
+test.data <- nhanes3[-idx, ]
+```
+
+Next we impute the training data using `mixgb()`. We can use the
+training data to generate `m` imputed datasets and save their imputation
+models. To achieve this, users need to set `save.models = TRUE`. By
+default, imputation models for all variables with missing values in the
+training data will be saved (`save.vars = NULL`). However, it is
+possible that unseen data may have missing values in other variables. To
+be thorough, users can save models for all variables by setting
+`save.vars = colnames(train.data)`. Note that this may take
+significantly longer as it requires training and saving a model for each
+variable. In cases where users are confident that only certain variables
+will have missing values in the new data, it is advisable to specify the
+names or indices of these variables in `save.vars` rather than saving
+models for all variables.
+
+To save the imputer object, users need to specify a local directory in
+the parameter `save.models.folder` in the main function `mixgb()`.
+Models will be save as JSON format by calling `xgb.save()` internally.
+Saving XGBoost models in this way instead of using `saveRDS` in R is
+recommended by XGBoost. This can ensure that the imputation models can
+still be used in later release of XGBoost.
+
+``` r
+# obtain m imputed datasets for train.data and save imputation models
+mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE, save.models.folder = "C:/Users/.....")
 saveRDS(object = mixgb.obj, file = "C:/Users/.../mixgbimputer.rds")
 ```
 
@@ -474,101 +404,20 @@ As the `mixgb.obj` does not contain the models themselves, users need
 not worry about saving this object via `saveRDS()`. For later use, one
 can load the object into R and impute new data.
 
+To impute new data with this saved imputer object, we can use the
+`impute_new()` function.
+
 ``` r
 mixgb.obj <- readRDS(file = "C:/Users/.../mixgbimputer.rds")
-
-set.seed(2022)
-n <- nrow(nhanes3)
-idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
-train.data <- nhanes3[idx, ]
-test.data <- nhanes3[-idx, ]
-
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
-test.imputed
 ```
 
-### Depreciated
-
-**Warning**: In previous versions, users can save models without
-specifying the local directory. This is not recommended but users can
-still do this using the old version `mixgb0()`. Note that this function
-will be depreciated in the near future.
-
-First, let us split the `nhanes3_newborn` dataset into training data and
-test data.
-
-``` r
-library(mixgb)
-data("nhanes3_newborn")
-set.seed(2022)
-n <- nrow(nhanes3_newborn)
-idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
-train.data <- nhanes3_newborn[idx, ]
-test.data <- nhanes3_newborn[-idx, ]
-```
-
-We can use the training data to generate `m` imputed datasets and save
-their imputation models. To achieve this, users need to set
-`save.models = TRUE`. By default, imputation models for all variables
-with missing values in the training data will be saved
-(`save.vars = NULL`). However, it is possible that unseen data may have
-missing values in other variables. To be thorough, users can save models
-for all variables by setting `save.vars = colnames(train.data)`. Note
-that this may take significantly longer as it requires training and
-saving a model for each variable. In cases where users are confident
-that only certain variables will have missing values in the new data, it
-is advisable to specify the names or indices of these variables in
-`save.vars` rather than saving models for all variables.
-
-``` r
-# obtain m imputed datasets for train.data and save
-# imputation models
-mixgb.obj <- mixgb0(data = train.data, m = 5, save.models = TRUE,
-    save.vars = NULL)
-```
-
-When `save.models = TRUE`, `mixgb()` will return an object containing
-the following:
-
-- `imputed.data`: a list of `m` imputed datasets for training data
-
-- `XGB.models`: a list of `m` sets of XGBoost models for variables
-  specified in `save.vars`.
-
-- `params`: a list of parameters that are required for imputing new data
-  using `impute_new()` later on.
-
-We can access the `m` imputed datasets from the saved imputer object by
-using `$imputed.data`.
-
-``` r
-train.imputed <- mixgb.obj$imputed.data
-# the 5th imputed dataset
-head(train.imputed[[5]])
-#>    HSHSIZER HSAGEIR HSSEX DMARACER DMAETHNR DMARETHN BMPHEAD BMPRECUM BMPSB1
-#> 1:        7       2     1        1        1        3    44.5     68.7    9.0
-#> 2:        4       3     2        2        3        2    42.6     67.1    8.8
-#> 3:        3       9     2        2        3        2    46.5     64.3    8.6
-#> 4:        3       9     2        1        3        1    46.2     68.5   10.8
-#> 5:        5       4     1        1        3        1    44.7     63.0    6.0
-#> 6:        5      10     1        1        3        1    45.2     72.0    5.4
-#>    BMPSB2 BMPTR1 BMPTR2 BMPWT DMPPIR HFF1 HYD1
-#> 1:   10.4   13.6   12.6  8.05  1.701    2    1
-#> 2:    8.8   13.3   12.2  8.70  0.102    2    1
-#> 3:    8.0   10.4    9.2  8.00  0.359    1    3
-#> 4:   10.0   16.6   16.0  8.98  0.561    1    3
-#> 5:    5.8    9.0    9.0  7.60  2.379    2    1
-#> 6:    5.4    9.2    9.4  9.00  2.173    2    2
-```
-
-To impute new data with this saved imputer object, we can use the
-`impute_new()` function. Users can choose whether to use new data for
-initial imputation. By default, the information of training data is used
-to initially impute the missing data in the new dataset
-(`initial.newdata = FALSE`). After this, the missing values in the new
-dataset will be imputed using the saved models from the imputer object.
-This process will be considerably faster because it will not involve
-rebuilding the imputation models.
+Users can choose whether to use new data for initial imputation. By
+default, the information of training data is used to initially impute
+the missing data in the new dataset (`initial.newdata = FALSE`). After
+this, the missing values in the new dataset will be imputed using the
+saved models from the imputer object. This process will be considerably
+faster because it does not involve rebuilding the imputation models.
 
 ``` r
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
@@ -586,8 +435,7 @@ Similarly, users can set the number of imputed datasets `m` in
 function will use the same `m` value as the saved object.
 
 ``` r
-test.imputed <- impute_new(object = mixgb.obj, newdata = test.data,
-    initial.newdata = FALSE, pmm.k = 3, m = 4)
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data, initial.newdata = FALSE, pmm.k = 3, m = 4)
 ```
 
 ## 5. Install `mixgb` with GPU support
@@ -595,16 +443,14 @@ test.imputed <- impute_new(object = mixgb.obj, newdata = test.data,
 Multiple imputation can be run with GPU support for machines with NVIDIA
 GPUs. Users must first install the R package `xgboost` with GPU support.
 
-# Newest Version (XGBoost \>= 2.0.0, mixgb \>= 1.3.1)
+### Newest Version (XGBoost \>= 2.0.0, mixgb \>= 1.3.1)
 
 Please download the Newest version of XGBoost with GPU support via
 [XGBoost GitHub Releases](https://github.com/dmlc/xgboost/releases).
 
 ``` r
-# Change the file path where you saved the downloaded
-# XGBoost package
-install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz",
-    repos = NULL)
+# Change the file path where you saved the downloaded XGBoost package
+install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz", repos = NULL)
 ```
 
 Then users can install the newest version of our package `mixgb` in R.
@@ -620,13 +466,17 @@ To utilize the GPU version of mixgb(), users can simply specify
 `tree_method = "hist"` from XGBoost 2.0.0.
 
 ``` r
-params <- list(device = "cuda", subsample = 0.7, nthread = 1,
-    tree_method = "hist")
+params <- list(
+  device = "cuda",
+  subsample = 0.7,
+  nthread = 1,
+  tree_method = "hist"
+)
 
 mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 ```
 
-# Old Version (XGBoost \< 2.0.0, mixgb \< 1.3.1)
+### Old Version (XGBoost \< 2.0.0, mixgb \< 1.3.1)
 
 The `xgboost` R package pre-built binary on Linux x86_64 with GPU
 support can be downloaded from the release page
@@ -654,8 +504,14 @@ GPU-realted arguments include `gpu_id` and `predictor`. By default,
 `gpu_id = 0` and `predictor = "auto"`.
 
 ``` r
-params <- list(max_depth = 3, subsample = 0.7, nthread = 1, tree_method = "gpu_hist",
-    gpu_id = 0, predictor = "auto")
+params <- list(
+  max_depth = 3,
+  subsample = 0.7,
+  nthread = 1,
+  tree_method = "gpu_hist",
+  gpu_id = 0,
+  predictor = "auto"
+)
 
 
 mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)

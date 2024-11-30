@@ -13,22 +13,19 @@ show_var(imputation.list, var.name, original.data, true.values = NULL)
 
 \item{original.data}{The original data with missing data.}
 
-\item{true.values}{A vector of the true values (if known) of the missing values. In general, this is unknown (\code{true.values = NULL}).}
+\item{true.values}{A vector of the true values (if known) of the missing values. In general, this is unknown.}
 }
 \value{
-A data.table with \code{m} columns, each of which represents a set of imputed values for the variable of interest. If \code{true.values} is provided, an additional column will display the true values of the missing values.
+A data.table with \code{m} columns, each column represents the imputed values of all missing entries in the specified variable. If \code{true.values} is provided, the last column will be the true values of the missing values.
 }
 \description{
 Show m sets of imputed values for a specified variable.
 }
 \examples{
-# obtain m multiply datasets
-params <- list(max_depth = 3, subsample = 1, nthread = 2)
-mixgb.data <- mixgb(data = nhanes3, m = 3, xgb.params = params, nrounds = 20)
+#obtain m multiply datasets
+library(mixgb)
+mixgb.data <- mixgb(data = nhanes3, m = 3)
 
-imputed.BMPHEAD <- show_var(
-  imputation.list = mixgb.data, var.name = "BMPHEAD",
-  original.data = nhanes3
-)
-imputed.BMPHEAD
+imputed.BMPHEAD <- show_var(imputation.list = mixgb.data, var.name = "BMPHEAD",
+  original.data = nhanes3)
 }

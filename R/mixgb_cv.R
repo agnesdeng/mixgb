@@ -17,7 +17,8 @@
 #' cv.results <- mixgb_cv(data = nhanes3, xgb.params = params)
 #' cv.results$best.nrounds
 #'
-#' imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params, nrounds = cv.results$best.nrounds)
+#' imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params,
+#'                       nrounds = cv.results$best.nrounds)
 mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL,
                      xgb.params = list(),
                      stringsAsFactors = FALSE, verbose = TRUE, ...) {

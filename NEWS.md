@@ -1,3 +1,10 @@
+# mixgb 1.5.2
+### For CRAN Submission
+- Significantly faster imputation by optimizing data preprocessing and the use of **RcppArmadillo**
+- Visual diagnostic functions have been move to the `vismi` package
+- Documentation
+
+
 # mixgb 1.4.2
 ### Bug fix
 - Set `drop.unused.levels = FALSE` in `fac2sparse()` to prevent dropping unused levels in factor or ordinal factor.

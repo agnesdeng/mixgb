@@ -1,21 +1,18 @@
 Package: mixgb
 Title: Multiple Imputation Through 'XGBoost'
-Version: 1.4.2
+Version: 1.5.2
 Authors@R: c(
-    person(given = "Yongshi", family ="Deng", email = "yongshi.deng@auckland.ac.nz",
+    person(given = "Yongshi", family ="Deng", email = "agnes.yongshideng@gmail.com",
            role = c("aut","cre"),comment =c(ORCID = "0000-0001-5845-859X")),
     person(given = "Thomas", family = "Lumley", email = "t.lumley@auckland.ac.nz",
            role = "ths")
   ) 
 Description: Multiple imputation using 'XGBoost', subsampling, and predictive mean 
     matching as described in Deng and Lumley (2023) 
-    <doi:10.1080/10618600.2023.2252501>. Our method utilizes the capabilities of
-    XGBoost, a highly efficient implementation of gradient boosted trees, to capture
-    interactions and non-linear relations automatically. Moreover, we have integrated
-    subsampling and predictive mean matching to minimize bias and reflect appropriate
-    imputation variability. This package supports various types of variables and offers
-    flexible settings for subsampling and predictive mean matching. Additionally, it 
-    includes diagnostic tools for evaluating the quality of the imputed values.
+    <doi:10.1080/10618600.2023.2252501>.  The package supports various types of 
+    variables, offers flexible settings, and enables saving an imputer to impute
+    new data. Data processing and memory usage have been optimized to speed up 
+    the imputation process.
 URL: https://github.com/agnesdeng/mixgb,
      https://agnesdeng.github.io/mixgb/
 BugReports: https://github.com/agnesdeng/mixgb/issues
@@ -24,24 +21,20 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     data.table,
-    ggplot2 (>= 3.4.1),
     Matrix,
     mice,
     Rcpp,
     Rfast,
-    rlang,
-    scales,
     stats,
-    tidyr,
     utils,
-    xgboost (>= 1.7.5.1)
+    xgboost (>= 1.7.5.1),
+    magrittr
 Suggests: 
     knitr,
-    rmarkdown,
-    RColorBrewer
-Depends: R (>= 3.5.0)
+    rmarkdown
+Depends: R (>= 3.6.0)
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 LinkingTo: 
     Rcpp,

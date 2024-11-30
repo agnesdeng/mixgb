@@ -1,7 +1,9 @@
-#' \pkg{mixgb}: Multiple Imputation Through XGBoost
-#' @name mixgb-package
-#' @docType package
-#' @description Multiple imputation using 'XGBoost', subsampling, and predictive mean matching as described in Deng and Lumley (2023) <arXiv:2106.01574>. Our method utilizes the capabilities of XGBoost, a highly efficient implementation of gradient boosted trees, to capture interactions and non-linear relations automatically. Moreover, we have integrated subsampling and predictive mean matching to minimize bias and reflect appropriate imputation variability. This package supports various types of variables and offers flexible settings for subsampling and predictive mean matching. Additionally, it includes diagnostic tools for evaluating the quality of the imputed values.
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
+#' @aliases mixgb-package
+#' @importFrom Rcpp sourceCpp
 #' @import data.table
 #' @importFrom Matrix sparse.model.matrix fac2sparse fac2Sparse t cbind2
 #' @importFrom xgboost xgboost xgb.train xgb.cv xgb.save xgb.load xgb.DMatrix
@@ -27,4 +29,5 @@
 #' Little, R. J. (1988), Missing-data Adjustments in Large Surveys,
 #' Journal of Business & Economic Statistics, 6(3), 287.
 #'
+## usethis namespace: end
 NULL
