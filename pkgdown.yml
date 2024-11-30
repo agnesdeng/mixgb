@@ -1,12 +1,10 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   Imputing-newdata: Imputing-newdata.html
   Using-mixgb: Using-mixgb.html
-  Visual-diagnostics: web/Visual-diagnostics.html
-last_built: 2024-01-08T23:32Z
+last_built: 2024-11-30T00:23Z
 urls:
   reference: https://agnesdeng.github.io/mixgb/reference
   article: https://agnesdeng.github.io/mixgb/articles
-
