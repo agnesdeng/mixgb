@@ -11,6 +11,7 @@ Multiple imputation using 'XGBoost', subsampling, and predictive mean matching a
 Useful links:
 \itemize{
   \item \url{https://github.com/agnesdeng/mixgb}
+  \item \url{https://agnesdeng.github.io/mixgb}
   \item Report bugs at \url{https://github.com/agnesdeng/mixgb/issues}
 }
 
