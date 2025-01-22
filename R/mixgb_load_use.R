@@ -1,5 +1,5 @@
 # Multiple imputation using xgboost (through saved models in local dir)
-mixgb_load_use <- function(nthread,Obs.m, matrix.method, cbind.types,
+mixgb_load_use <- function(nthread, Obs.m, matrix.method, cbind.types,
                            m.set, xgb.models, save.vars, save.p, extra.vars = NULL,
                            extra.types = NULL,
                            pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL,
@@ -15,47 +15,44 @@ mixgb_load_use <- function(nthread,Obs.m, matrix.method, cbind.types,
   # param Ncol number of columns in new data
 
   for (var in new.missing.vars) {
-
-    #features <- setdiff(sorted.names, var)
-    #form <- reformulate(termlabels = features, response = var)
+    # features <- setdiff(sorted.names, var)
+    # form <- reformulate(termlabels = features, response = var)
 
     na.idx <- new.Na.idx[[var]]
 
-    #originally missing variables in the original training dataset
-    Mis.vars<-missing.vars[missing.vars != var]
+    # originally missing variables in the original training dataset
+    # Mis.vars: missing variables except the current imputed variable (as response)
+    if (length(missing.vars) != 1) {
+      Mis.vars <- missing.vars[missing.vars != var]
 
 
-    if(matrix.method=="as.matrix"){
+      if (matrix.method == "as.matrix") {
+        Mis.m <- as.matrix(sorted.dt[, Mis.vars, with = FALSE])
+      } else {
+        Mis.list <- lapply(Mis.vars, function(feature) {
+          if (cbind.types[feature] %in% c("numeric", "integer")) {
+            as.matrix(sorted.dt[[feature]])
+          } else if (cbind.types[feature] == "ordered") {
+            Matrix::t(fac2Sparse(sorted.dt[[feature]], drop.unused.levels = FALSE, factorPatt12 = c(T, F), contrasts.arg = "contr.poly")[[1]])
+          } else {
+            Matrix::t(fac2sparse(sorted.dt[[feature]], drop.unused.levels = FALSE))[, -1, drop = FALSE]
+          }
+        })
 
-      Mis.m<-as.matrix(sorted.dt[,Mis.vars,with = FALSE])
 
-
-    }else{
-
-      Mis.list <- lapply(Mis.vars, function(feature){
-
-        if(cbind.types[feature] %in% c("numeric","integer")){
-          as.matrix(sorted.dt[[feature]])
-        } else if(cbind.types[feature] == "ordered"){
-          Matrix::t(fac2Sparse(sorted.dt[[feature]], drop.unused.levels = FALSE, factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
-        } else {
-          Matrix::t(fac2sparse(sorted.dt[[feature]], drop.unused.levels = FALSE))[, -1, drop = FALSE]
+        if (matrix.method == "cpp.combo") {
+          Mis.m <- cbind_combo(Mis.list)
+        } else if (matrix.method == "cpp.factor") {
+          Mis.m <- cbind_sparse_matrix(Mis.list)
         }
-      })
-
-
-      if(matrix.method=="cpp.combo"){
-        Mis.m<-cbind_combo(Mis.list )
-      }else if(matrix.method=="cpp.factor"){
-        Mis.m<-cbind_sparse_matrix(Mis.list )
       }
 
-
+      All.m <- cbind2(Mis.m, Obs.m)
+    } else {
+      All.m <- Obs.m
     }
 
-    All.m<-cbind2(Mis.m,Obs.m)
-
-    mis.data<-All.m[na.idx, , drop = FALSE]
+    mis.data <- All.m[na.idx, , drop = FALSE]
 
 
     # numeric or integer ---------------------------------------------------------------------------
@@ -71,9 +68,9 @@ mixgb_load_use <- function(nthread,Obs.m, matrix.method, cbind.types,
         }
       }
       # update dataset
-      #sorted.dt[[var]][na.idx] <- yhatmis
+      # sorted.dt[[var]][na.idx] <- yhatmis
       sorted.dt[na.idx, (var) := yhatmis]
-    }else if (new.missing.types[var] == "integer") {
+    } else if (new.missing.types[var] == "integer") {
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       yhatmis <- predict(xgb.load(xgb.models[[var]]), dmis)
 
@@ -85,9 +82,8 @@ mixgb_load_use <- function(nthread,Obs.m, matrix.method, cbind.types,
         }
       }
       # update dataset
-      #sorted.dt[[var]][na.idx] <- yhatmis
+      # sorted.dt[[var]][na.idx] <- yhatmis
       sorted.dt[na.idx, (var) := round(yhatmis)]
-
     } else if (new.missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
@@ -111,8 +107,8 @@ mixgb_load_use <- function(nthread,Obs.m, matrix.method, cbind.types,
         }
       } else {
         # load majority class
-        #sorted.dt[[var]][na.idx] <- xgb.models[[var]]
-        yhatmis<- xgb.models[[var]]
+        # sorted.dt[[var]][na.idx] <- xgb.models[[var]]
+        yhatmis <- xgb.models[[var]]
         sorted.dt[na.idx, (var) := yhatmis]
         msg <- paste("Imputation for variable", var, "use the only existent class in the bootstrap sample. May not be reliable.")
         warning(msg)
@@ -151,7 +147,6 @@ mixgb_load_use <- function(nthread,Obs.m, matrix.method, cbind.types,
         yhatmis <- predict(xgb.load(xgb.models[[var]]), dmis)
         yhatmis <- levels(sorted.dt[[var]])[yhatmis + 1]
         sorted.dt[na.idx, (var) := yhatmis]
-
       } else {
         # predict returns probability matrix for each class
         yhatmis <- predict(xgb.load(xgb.models[[var]]), dmis, reshape = TRUE)

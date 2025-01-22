@@ -1,10 +1,8 @@
 # Multiple imputation using xgboost (without bootstrap) updated version
-mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
-                      xgb.params = list(),
-                      nrounds, early_stopping_rounds, print_every_n, verbose,
-                      ...) {
-
-
+mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt, missing.vars, sorted.names, Na.idx, missing.types, Ncol,
+                       xgb.params = list(),
+                       nrounds, early_stopping_rounds, print_every_n, verbose,
+                       ...) {
   nthread <- xgb.params$nthread
 
 
@@ -12,44 +10,43 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
     na.idx <- Na.idx[[var]]
     obs.y <- yobs.list[[var]]
 
-
-    Mis.vars<-missing.vars[missing.vars != var]
-
-
-    if(matrix.method=="as.matrix"){
-
-      Mis.m<-as.matrix(sorted.dt[,Mis.vars,with = FALSE])
+    # Mis.vars: missing variables except the current imputed variable (as response)
+    if (length(missing.vars) != 1) {
+      Mis.vars <- missing.vars[missing.vars != var]
 
 
-    }else{
 
-      Mis.list <- lapply(Mis.vars, function(feature){
 
-        if(cbind.types[feature] %in% c("numeric","integer")){
-          as.matrix(sorted.dt[[feature]])
-        } else if(cbind.types[feature] == "ordered"){
-          Matrix::t(fac2Sparse(sorted.dt[[feature]], drop.unused.levels = FALSE, factorPatt12=c(T,F), contrasts.arg = "contr.poly")[[1]])
-        } else {
-          Matrix::t(fac2sparse(sorted.dt[[feature]], drop.unused.levels = FALSE))[, -1, drop = FALSE]
+      if (matrix.method == "as.matrix") {
+        Mis.m <- as.matrix(sorted.dt[, Mis.vars, with = FALSE])
+      } else {
+        Mis.list <- lapply(Mis.vars, function(feature) {
+          if (cbind.types[feature] %in% c("numeric", "integer")) {
+            as.matrix(sorted.dt[[feature]])
+          } else if (cbind.types[feature] == "ordered") {
+            Matrix::t(fac2Sparse(sorted.dt[[feature]], drop.unused.levels = FALSE, factorPatt12 = c(T, F), contrasts.arg = "contr.poly")[[1]])
+          } else {
+            Matrix::t(fac2sparse(sorted.dt[[feature]], drop.unused.levels = FALSE))[, -1, drop = FALSE]
+          }
+        })
+
+
+        if (matrix.method == "cpp.combo") {
+          Mis.m <- cbind_combo(Mis.list)
+        } else if (matrix.method == "cpp.factor") {
+          Mis.m <- cbind_sparse_matrix(Mis.list)
         }
-      })
-
-
-      if(matrix.method=="cpp.combo"){
-        Mis.m<-cbind_combo(Mis.list )
-      }else if(matrix.method=="cpp.factor"){
-        Mis.m<-cbind_sparse_matrix(Mis.list )
       }
 
-
+      All.m <- cbind2(Mis.m, Obs.m)
+    } else {
+      All.m <- Obs.m
     }
 
-    All.m<-cbind2(Mis.m,Obs.m)
 
 
-
-    obs.data<-All.m[-na.idx, , drop = FALSE]
-    mis.data<-All.m[na.idx, , drop = FALSE]
+    obs.data <- All.m[-na.idx, , drop = FALSE]
+    mis.data <- All.m[na.idx, , drop = FALSE]
 
 
 
@@ -90,8 +87,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
       # update dataset
 
       sorted.dt[na.idx, (var) := yhatmis]
-
-    }else if (missing.types[var] == "integer") {
+    } else if (missing.types[var] == "integer") {
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
@@ -120,14 +116,10 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
         }
         yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = obs.y, k = pmm.k)
         sorted.dt[na.idx, (var) := yhatmis]
-
-      }else{
+      } else {
         # round to integer when PMM is not used
         sorted.dt[na.idx, (var) := round(yhatmis)]
       }
-
-
-
     } else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
@@ -153,7 +145,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
         msg <- paste("The binary variable", var, "in the data only have single class. Imputation models can't be built.")
         stop(msg)
       } else {
-        if (!is.null(pmm.type) & isFALSE(pmm.type=="auto") & pmm.link == "logit") {
+        if (!is.null(pmm.type) & isFALSE(pmm.type == "auto") & pmm.link == "logit") {
           # pmm by "logit" value, only when pmm.type is not null and not "auto"
           obj.type <- "binary:logitraw"
         } else {
@@ -246,7 +238,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types,  pmm.type, pmm.link, p
       # multiclass ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
 
-      dobs <-xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+      dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
         watchlist <- list(train = dobs)

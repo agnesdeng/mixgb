@@ -1,8 +1,13 @@
+# mixgb 1.5.3
+### Bug fix
+- Fix an error in `cbind2(Mis.m, Obs.m)` that occurred when the imputed dataset had only a single incomplete variable. 
+  - Cause of error: In this scenario, `Mis.m`  (a matrix of all other incomplete variables except the currently imputed one) was a `0x0` matrix, which caused error during binding. 
+
 # mixgb 1.5.2
 ### For CRAN Submission
 - Significantly faster imputation by optimising data preprocessing and the use of **RcppArmadillo**
-- Visual diagnostic functions have been move to the `vismi` package
-- Documentation
+- Visual diagnostic functions have been moved to the `vismi` package
+- Update Documentation
 
 
 # mixgb 1.4.2
