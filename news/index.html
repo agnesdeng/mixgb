@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,13 +38,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.5.2" id="mixgb-152">mixgb 1.5.2<a class="anchor" aria-label="anchor" href="#mixgb-152"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.5.3" id="mixgb-153">mixgb 1.5.3<a class="anchor" aria-label="anchor" href="#mixgb-153"></a></h2>
+<div class="section level4">
+<h4 id="bug-fix-1-5-3">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-1-5-3"></a></h4>
+<ul><li>Fix an error in <code>cbind2(Mis.m, Obs.m)</code> that occurred when the imputed dataset had only a single incomplete variable.
+<ul><li>Cause of error: In this scenario, <code>Mis.m</code> (a matrix of all other incomplete variables except the currently imputed one) was a <code>0x0</code> matrix, which caused error during binding.</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.5.2" id="mixgb-152">mixgb 1.5.2<a class="anchor" aria-label="anchor" href="#mixgb-152"></a></h2><p class="text-muted">CRAN release: 2024-12-02</p>
 <div class="section level4">
 <h4 id="for-cran-submission-1-5-2">For CRAN Submission<a class="anchor" aria-label="anchor" href="#for-cran-submission-1-5-2"></a></h4>
 <ul><li>Significantly faster imputation by optimising data preprocessing and the use of <strong>RcppArmadillo</strong>
 </li>
-<li>Visual diagnostic functions have been move to the <code>vismi</code> package</li>
-<li>Documentation</li>
+<li>Visual diagnostic functions have been moved to the <code>vismi</code> package</li>
+<li>Update Documentation</li>
 </ul></div>
 </div>
     <div class="section level2">
