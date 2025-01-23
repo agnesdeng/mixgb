@@ -24,11 +24,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      
-    - name: Install System Libraries
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libgsl-dev
+
+      - name: Install System Libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgsl-dev
 
       - uses: r-lib/actions/setup-pandoc@v2
 
