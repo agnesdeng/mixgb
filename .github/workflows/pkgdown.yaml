@@ -25,8 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install System Libraries (Ubuntu only)
-        if: startsWith(matrix.config.os, 'ubuntu')
+      - name: Install System Libraries
         run: |
           sudo apt-get update
           sudo apt-get install -y libgsl-dev
