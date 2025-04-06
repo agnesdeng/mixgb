@@ -1,10 +1,7 @@
-# mixgb 1.5.2
+# mixgb 1.5.3
 
 ## R CMD check results 
-mixgb 1.5.2 ────
-Duration: 41.4s
+mixgb 1.5.3 ────
+Duration: 37.8s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
-
-
-Maintainer email requires a change as I am about to graduate.

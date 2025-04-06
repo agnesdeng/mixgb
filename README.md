@@ -303,9 +303,9 @@ optimal `nrounds` first.
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPWT"
+#> [1] "BMPSB2"
 cv.results$best.nrounds
-#> [1] 19
+#> [1] 16
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -322,7 +322,7 @@ cv.results <- mixgb_cv(
 )
 
 cv.results$best.nrounds
-#> [1] 23
+#> [1] 18
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`
