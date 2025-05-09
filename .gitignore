@@ -7,4 +7,10 @@ inst/doc
 /Meta/
 docs
 notes
+
+# Windows
 desktop.ini
+
+# Mac
+.DS_Store
+
