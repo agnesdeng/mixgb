@@ -1,10 +1,10 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   Imputing-newdata: Imputing-newdata.html
   Using-mixgb: Using-mixgb.html
-last_built: 2025-04-06T22:41Z
+last_built: 2025-05-09T23:27Z
 urls:
   reference: https://agnesdeng.github.io/mixgb/reference
   article: https://agnesdeng.github.io/mixgb/articles
