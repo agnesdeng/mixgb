@@ -13,7 +13,7 @@ Description: Multiple imputation using 'XGBoost', subsampling, and predictive me
     variables, offers flexible settings, and enables saving an imputation model to impute
     new data. Data processing and memory usage have been optimised to speed up 
     the imputation process.
-URL: https://github.com/agnesdeng/mixgb
+URL: https://github.com/agnesdeng/mixgb,https://agnesdeng.github.io/mixgb/
 BugReports: https://github.com/agnesdeng/mixgb/issues
 License: GPL (>= 3)
 Encoding: UTF-8
@@ -34,7 +34,7 @@ Suggests:
     testthat (>= 3.0.0)
 Depends: R (>= 3.6.0)
 VignetteBuilder: knitr
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 LinkingTo: 
     Rcpp,

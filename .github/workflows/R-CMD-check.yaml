@@ -46,10 +46,18 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck
-          needs: check
+      - name: Install dependencies with pak
+        run: |
+          install.packages("pak", repos = "https://cloud.r-project.org")
+          pak::pkg_install(c(
+            "xgboost@3.1.1.1",
+            "devtools",
+            "rcmdcheck",
+            "pkgdown"
+          ), repos = c(
+            "https://dmlc.r-universe.dev",
+            "https://cloud.r-project.org"
+          ))
 
       - uses: r-lib/actions/check-r-package@v2
         with:
