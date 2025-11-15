@@ -39,18 +39,15 @@ jobs:
       image: ${{ matrix.config.container }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: r-hub/actions/platform-info@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-
       - name: Install R packages
         run: |
-          Rscript -e 'install.packages("pak", repos = "https://cloud.r-project.org")'
+          Rscript -e 'install.packages("pak")'
           Rscript -e 'pak::pkg_install(c("rcmdcheck", "remotes"))'
           Rscript -e 'pak::pkg_install("dmlc/xgboost@3.1.1.1")'
-
       - uses: r-hub/actions/run-check@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
@@ -66,23 +63,19 @@ jobs:
         config: ${{ fromJson(needs.setup.outputs.platforms) }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: r-hub/actions/setup-r@v1
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}
-
       - uses: r-hub/actions/platform-info@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-
       - name: Install R packages
         run: |
-          Rscript -e 'install.packages("pak", repos = "https://cloud.r-project.org")'
+          Rscript -e 'install.packages("pak")'
           Rscript -e 'pak::pkg_install(c("rcmdcheck", "remotes"))'
           Rscript -e 'pak::pkg_install("dmlc/xgboost@3.1.1.1")'
-
       - uses: r-hub/actions/run-check@v1
         with:
           job-config: ${{ matrix.config.job-config }}
