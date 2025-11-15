@@ -1,5 +1,5 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Builds pkgdown site and deploys to GitHub Pages
+# Workflow for building and deploying pkgdown site
+# Updated for modern pak usage
 
 name: pkgdown
 
@@ -11,17 +11,18 @@ on:
     types: [published]
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: read-all
 
 jobs:
-  build-deploy:
+  pkgdown:
     runs-on: ubuntu-latest
+    # Only restrict concurrency for non-PR jobs
     concurrency:
-      group: pkgdown-${{ github.run_id }}
-      cancel-in-progress: false
+      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -29,7 +30,7 @@ jobs:
       - name: Install System Libraries
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libgsl-dev libgit2-dev libglpk-dev
+          sudo apt-get install -y libgsl-dev libcurl4-openssl-dev libsecret-1-dev
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -43,15 +44,12 @@ jobs:
           Rscript -e 'pak::pkg_install(c(
             "pkgdown",
             "xgboost@3.1.1.1"
-          ), repos = c(
-            "https://dmlc.r-universe.dev",
-            "https://cloud.r-project.org"
           ))'
 
       - name: Build site
         run: Rscript -e 'pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)'
 
-      - name: Deploy to GitHub Pages 
+      - name: Deploy to GitHub Pages 🚀
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:

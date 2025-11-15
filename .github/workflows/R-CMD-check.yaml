@@ -11,14 +11,13 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
     strategy:
       fail-fast: false
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,  r: 'devel'}
           - {os: ubuntu-latest,  r: 'release'}
           - {os: ubuntu-latest,  r: 'oldrel-1'}
 
@@ -33,28 +32,24 @@ jobs:
         if: startsWith(matrix.config.os, 'ubuntu')
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libgsl-dev libgit2-dev libglpk-dev
+          sudo apt-get install -y libgsl-dev libcurl4-openssl-dev libsecret-1-dev
 
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install dependencies with pak
+      - name: Install R packages with pak
         run: |
-          Rscript -e 'install.packages("pak", repos = "https://cloud.r-project.org")'
-          Rscript -e 'pak::pkg_install(c(
+          install.packages("pak", repos = "https://cloud.r-project.org")
+          pak::pkg_install(c(
             "xgboost@3.1.1.1",
             "devtools",
             "rcmdcheck",
-            "pkgdown"
-          ), repos = c(
-            "https://dmlc.r-universe.dev",
-            "https://cloud.r-project.org"
-          ))'
+            "pkgdown@2.0.7"   # pin pkgdown version if needed
+          ))
 
       - uses: r-lib/actions/check-r-package@v2
         with:
