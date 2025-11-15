@@ -1,3 +1,16 @@
+# mixgb 2.0.0 
+## Breaking Changes
+- The package is now compatible with XGBoost version 3.1.1.1 or higher.
+### Parameter Changes
+- realted to `xgb.train()`: 
+  - `watchlist` is changed to `evals`
+  -  `objective` and `eval_metric` are now passed through `params` list.
+
+- related to `xgb.cv()`:
+  - convert data from `sparse.model.matrix` into `xgb.DMatrix` format. Note, this is a quick fix for minimal safe change, and we plan to further optimise data handling in future releases.
+  -  `best.nrounds` is now obtained via `cv.train$early_stop$best_iteration` instead of `cv.train$best_iteration`.
+
+
 # mixgb 1.5.3
 ### Bug fix
 - Fix an error in `cbind2(Mis.m, Obs.m)` that occurred when the imputed dataset had only a single incomplete variable. 

@@ -37,7 +37,15 @@ XGBoost](https://yongshideng.com/journal-article/mixgb/).
 
 ## New updates
 
-**New Release: Nov 2024**
+**New Release: Nov 2025**
+
+- Breaking Changes! Now compatible with XGBoost (\>=3.1.1.1).
+
+I will submit a new CRAN version once XGBoost release their new version
+on CRAN. Please try the development version of **mixgb** from GitHub for
+now. If you have any questions, please feel free to post an issue.
+
+**Nov 2024**
 
 - New CRAN version 1.5.2. A lot faster than 1.0.2!
 
@@ -165,7 +173,8 @@ devtools::install_github("agnesdeng/mixgb")
 
 ``` r
 # load mixgb
-library(mixgb)
+#library(mixgb)
+devtools::load_all()
 ```
 
 ### 1.1 Data cleaning before imputation
@@ -303,9 +312,9 @@ optimal `nrounds` first.
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPSB2"
+#> [1] "BMPWT"
 cv.results$best.nrounds
-#> [1] 16
+#> [1] 14
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -322,7 +331,7 @@ cv.results <- mixgb_cv(
 )
 
 cv.results$best.nrounds
-#> [1] 18
+#> [1] 15
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`

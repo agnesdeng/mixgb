@@ -77,30 +77,39 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     obs.data <- sparse.model.matrix(reformulate(select_features, response), data = cc.data)[, -1]
   }
 
+
   if (Types[response] == "numeric" | Types[response] == "integer") {
     obj.type <- "reg:squarederror"
+    xgb.params$objective <- obj.type
     # 1 row vectoc
     obs.y <- cc.data[[response]]
-    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else if (Types[response] == "binary") {
     obj.type <- "binary:logistic"
-    eval_metric <- "logloss"
+    xgb.params$objective <- obj.type
+    xgb.params$eval_metric<- "logloss"
     obs.y <- as.integer(cc.data[[response]]) - 1
-    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params,  nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else if (Types[response] == "logical") {
     obj.type <- "binary:logistic"
-    eval_metric <- "logloss"
+    xgb.params$objective <- obj.type
+    xgb.params$eval_metric<- "logloss"
     obs.y <- cc.data[[response]]
-    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params,  nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else {
     obj.type <- "multi:softmax"
-    eval_metric <- "mlogloss"
+    xgb.params$objective <- obj.type
+    xgb.params$eval_metric<- "mlogloss"
     obs.y <- as.integer(cc.data[[response]]) - 1
     N.class <- length(levels(cc.data[[response]]))
-    cv.train <- xgb.cv(data = obs.data, params = xgb.params, label = obs.y, num_class = N.class, objective = obj.type, eval_metric = eval_metric, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, num_class = N.class, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   }
 
   evaluation.log <- cv.train$evaluation_log
-  best.nrounds <- cv.train$best_iteration
+  best.nrounds <- cv.train$early_stop$best_iteration
   return(list("best.nrounds" = best.nrounds, "evaluation.log" = evaluation.log, "response" = response))
 }

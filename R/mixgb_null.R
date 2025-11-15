@@ -56,17 +56,18 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
       } else {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
         # to be done, have eval
-        # watchlist <- list(train = dobs,eval=dmis)
+        # evals <- list(train = dobs,eval=dmis)
       }
 
 
       obj.type <- "reg:squarederror"
+      xgb.params$objective <- obj.type
       xgb.fit <- xgb.train(
-        data = dobs, objective = obj.type, watchlist = watchlist,
+        data = dobs, evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
       )
@@ -91,16 +92,17 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
       } else {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
         # to be done, have eval
-        # watchlist <- list(train = dobs,eval=dmis)
+        # evals <- list(train = dobs,eval=dmis)
       }
 
       obj.type <- "reg:squarederror"
+      xgb.params$objective <- obj.type
       xgb.fit <- xgb.train(
-        data = dobs, objective = obj.type, watchlist = watchlist,
+        data = dobs, evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
       )
@@ -128,11 +130,11 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
       } else {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
         # to be done, have eval
-        # watchlist <- list(train = dobs,eval=dmis)
+        # evals <- list(train = dobs,eval=dmis)
       }
 
       # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
@@ -152,9 +154,10 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
           # pmm by "prob" and for no pmm
           obj.type <- "binary:logistic"
         }
+        xgb.params$objective <- obj.type
+        xgb.params$eval_metric<- "logloss"
         xgb.fit <- xgb.train(
-          data = dobs, objective = obj.type, watchlist = watchlist,
-          eval_metric = "logloss",
+          data = dobs, evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
@@ -184,11 +187,11 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
       } else {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
         # to be done, have eval
-        # watchlist <- list(train = dobs,eval=dmis)
+        # evals <- list(train = dobs,eval=dmis)
       }
 
       bin.t <- sort(table(obs.y))
@@ -209,10 +212,11 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
           # pmm by "prob" and for no pmm
           obj.type <- "binary:logistic"
         }
+        xgb.params$objective <- obj.type
+        xgb.params$eval_metric<- "logloss"
 
         xgb.fit <- xgb.train(
-          data = dobs, objective = obj.type, watchlist = watchlist,
-          eval_metric = "logloss",
+          data = dobs, evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
@@ -241,11 +245,11 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
       if (is.null(early_stopping_rounds)) {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
       } else {
-        watchlist <- list(train = dobs)
+        evals <- list(train = dobs)
         # to be done, have eval
-        # watchlist <- list(train = dobs,eval=dmis)
+        # evals <- list(train = dobs,eval=dmis)
       }
 
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
@@ -256,11 +260,11 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
       }
       N.class <- length(levels(sorted.dt[[var]]))
 
-
+      xgb.params$objective <- obj.type
+      xgb.params$eval_metric<- "mlogloss"
       xgb.fit <- xgb.train(
         data = dobs, num_class = N.class,
-        objective = obj.type, watchlist = watchlist,
-        eval_metric = "mlogloss",
+        evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
       )

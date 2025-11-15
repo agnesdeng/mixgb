@@ -35,7 +35,15 @@ The R package **mixgb** provides a scalable approach for multiple imputation by 
 - Tianqi Chen & Carlos Guestrin. (2016), [XGBoost: A Scalable Tree Boosting System][xgboost-url], In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.
 
 ## New updates
-**New Release: Nov 2024**
+
+**New Release: Nov 2025**
+
+ * Breaking Changes! Now compatible with XGBoost (>=3.1.1.1). 
+ 
+ I will submit a new CRAN version once XGBoost release their new version on CRAN. Please try the development version of **mixgb** from GitHub for now. If you have any questions, please feel free to post an issue. 
+ 
+
+**Nov 2024**
 
  * New CRAN version 1.5.2. A lot faster than 1.0.2!
  
@@ -134,7 +142,8 @@ devtools::install_github("agnesdeng/mixgb")
 
 ```{r}
 # load mixgb
-library(mixgb)
+#library(mixgb)
+devtools::load_all()
 ```
 
 ### 1.1 Data cleaning before imputation
