@@ -1,5 +1,4 @@
 # Workflow for building and deploying pkgdown site
-# Updated for modern pak usage
 
 name: pkgdown
 
@@ -38,13 +37,14 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install pak and dependencies
-        run: |
-          Rscript -e 'install.packages("pak", repos = "https://cloud.r-project.org")'
-          Rscript -e 'pak::pkg_install(c(
-            "pkgdown",
-            "xgboost@3.1.1.1"
-          ))'
+      - name: Install pak
+        run: Rscript -e 'install.packages("pak", repos = "https://cloud.r-project.org")'
+
+      - name: Install pkgdown
+        run: Rscript -e 'pak::pkg_install("pkgdown")'
+
+      - name: Install xgboost 3.1.1.1
+        run: Rscript -e 'pak::pkg_install("dmlc/xgboost@3.1.1.1")'
 
       - name: Build site
         run: Rscript -e 'pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)'
