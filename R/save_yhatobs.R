@@ -76,16 +76,18 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
         dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
 
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
 
         obj.type <- "reg:squarederror"
+        xgb.params$objective <- obj.type
+
         xgb.fit <- xgb.train(
-          data = dobs, objective = obj.type, watchlist = watchlist,
+          data = dobs, evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
@@ -104,16 +106,18 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
         dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
 
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
 
         obj.type <- "reg:squarederror"
+        xgb.params$objective <- obj.type
+
         xgb.fit <- xgb.train(
-          data = dobs, objective = obj.type, watchlist = watchlist,
+          data = dobs, evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
@@ -136,11 +140,11 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
         dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
 
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
 
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
@@ -168,9 +172,11 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
             # pmm by "prob" value
             obj.type <- "binary:logistic"
           }
+
+          xgb.params$objective <- obj.type
+          xgb.params$eval_metric<- "logloss"
           xgb.fit <- xgb.train(
-            data = dobs, objective = obj.type, watchlist = watchlist,
-            eval_metric = "logloss",
+            data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
             print_every_n = print_every_n, verbose = verbose, ...
           )
@@ -195,11 +201,11 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
         dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
         dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
 
         bin.t <- sort(table(obs.y))
@@ -230,9 +236,10 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
             # pmm by "prob" value
             obj.type <- "binary:logistic"
           }
+          xgb.params$objective <- obj.type
+          xgb.params$eval_metric<- "logloss"
           xgb.fit <- xgb.train(
-            data = dobs, objective = obj.type, watchlist = watchlist,
-            eval_metric = "logloss",
+            data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
             print_every_n = print_every_n, verbose = verbose, ...
           )
@@ -260,11 +267,11 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
         dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
 
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
 
         if (i != maxit) {
@@ -274,12 +281,14 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
           # predict return prob
           obj.type <- "multi:softprob"
         }
+        xgb.params$objective <- obj.type
+        xgb.params$eval_metric<- "mlogloss"
 
         N.class <- length(levels(sorted.dt[[var]]))
+        xgb.params$num_class = N.class
         xgb.fit <- xgb.train(
-          data = dobs, num_class = N.class,
-          objective = obj.type, watchlist = watchlist,
-          eval_metric = "mlogloss",
+          data = dobs,
+          evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
@@ -294,7 +303,7 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
           sorted.dt[na.idx, (var) := yhatmis]
         } else {
           # prediction returns probability for matching: probability matrix for each class
-          yhatobs.list[[var]] <- predict(xgb.fit, dobs, reshape = TRUE)
+          yhatobs.list[[var]] <- predict(xgb.fit, dobs)
         }
       }
     } # end of for each missing variable
@@ -356,16 +365,18 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
         dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
 
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
 
         obj.type <- "reg:squarederror"
+        xgb.params$objective <- obj.type
+
         xgb.fit <- xgb.train(
-          data = dobs, objective = obj.type, watchlist = watchlist,
+          data = dobs, evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
@@ -376,11 +387,11 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
         bin.t <- sort(table(obs.y))
         dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
         # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
         # when bin.t only has one value: bin.t[1] the only existent class
@@ -397,9 +408,10 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
             # pmm by "prob" value
             obj.type <- "binary:logistic"
           }
+          xgb.params$objective <- obj.type
+          xgb.params$eval_metric<- "logloss"
           xgb.fit <- xgb.train(
-            data = dobs, objective = obj.type, watchlist = watchlist,
-            eval_metric = "logloss",
+            data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
             print_every_n = print_every_n, verbose = verbose, ...
           )
@@ -410,11 +422,11 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
         dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
 
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
 
 
@@ -434,9 +446,10 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
             # pmm by "prob" value
             obj.type <- "binary:logistic"
           }
+          xgb.params$objective <- obj.type
+          xgb.params$eval_metric<- "logloss"
           xgb.fit <- xgb.train(
-            data = dobs, objective = obj.type, watchlist = watchlist,
-            eval_metric = "logloss",
+            data = dobs,  evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
             print_every_n = print_every_n, verbose = verbose, ...
           )
@@ -450,27 +463,29 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
         dobs <-xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
         if (is.null(early_stopping_rounds)) {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
         } else {
-          watchlist <- list(train = dobs)
+          evals <- list(train = dobs)
           # to be done, have eval
-          # watchlist <- list(train = dobs,eval=dmis)
+          # evals <- list(train = dobs,eval=dmis)
         }
           #save probability as yhatobs to do pmm matching
 
-          obj.type <- "multi:softprob"
-
+        obj.type <- "multi:softprob"
+        xgb.params$objective <- obj.type
+        xgb.params$eval_metric<- "mlogloss"
 
         N.class <- length(levels(sorted.dt[[var]]))
+        xgb.params$num_class = N.class
+
         xgb.fit <- xgb.train(
-          data = dobs, num_class = N.class,
-          objective = obj.type, watchlist = watchlist,
-          eval_metric = "mlogloss",
+          data = dobs,
+          evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
         # prediction returns probability for matching: probability matrix for each class
-        yhatobs.list[[var]] <- predict(xgb.fit, dobs, reshape = TRUE)
+        yhatobs.list[[var]] <- predict(xgb.fit, dobs)
       }
     } # end of for each extra variable
   }

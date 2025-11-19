@@ -262,8 +262,9 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
 
       xgb.params$objective <- obj.type
       xgb.params$eval_metric<- "mlogloss"
+      xgb.params$num_class = N.class
       xgb.fit <- xgb.train(
-        data = dobs, num_class = N.class,
+        data = dobs,
         evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
@@ -278,17 +279,16 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
         sorted.dt[na.idx, (var) := yhatmis]
       } else {
         # predict returns probability matrix for each class
-        # yhatmis <- predict(xgb.fit, mis.data, reshape = TRUE)
+        # yhatmis <- predict(xgb.fit, mis.data)
 
-        yhatmis <- predict(xgb.fit, dmis, reshape = TRUE)
+        yhatmis <- predict(xgb.fit, dmis)
         if (pmm.type == 1) {
           # for pmm.type=1
           yhatobs <- yhatobs.list[[var]]
         } else {
           # for pmm.type=0 or 2
           # probability matrix for each class
-          # yhatobs <- predict(xgb.fit, obs.data, reshape = TRUE)
-          yhatobs <- predict(xgb.fit, dobs, reshape = TRUE)
+          yhatobs <- predict(xgb.fit, dobs)
         }
         yhatmis <- pmm.multiclass(yhatobs = yhatobs, yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)
         yhatmis <- levels(sorted.dt[[var]])[yhatmis]

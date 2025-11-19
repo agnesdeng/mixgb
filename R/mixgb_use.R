@@ -150,7 +150,7 @@ mixgb_use <- function(nthread, Obs.m, matrix.method, cbind.types,
         sorted.dt[na.idx, (var) := yhatmis]
       } else {
         # predict returns probability matrix for each class
-        yhatmis <- predict(xgb.models[[var]], dmis, reshape = TRUE)
+        yhatmis <- predict(xgb.models[[var]], dmis)
         if (pmm.type == 1) {
           # for pmm.type=1
           yhatmis <- pmm.multiclass(yhatobs = yhatobs.list[[var]], yhatmis = yhatmis, yobs = yobs.list[[var]], k = pmm.k)

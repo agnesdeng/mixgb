@@ -1,5 +1,2 @@
-# Enable OpenMP for parallel C++ code
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
-
-# Link C++ libraries and use Accelerate framework for BLAS/LAPACK
-PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) -framework Accelerate
+PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS)

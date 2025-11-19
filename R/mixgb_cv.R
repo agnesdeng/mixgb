@@ -103,10 +103,11 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     obj.type <- "multi:softmax"
     xgb.params$objective <- obj.type
     xgb.params$eval_metric<- "mlogloss"
+    xgb.params$num_class = N.class
     obs.y <- as.integer(cc.data[[response]]) - 1
     N.class <- length(levels(cc.data[[response]]))
     obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
-    cv.train <- xgb.cv(data = obs.data, params = xgb.params, num_class = N.class, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   }
 
   evaluation.log <- cv.train$evaluation_log

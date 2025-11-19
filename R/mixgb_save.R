@@ -294,9 +294,10 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
       xgb.params$objective <- obj.type
       xgb.params$eval_metric<- "mlogloss"
       N.class <- length(levels(sorted.dt[[var]]))
+      xgb.params$num_class = N.class
 
       xgb.fit <- xgb.train(
-        data = dobs, num_class = N.class,
+        data = dobs,
         evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
@@ -312,14 +313,14 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         sorted.dt[na.idx, (var) := yhatmis]
       } else {
         # predict returns probability matrix for each class
-        yhatmis <- predict(xgb.fit, dmis, reshape = TRUE)
+        yhatmis <- predict(xgb.fit, dmis)
         if (pmm.type == 1) {
           # for pmm.type=1
           yhatobs <- yhatobs.list[[var]]
         } else {
           # for pmm.type=0 or 2
           # probability matrix for each class
-          yhatobs <- predict(xgb.fit, dobs, reshape = TRUE)
+          yhatobs <- predict(xgb.fit, dobs)
           yhatobs.list[[var]] <- yhatobs
         }
 
@@ -519,8 +520,9 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         xgb.params$eval_metric<- "mlogloss"
 
         N.class <- length(levels(sorted.dt[[var]]))
+        xgb.params$num_class = N.class
         xgb.fit <- xgb.train(
-          data = dobs, num_class = N.class,
+          data = dobs,
           evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
@@ -531,7 +533,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
         # prediction returns probability for matching: probability matrix for each class
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
-          yhatobs.list[[var]] <- predict(xgb.fit, dobs, reshape = TRUE)
+          yhatobs.list[[var]] <- predict(xgb.fit, dobs)
         }
       }
     } # end of for each extra variable
