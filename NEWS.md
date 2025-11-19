@@ -1,3 +1,11 @@
+# mixgb 2.0.1
+### Bug fix
+- Removed macOS-specific `-framework Accelerate` flag for Linux builds in `Makevars` file 
+### Parameter Changes
+- realted to `xgb.train()`: 
+  -  `num_class` now passed through `params` list.
+- remove `reshape = TRUE` argument in `predict()` function as it is deprecated in XGBoost >= 2.0.0.
+
 # mixgb 2.0.0 
 ## Breaking Changes
 - The package is now compatible with XGBoost version 3.1.1.1 or higher.
