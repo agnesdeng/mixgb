@@ -101,10 +101,12 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
 
       obj.type <- "reg:squarederror"
       xgb.params$objective <- obj.type
+      xgb.params$eval_metric<- "rmse"
+      xgb.params$num_class <- NULL
       xgb.fit <- xgb.train(
         data = dobs, evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
-        print_every_n = print_every_n, verbose = verbose, ...
+        print_every_n = print_every_n, verbose = verbose,...
       )
 
       yhatmis <- predict(xgb.fit, dmis)
