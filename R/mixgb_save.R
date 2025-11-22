@@ -76,6 +76,8 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
       obj.type <- "reg:squarederror"
       xgb.params$objective <- obj.type
+      xgb.params$eval_metric <- "rmse"
+      xgb.params$num_class <- NULL
 
       xgb.fit <- xgb.train(
         data = dobs,evals = evals,
@@ -113,6 +115,9 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
       obj.type <- "reg:squarederror"
       xgb.params$objective <- obj.type
+      xgb.params$eval_metric <- "rmse"
+      xgb.params$num_class <- NULL
+
       xgb.fit <- xgb.train(
         data = dobs, evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -177,6 +182,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         }
         xgb.params$objective <- obj.type
         xgb.params$eval_metric<- "logloss"
+        xgb.params$num_class <- NULL
         xgb.fit <- xgb.train(
           data = dobs,  evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -228,7 +234,6 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         yhatmis <- as.logical(names(bin.t[1]))
         sorted.dt[na.idx, (var) := yhatmis]
 
-
         # save models=the only class exist in the sample
         xgb.models[[var]] <- yhatmis
         yhatobs.list[[var]] <- rep(yhatmis, length(yobs.list[[var]]))
@@ -244,6 +249,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         }
         xgb.params$objective <- obj.type
         xgb.params$eval_metric<- "logloss"
+        xgb.params$num_class <- NULL
         xgb.fit <- xgb.train(
           data = dobs, evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -293,6 +299,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
       }
       xgb.params$objective <- obj.type
       xgb.params$eval_metric<- "mlogloss"
+
       N.class <- length(levels(sorted.dt[[var]]))
       xgb.params$num_class = N.class
 
@@ -397,6 +404,8 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
         obj.type <- "reg:squarederror"
         xgb.params$objective <- obj.type
+        xgb.params$eval_metric <- "rmse"
+        xgb.params$num_class <- NULL
 
         xgb.fit <- xgb.train(
           data = dobs, evals = evals,
@@ -439,6 +448,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           }
           xgb.params$objective <- obj.type
           xgb.params$eval_metric<- "logloss"
+          xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -484,6 +494,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           }
           xgb.params$objective <- obj.type
           xgb.params$eval_metric<- "logloss"
+          xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -518,9 +529,9 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         }
         xgb.params$objective <- obj.type
         xgb.params$eval_metric<- "mlogloss"
-
         N.class <- length(levels(sorted.dt[[var]]))
         xgb.params$num_class = N.class
+
         xgb.fit <- xgb.train(
           data = dobs,
           evals = evals,

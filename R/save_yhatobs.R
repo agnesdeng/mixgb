@@ -85,6 +85,8 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
         obj.type <- "reg:squarederror"
         xgb.params$objective <- obj.type
+        xgb.params$eval_metric <- "rmse"
+        xgb.params$num_class <- NULL
 
         xgb.fit <- xgb.train(
           data = dobs, evals = evals,
@@ -115,6 +117,8 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
         obj.type <- "reg:squarederror"
         xgb.params$objective <- obj.type
+        xgb.params$eval_metric <- "rmse"
+        xgb.params$num_class <- NULL
 
         xgb.fit <- xgb.train(
           data = dobs, evals = evals,
@@ -175,6 +179,7 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
           xgb.params$objective <- obj.type
           xgb.params$eval_metric<- "logloss"
+          xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -238,6 +243,7 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
           }
           xgb.params$objective <- obj.type
           xgb.params$eval_metric<- "logloss"
+          xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -374,6 +380,8 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
         obj.type <- "reg:squarederror"
         xgb.params$objective <- obj.type
+        xgb.params$eval_metric <- "rmse"
+        xgb.params$num_class <- NULL
 
         xgb.fit <- xgb.train(
           data = dobs, evals = evals,
@@ -410,6 +418,7 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
           }
           xgb.params$objective <- obj.type
           xgb.params$eval_metric<- "logloss"
+          xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -448,6 +457,7 @@ save_yhatobs <- function(Obs.m, matrix.method, cbind.types, all.idx,
           }
           xgb.params$objective <- obj.type
           xgb.params$eval_metric<- "logloss"
+          xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs,  evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,

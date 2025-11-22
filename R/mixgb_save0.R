@@ -1,10 +1,10 @@
 # Multiple imputation using xgboost (save models using xgb.save() and imputations)
-mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
-                           save.models.folder, i = i, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt,
-                           missing.vars, sorted.names, Na.idx, missing.types, Ncol,
-                           xgb.params = list(),
-                           nrounds, early_stopping_rounds, print_every_n, verbose,
-                           ...) {
+mixgb_save0 <- function(Obs.m, matrix.method, cbind.types, all.idx,
+                       save.models.folder, i = i, save.vars, save.p, extra.vars = NULL, extra.types = NULL, pmm.type, pmm.link, pmm.k, yobs.list, yhatobs.list = NULL, sorted.dt,
+                       missing.vars, sorted.names, Na.idx, missing.types, Ncol,
+                       xgb.params = list(),
+                       nrounds, early_stopping_rounds, print_every_n, verbose,
+                       ...) {
   # yhatobs.list if it is pmm.type 1, must feed in the yhatobs.list
   # pre-allocation for models
   xgb.models <- vector("list", save.p)
@@ -24,7 +24,6 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
   for (var in missing.vars) {
     na.idx <- Na.idx[[var]]
     obs.y <- yobs.list[[var]]
-
 
     # Mis.vars: missing variables except the current imputed variable (as response)
     if (length(missing.vars) != 1) {
@@ -58,8 +57,6 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
     }
 
 
-
-
     obs.data <- All.m[-na.idx, , drop = FALSE]
     mis.data <- All.m[na.idx, , drop = FALSE]
 
@@ -79,10 +76,9 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
       obj.type <- "reg:squarederror"
       xgb.params$objective <- obj.type
-      xgb.params$eval_metric <- "rmse"
-      xgb.params$num_class <- NULL
+
       xgb.fit <- xgb.train(
-        data = dobs, evals = evals,
+        data = dobs,evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
       )
@@ -102,10 +98,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
       # update dataset
       sorted.dt[na.idx, (var) := yhatmis]
       # save models
-      filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-      filedir <- paste(filedir, ".json", sep = "")
-      xgb.save(model = xgb.fit, fname = filedir)
-      xgb.models[[var]] <- filedir
+      xgb.models[[var]] <- xgb.fit
     } else if (missing.types[var] == "integer") {
       dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
       dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
@@ -120,9 +113,6 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
       obj.type <- "reg:squarederror"
       xgb.params$objective <- obj.type
-      xgb.params$eval_metric <- "rmse"
-      xgb.params$num_class <- NULL
-
       xgb.fit <- xgb.train(
         data = dobs, evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -147,10 +137,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
       # round to integer when PMM is not used
       sorted.dt[na.idx, (var) := round(yhatmis)]
       # save models
-      filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-      filedir <- paste(filedir, ".json", sep = "")
-      xgb.save(model = xgb.fit, fname = filedir)
-      xgb.models[[var]] <- filedir
+      xgb.models[[var]] <- xgb.fit
     } else if (missing.types[var] == "binary") {
       # binary ---------------------------------------------------------------------------
       obs.y <- as.integer(obs.y) - 1
@@ -190,7 +177,6 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         }
         xgb.params$objective <- obj.type
         xgb.params$eval_metric<- "logloss"
-        xgb.params$num_class <- NULL
         xgb.fit <- xgb.train(
           data = dobs,  evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
@@ -199,10 +185,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         yhatmis <- predict(xgb.fit, dmis)
 
         # save models
-        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-        filedir <- paste(filedir, ".json", sep = "")
-        xgb.save(model = xgb.fit, fname = filedir)
-        xgb.models[[var]] <- filedir
+        xgb.models[[var]] <- xgb.fit
 
 
 
@@ -261,18 +244,14 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         }
         xgb.params$objective <- obj.type
         xgb.params$eval_metric<- "logloss"
-        xgb.params$num_class <- NULL
         xgb.fit <- xgb.train(
-          data = dobs,  evals = evals,
+          data = dobs, evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
         yhatmis <- predict(xgb.fit, dmis)
         # save models
-        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-        filedir <- paste(filedir, ".json", sep = "")
-        xgb.save(model = xgb.fit, fname = filedir)
-        xgb.models[[var]] <- filedir
+        xgb.models[[var]] <- xgb.fit
 
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
           # for pmm.type=NULL or "auto"
@@ -324,10 +303,7 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         print_every_n = print_every_n, verbose = verbose, ...
       )
       # save models
-      filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-      filedir <- paste(filedir, ".json", sep = "")
-      xgb.save(model = xgb.fit, fname = filedir)
-      xgb.models[[var]] <- filedir
+      xgb.models[[var]] <- xgb.fit
 
       if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
         # use softmax, predict returns class
@@ -421,8 +397,6 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
         obj.type <- "reg:squarederror"
         xgb.params$objective <- obj.type
-        xgb.params$eval_metric <- "rmse"
-        xgb.params$num_class <- NULL
 
         xgb.fit <- xgb.train(
           data = dobs, evals = evals,
@@ -430,10 +404,8 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           print_every_n = print_every_n, verbose = verbose, ...
         )
 
-        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-        filedir <- paste(filedir, ".json", sep = "")
-        xgb.save(model = xgb.fit, fname = filedir)
-        xgb.models[[var]] <- filedir
+
+        xgb.models[[var]] <- xgb.fit
 
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2) | isTRUE(pmm.type == "auto")) {
           yhatobs.list[[var]] <- predict(xgb.fit, dobs)
@@ -467,17 +439,14 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           }
           xgb.params$objective <- obj.type
           xgb.params$eval_metric<- "logloss"
-          xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
             print_every_n = print_every_n, verbose = verbose, ...
           )
 
-          filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-          filedir <- paste(filedir, ".json", sep = "")
-          xgb.save(model = xgb.fit, fname = filedir)
-          xgb.models[[var]] <- filedir
+
+          xgb.models[[var]] <- xgb.fit
           # if pmm.link="logit", these would be logit values, otherwise would be probability values
           if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
             yhatobs.list[[var]] <- predict(xgb.fit, dobs)
@@ -515,17 +484,14 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           }
           xgb.params$objective <- obj.type
           xgb.params$eval_metric<- "logloss"
-          xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
-            data = dobs,  evals = evals,
+            data = dobs, evals = evals,
             params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
             print_every_n = print_every_n, verbose = verbose, ...
           )
 
-          filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-          filedir <- paste(filedir, ".json", sep = "")
-          xgb.save(model = xgb.fit, fname = filedir)
-          xgb.models[[var]] <- filedir
+
+          xgb.models[[var]] <- xgb.fit
           # if pmm.link="logit", these would be logit values, otherwise would be probability values
           if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {
             yhatobs.list[[var]] <- predict(xgb.fit, dobs)
@@ -552,9 +518,9 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         }
         xgb.params$objective <- obj.type
         xgb.params$eval_metric<- "mlogloss"
+
         N.class <- length(levels(sorted.dt[[var]]))
         xgb.params$num_class = N.class
-
         xgb.fit <- xgb.train(
           data = dobs,
           evals = evals,
@@ -562,10 +528,8 @@ mixgb_xgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           print_every_n = print_every_n, verbose = verbose, ...
         )
 
-        filedir <- paste(save.models.folder, paste("/xgb.model.", var, i, sep = ""), sep = "")
-        filedir <- paste(filedir, ".json", sep = "")
-        xgb.save(model = xgb.fit, fname = filedir)
-        xgb.models[[var]] <- filedir
+
+        xgb.models[[var]] <- xgb.fit
 
         # prediction returns probability for matching: probability matrix for each class
         if (isTRUE(pmm.type == 0) | isTRUE(pmm.type == 2)) {

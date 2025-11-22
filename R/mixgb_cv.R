@@ -81,6 +81,8 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
   if (Types[response] == "numeric" | Types[response] == "integer") {
     obj.type <- "reg:squarederror"
     xgb.params$objective <- obj.type
+    xgb.params$eval_metric <- "rmse"
+    xgb.params$num_class <- NULL
     # 1 row vectoc
     obs.y <- cc.data[[response]]
     obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
@@ -89,6 +91,7 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     obj.type <- "binary:logistic"
     xgb.params$objective <- obj.type
     xgb.params$eval_metric<- "logloss"
+    xgb.params$num_class <- NULL
     obs.y <- as.integer(cc.data[[response]]) - 1
     obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
     cv.train <- xgb.cv(data = obs.data, params = xgb.params,  nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
@@ -96,6 +99,7 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
     obj.type <- "binary:logistic"
     xgb.params$objective <- obj.type
     xgb.params$eval_metric<- "logloss"
+    xgb.params$num_class <- NULL
     obs.y <- cc.data[[response]]
     obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
     cv.train <- xgb.cv(data = obs.data, params = xgb.params,  nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)

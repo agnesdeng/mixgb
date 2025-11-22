@@ -1,7 +1,19 @@
+# mixgb 2.0.2
+### Deprecation
+- Removed support for bootstrap in `mixgb()`
+
+### Realted to XGBoost Parameter Changes
+- realted to `xgb.train()`: 
+  -  `num_class` now passed through `params` list, need to set `num_class=NULL` for non-multiclass imputation.
+
+### Refactorisation
+- Refactored `mixgb_null()` function for better readability and maintainability - using helper functions in `impute_each.R`. Other relevant functions will be updated later.
+
+
 # mixgb 2.0.1
 ### Bug fix
 - Removed macOS-specific `-framework Accelerate` flag for Linux builds in `Makevars` file 
-### Parameter Changes
+### Realted to XGBoost Parameter Changes
 - realted to `xgb.train()`: 
   -  `num_class` now passed through `params` list.
 - remove `reshape = TRUE` argument in `predict()` function as it is deprecated in XGBoost >= 2.0.0.
@@ -9,7 +21,7 @@
 # mixgb 2.0.0 
 ## Breaking Changes
 - The package is now compatible with XGBoost version 3.1.1.1 or higher.
-### Parameter Changes
+### Realted to XGBoost Parameter Changes
 - realted to `xgb.train()`: 
   - `watchlist` is changed to `evals`
   -  `objective` and `eval_metric` are now passed through `params` list.
