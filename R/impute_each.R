@@ -52,7 +52,7 @@ impute_numeric <- function(save,obs.data, mis.data, obs.y, xgb.params,
 # ----------------------------
 # Helper: impute binary
 # ----------------------------
-impute_binary <- function(save, obs.data, mis.data, obs.y, xgb.params,
+impute_binary <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
                           nrounds,nthread, early_stopping_rounds, print_every_n, verbose,
                           pmm.type, pmm.link, pmm.k, yhatobs = NULL,original_levels) {
   original_labels<-obs.y
@@ -120,10 +120,10 @@ impute_binary <- function(save, obs.data, mis.data, obs.y, xgb.params,
   # ----------------------------
 # Helper: impute logical
 # ----------------------------
-impute_logical <- function(save, obs.data, mis.data, obs.y, xgb.params,
+impute_logical <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
                           nrounds,nthread, early_stopping_rounds, print_every_n, verbose,
                           pmm.type, pmm.link, pmm.k, yhatobs = NULL,original_levels){
-
+  original_labels<-obs.y
   bin.t <- sort(table(obs.y))
 
   # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class

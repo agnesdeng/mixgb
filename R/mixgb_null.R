@@ -61,7 +61,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
         round_nopmm = TRUE
       )
     } else if (missing.types[var] == "binary") {
-      yhatmis <- impute_binary(
+      yhatmis <- impute_binary(var,
         save = FALSE, obs.data, mis.data, obs.y, xgb.params,
         nrounds, nthread, early_stopping_rounds, print_every_n, verbose,
         pmm.type, pmm.k, pmm.link,
@@ -69,7 +69,7 @@ mixgb_null <- function(Obs.m, matrix.method, cbind.types, pmm.type, pmm.link, pm
         original_levels = levels(sorted.dt[[var]])
       )
     } else if (missing.types[var] == "logical") {
-      yhatmis <- impute_binary(
+      yhatmis <- impute_binary(var,
         save = FALSE, obs.data, mis.data, obs.y, xgb.params,
         nrounds, nthread, early_stopping_rounds, print_every_n, verbose,
         pmm.type, pmm.k, pmm.link,

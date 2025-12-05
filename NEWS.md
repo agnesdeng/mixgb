@@ -1,3 +1,7 @@
+# mixgb 2.0.3
+### Bug fix
+- global variable warning resolved
+
 # mixgb 2.0.2
 ### Deprecation
 - Removed support for bootstrap in `mixgb()`
