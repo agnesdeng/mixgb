@@ -36,6 +36,12 @@ The R package **mixgb** provides a scalable approach for multiple imputation by 
 
 ## New updates
 
+**Dec 2025**
+
+* New CRAN version 2.0.3. Now compatible with XGBoost (3.1.2.1) on CRAN.
+
+* This update addresses breaking changes introduced in the latest XGBoost release on CRAN in December 2025. If you experience any problems, please post an issue on GitHub.
+
 **New Release: Nov 2025**
 
  * Breaking Changes! Now compatible with XGBoost (>=3.1.1.1). 
@@ -413,8 +419,8 @@ mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 
 
 
-[mixgb-url]: https://yongshideng.com/journal-article/mixgb/
+[mixgb-url]: https://www.yongshideng.com/papers
 
-[xgboost-url]: http://arxiv.org/abs/1603.02754
+[xgboost-url]: https://arxiv.org/abs/1603.02754
 
 [xgboost-release]: https://github.com/dmlc/xgboost/releases

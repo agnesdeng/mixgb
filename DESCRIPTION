@@ -13,10 +13,11 @@ Description: Multiple imputation using 'XGBoost', subsampling, and predictive me
     variables, offers flexible settings, and enables saving an imputation model to impute
     new data. Data processing and memory usage have been optimised to speed up 
     the imputation process.
-URL: https://github.com/agnesdeng/mixgb,https://agnesdeng.github.io/mixgb/
+URL: https://github.com/agnesdeng/mixgb
 BugReports: https://github.com/agnesdeng/mixgb/issues
 License: GPL (>= 3)
 Encoding: UTF-8
+Language: en-GB
 LazyData: true
 Imports: 
     data.table,

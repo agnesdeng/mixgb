@@ -22,20 +22,28 @@ matching. We have shown that our method can yield less biased estimates
 and reflect appropriate imputation variability, while achieving high
 computational efficiency. For further information, please refer to our
 paper [Multiple Imputation Through
-XGBoost](https://yongshideng.com/journal-article/mixgb/).
+XGBoost](https://www.yongshideng.com/papers).
 
 ## References
 
 - Yongshi Deng & Thomas Lumley. (2023), [Multiple Imputation Through
-  XGBoost](https://yongshideng.com/journal-article/mixgb/), Journal of
-  Computational and Graphical Statistics, 33(2), 352-363. DOI:
+  XGBoost](https://www.yongshideng.com/papers), Journal of Computational
+  and Graphical Statistics, 33(2), 352-363. DOI:
   10.1080/10618600.2023.2252501.
 
 - Tianqi Chen & Carlos Guestrin. (2016), [XGBoost: A Scalable Tree
-  Boosting System](http://arxiv.org/abs/1603.02754), In 22nd SIGKDD
+  Boosting System](https://arxiv.org/abs/1603.02754), In 22nd SIGKDD
   Conference on Knowledge Discovery and Data Mining.
 
 ## New updates
+
+**Dec 2025**
+
+- New CRAN version 2.0.3. Now compatible with XGBoost (3.1.2.1) on CRAN.
+
+- This update addresses breaking changes introduced in the latest
+  XGBoost release on CRAN in December 2025. If you experience any
+  problems, please post an issue on GitHub.
 
 **New Release: Nov 2025**
 
@@ -74,8 +82,10 @@ now. If you have any questions, please feel free to post an issue.
   follows:
 
 ``` r
-# Change the file path where you saved the downloaded XGBoost package
-install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz", repos = NULL)
+# Change the file path where you saved the downloaded
+# XGBoost package
+install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz",
+    repos = NULL)
 ```
 
 ``` r
@@ -172,8 +182,7 @@ devtools::install_github("agnesdeng/mixgb")
 ```
 
 ``` r
-# load mixgb
-#library(mixgb)
+# load mixgb library(mixgb)
 devtools::load_all()
 ```
 
@@ -279,21 +288,14 @@ We can also customize imputation settings:
 
 ``` r
 # Use mixgb with chosen settings
-params <- list(
-  max_depth = 5,
-  subsample = 0.9,
-  nthread = 2,
-  tree_method = "hist"
-)
+params <- list(max_depth = 5, subsample = 0.9, nthread = 2, tree_method = "hist")
 
-imputed.data <- mixgb(
-  data = nhanes3_newborn, m = 10, maxit = 2,
-  ordinalAsInteger = FALSE, bootstrap = FALSE,
-  pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
-  initial.num = "normal", initial.int = "mode", initial.fac = "mode",
-  save.models = FALSE, save.vars = NULL,
-  xgb.params = params, nrounds = 200, early_stopping_rounds = 10, print_every_n = 10L, verbose = 0
-)
+imputed.data <- mixgb(data = nhanes3_newborn, m = 10, maxit = 2,
+    ordinalAsInteger = FALSE, bootstrap = FALSE, pmm.type = "auto",
+    pmm.k = 5, pmm.link = "prob", initial.num = "normal", initial.int = "mode",
+    initial.fac = "mode", save.models = FALSE, save.vars = NULL,
+    xgb.params = params, nrounds = 200, early_stopping_rounds = 10,
+    print_every_n = 10L, verbose = 0)
 ```
 
 ### 2.2 Tune hyperparameters
@@ -310,11 +312,12 @@ optimal `nrounds` first.
 
 ``` r
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
-cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
+cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
+    xgb.params = params, verbose = FALSE)
 cv.results$response
 #> [1] "BMPWT"
 cv.results$best.nrounds
-#> [1] 14
+#> [1] 18
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -325,10 +328,10 @@ results. Users can also specify the response and covariates in the
 argument `response` and `select_features` respectively.
 
 ``` r
-cv.results <- mixgb_cv(
-  data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
-  response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE
-)
+cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
+    early_stopping_rounds = 1, response = "BMPHEAD", select_features = c("HSAGEIR",
+        "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2",
+        "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
 #> [1] 15
@@ -389,8 +392,10 @@ recommended by XGBoost. This can ensure that the imputation models can
 still be used in later release of XGBoost.
 
 ``` r
-# obtain m imputed datasets for train.data and save imputation models
-mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE, save.models.folder = "C:/Users/.....")
+# obtain m imputed datasets for train.data and save
+# imputation models
+mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE,
+    save.models.folder = "C:/Users/.....")
 saveRDS(object = mixgb.obj, file = "C:/Users/.../mixgbimputer.rds")
 ```
 
@@ -443,7 +448,8 @@ Similarly, users can set the number of imputed datasets `m` in
 function will use the same `m` value as the saved object.
 
 ``` r
-test.imputed <- impute_new(object = mixgb.obj, newdata = test.data, initial.newdata = FALSE, pmm.k = 3, m = 4)
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data,
+    initial.newdata = FALSE, pmm.k = 3, m = 4)
 ```
 
 ## 5. Install `mixgb` with GPU support
@@ -457,8 +463,10 @@ Please download the Newest version of XGBoost with GPU support via
 [XGBoost GitHub Releases](https://github.com/dmlc/xgboost/releases).
 
 ``` r
-# Change the file path where you saved the downloaded XGBoost package
-install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz", repos = NULL)
+# Change the file path where you saved the downloaded
+# XGBoost package
+install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz",
+    repos = NULL)
 ```
 
 Then users can install the newest version of our package `mixgb` in R.
@@ -474,12 +482,8 @@ To utilize the GPU version of mixgb(), users can simply specify
 `tree_method = "hist"` from XGBoost 2.0.0.
 
 ``` r
-params <- list(
-  device = "cuda",
-  subsample = 0.7,
-  nthread = 1,
-  tree_method = "hist"
-)
+params <- list(device = "cuda", subsample = 0.7, nthread = 1,
+    tree_method = "hist")
 
 mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 ```
@@ -512,14 +516,8 @@ GPU-related arguments include `gpu_id` and `predictor`. By default,
 `gpu_id = 0` and `predictor = "auto"`.
 
 ``` r
-params <- list(
-  max_depth = 3,
-  subsample = 0.7,
-  nthread = 1,
-  tree_method = "gpu_hist",
-  gpu_id = 0,
-  predictor = "auto"
-)
+params <- list(max_depth = 3, subsample = 0.7, nthread = 1, tree_method = "gpu_hist",
+    gpu_id = 0, predictor = "auto")
 
 
 mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)

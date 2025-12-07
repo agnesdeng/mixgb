@@ -484,7 +484,7 @@ mixgb<- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
 
 #' Auxiliary function for validating xgb.params
 #' @description Auxiliary function for setting up the default XGBoost-related hyperparameters for mixgb and checking the \code{xgb.params} argument in \code{mixgb()}. For more details on XGBoost hyperparameters, please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html}{XGBoost documentation on parameters}.
-#' @param device Can be either \code{"cpu"} or \code{"cuda"}. For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.
+#' @param device Can be either \code{"cpu"} or \code{"cuda"}. For other options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.
 #' @param tree_method Options: \code{"auto"}, \code{"exact"}, \code{"approx"}, and \code{"hist"}. Default: \code{"hist"}.
 #' @param eta Step size shrinkage. Default: 0.3.
 #' @param gamma Minimum loss reduction required to make a further partition on a leaf node of the tree. Default: 0

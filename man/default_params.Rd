@@ -26,7 +26,7 @@ default_params(
 )
 }
 \arguments{
-\item{device}{Can be either \code{"cpu"} or \code{"cuda"}. For ther options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.}
+\item{device}{Can be either \code{"cpu"} or \code{"cuda"}. For other options please refer to \href{https://xgboost.readthedocs.io/en/stable/parameter.html#general-parameters}{XGBoost documentation on parameters}.}
 
 \item{tree_method}{Options: \code{"auto"}, \code{"exact"}, \code{"approx"}, and \code{"hist"}. Default: \code{"hist"}.}
 

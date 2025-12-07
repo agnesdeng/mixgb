@@ -71,9 +71,6 @@ We can also customize imputation settings:
 -   Whether ordinal factors should be converted to integer (imputation process may be faster)
     `ordinalAsInteger`
 
--   Whether or not to use bootstrapping 
-    `bootstrap`
-
 -   Initial imputation methods for different types of variables
     `initial.num`, `initial.int` and `initial.fac`.
 
@@ -92,7 +89,7 @@ params <- list(
 
 imputed.data <- mixgb(
   data = nhanes3_newborn, m = 10, maxit = 2,
-  ordinalAsInteger = FALSE, bootstrap = FALSE,
+  ordinalAsInteger = FALSE, 
   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
   save.models = FALSE, save.vars = NULL,
