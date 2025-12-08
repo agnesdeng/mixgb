@@ -10,7 +10,7 @@ R](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng
 [![CRAN
 version](https://img.shields.io/cran/v/mixgb?color=9cf)](https://cran.r-project.org/package=mixgb)
 [![CRAN
-downloads](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/mixgb)](https://cranlogs.r-pkg.org/badges/grand-total/mixgb)
 [![GitHub release (latest by
 date)](https://img.shields.io/github/v/release/agnesdeng/mixgb?color=green)](https://github.com/agnesdeng/mixgb/releases)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
@@ -37,7 +37,7 @@ XGBoost](https://www.yongshideng.com/papers).
 
 ## New updates
 
-**Dec 2025**
+**New Release on CRAN! Dec 2025**
 
 - New CRAN version 2.0.3. Now compatible with XGBoost (3.1.2.1) on CRAN.
 
@@ -315,9 +315,9 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100,
     xgb.params = params, verbose = FALSE)
 cv.results$response
-#> [1] "BMPWT"
+#> [1] "HFF1"
 cv.results$best.nrounds
-#> [1] 18
+#> [1] 7
 ```
 
 By default, `mixgb_cv()` will randomly choose an incomplete variable as
@@ -334,7 +334,7 @@ cv.results <- mixgb_cv(data = nhanes3_newborn, nfold = 10, nrounds = 100,
         "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE)
 
 cv.results$best.nrounds
-#> [1] 15
+#> [1] 12
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()`

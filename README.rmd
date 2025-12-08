@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Made with R](https://img.shields.io/badge/Made%20With-R-9cf)](https://github.com/agnesdeng/mixgb)
 [![CRAN version](https://img.shields.io/cran/v/mixgb?color=9cf)](https://cran.r-project.org/package=mixgb)
-[![CRAN downloads](https://cranlogs.r-pkg.org/badges/mixgb)](https://cran.r-project.org/package=mixgb)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/mixgb)](https://cranlogs.r-pkg.org/badges/grand-total/mixgb)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/agnesdeng/mixgb?color=green)](https://github.com/agnesdeng/mixgb/releases)
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
@@ -36,7 +36,7 @@ The R package **mixgb** provides a scalable approach for multiple imputation by 
 
 ## New updates
 
-**Dec 2025**
+**New Release on CRAN! Dec 2025**
 
 * New CRAN version 2.0.3. Now compatible with XGBoost (3.1.2.1) on CRAN.
 
