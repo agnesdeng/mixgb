@@ -1,0 +1,104 @@
+# Imputing newdata with a saved mixgb imputer
+
+## Impute new unseen data using a saved imputer object
+
+To demonstrate how to impute new data using a saved imputer, we first
+split the `nhanes3_newborn` dataset into training data and test data.
+
+``` r
+set.seed(2022)
+n <- nrow(nhanes3)
+idx <- sample(1:n, size = round(0.7 * n), replace = FALSE)
+train.data <- nhanes3[idx, ]
+test.data <- nhanes3[-idx, ]
+```
+
+Next we impute the training data using
+[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md). We
+can use the training data to generate `m` imputed datasets and save
+their imputation models. To achieve this, users need to set
+`save.models = TRUE`. By default, imputation models for all variables
+with missing values in the training data will be saved
+(`save.vars = NULL`). However, it is possible that unseen data may have
+missing values in other variables. To be thorough, users can save models
+for all variables by setting `save.vars = colnames(train.data)`. Note
+that this may take significantly longer as it requires training and
+saving a model for each variable. In cases where users are confident
+that only certain variables will have missing values in the new data, it
+is advisable to specify the names or indices of these variables in
+`save.vars` rather than saving models for all variables.
+
+To save the imputer object, users need to specify a local directory in
+the parameter `save.models.folder` in the main function
+[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md).
+Models will be save as JSON format by calling `xgb.save()` internally.
+Saving XGBoost models in this way instead of using `saveRDS` in R is
+recommended by XGBoost. This can ensure that the imputation models can
+still be used in later release of XGBoost.
+
+``` r
+# obtain m imputed datasets for train.data and save imputation models
+mixgb.obj <- mixgb(data = train.data, m = 5, save.models = TRUE, save.models.folder = "C:/Users/.....")
+saveRDS(object = mixgb.obj, file = "C:/Users/.../mixgbimputer.rds")
+```
+
+If users specify the `save.models.folder`, the return object will
+include the following:
+
+- `imputed.data`: a list of `m` imputed datasets for training data
+
+- `XGB.models`: a list of directories of `m` sets of XGBoost models for
+  variables specified in `save.vars`.
+
+- `params`: a list of parameters that are required for imputing new data
+  using
+  [`impute_new()`](https://agnesdeng.github.io/mixgb/reference/impute_new.md)
+  later on.
+
+- `XGB.save` : a parameter indicates whether `XGB.models` are the saved
+  models or the directories for the saved models.
+
+As the `mixgb.obj` does not contain the models themselves, users need
+not worry about saving this object via
+[`saveRDS()`](https://rdrr.io/r/base/readRDS.html). For later use, one
+can load the object into R and impute new data.
+
+To impute new data with this saved imputer object, we can use the
+[`impute_new()`](https://agnesdeng.github.io/mixgb/reference/impute_new.md)
+function.
+
+``` r
+mixgb.obj <- readRDS(file = "C:/Users/.../mixgbimputer.rds")
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
+```
+
+Users can choose whether to use new data for initial imputation. By
+default, the information of training data is used to initially impute
+the missing data in the new dataset (`initial.newdata = FALSE`). After
+this, the missing values in the new dataset will be imputed using the
+saved models from the imputer object. This process will be considerably
+faster because it does not involve rebuilding the imputation models.
+
+``` r
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
+```
+
+If PMM is used in
+[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md),
+predicted values of missing entries in the new dataset will be matched
+with donors from the training data. Additionally, users can set the
+number of donors to be used in PMM when imputing new data. The default
+setting `pmm.k = NULL` indicates that the same setting as the training
+object will be used.
+
+Similarly, users can set the number of imputed datasets `m` in
+[`impute_new()`](https://agnesdeng.github.io/mixgb/reference/impute_new.md).
+Note that this value has to be less than or equal to the `m` value
+specified in
+[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md). If
+this value is not specified, the function will use the same `m` value as
+the saved object.
+
+``` r
+test.imputed <- impute_new(object = mixgb.obj, newdata = test.data, initial.newdata = FALSE, pmm.k = 3, m = 4)
+```

@@ -1,4 +1,8 @@
 url: https://agnesdeng.github.io/mixgb/
 template:
   bootstrap: 5
+  bslib:
+  includes:
+    in_header: |
+      <link rel="stylesheet" href="extra.css">
 

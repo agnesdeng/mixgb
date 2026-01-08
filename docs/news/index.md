@@ -1,0 +1,250 @@
+# Changelog
+
+## mixgb 2.1.3
+
+#### New Features
+
+- When `save.models = TRUE` in
+  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md), the
+  return object now includes the mean and variance of imputed values for
+  each variable for each iteration. This would allow users to plot
+  convergence diagnostics using package `vismi`.
+
+## mixgb 2.0.3
+
+CRAN release: 2025-12-07
+
+#### Bug fix
+
+- global variable warning resolved
+
+## mixgb 2.0.2
+
+#### Deprecation
+
+- Removed support for bootstrap in
+  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md)
+
+#### related to XGBoost Parameter Changes
+
+- related to `xgb.train()`:
+  - `num_class` now passed through `params` list, need to set
+    `num_class=NULL` for non-multiclass imputation.
+
+#### Refactorisation
+
+- Refactored `mixgb_null()` function for better readability and
+  maintainability - using helper functions in `impute_each.R`. Other
+  relevant functions will be updated later.
+
+## mixgb 2.0.1
+
+#### Bug fix
+
+- Removed macOS-specific `-framework Accelerate` flag for Linux builds
+  in `Makevars` file \### related to XGBoost Parameter Changes
+- related to `xgb.train()`:
+  - `num_class` now passed through `params` list.
+- remove `reshape = TRUE` argument in
+  [`predict()`](https://rdrr.io/r/stats/predict.html) function as it is
+  deprecated in XGBoost \>= 2.0.0.
+
+## mixgb 2.0.0
+
+### Breaking Changes
+
+- The package is now compatible with XGBoost version 3.1.1.1 or higher.
+  \### related to XGBoost Parameter Changes
+- related to `xgb.train()`:
+  - `watchlist` is changed to `evals`
+  - `objective` and `eval_metric` are now passed through `params` list.
+- related to `xgb.cv()`:
+  - convert data from `sparse.model.matrix` into `xgb.DMatrix` format.
+    Note, this is a quick fix for minimal safe change, and we plan to
+    further optimise data handling in future releases.
+  - `best.nrounds` is now obtained via
+    `cv.train$early_stop$best_iteration` instead of
+    `cv.train$best_iteration`.
+
+## mixgb 1.5.3
+
+CRAN release: 2025-04-06
+
+#### Bug fix
+
+- Fix an error in `cbind2(Mis.m, Obs.m)` that occurred when the imputed
+  dataset had only a single incomplete variable.
+  - Cause of error: In this scenario, `Mis.m` (a matrix of all other
+    incomplete variables except the currently imputed one) was a `0x0`
+    matrix, which caused error during binding.
+
+## mixgb 1.5.2
+
+CRAN release: 2024-12-02
+
+#### For CRAN Submission
+
+- Significantly faster imputation by optimising data preprocessing and
+  the use of **RcppArmadillo**
+- Visual diagnostic functions have been moved to the `vismi` package
+- Update Documentation
+
+## mixgb 1.4.2
+
+#### Bug fix
+
+- Set `drop.unused.levels = FALSE` in `fac2sparse()` to prevent dropping
+  unused levels in factor or ordinal factor.
+  - Ensure the feature matrix has the same number of columns to feed in
+    XGBoost
+
+## mixgb 1.4.1
+
+#### Compatibility
+
+- Compatible with both XGBoost \>=2.0.0 or CRAN version of XGBoost
+  (=1.7.5.1)
+
+#### Bug fix
+
+- Correct feature type for numeric and integer variable for initial
+  imputation
+- Update `save_yhatobs()` for Type 1 pmm.
+
+## mixgb 1.4.0
+
+- Optimised
+  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) for
+  large datasets:
+  - Significantly faster imputation by optimising data preprocessing and
+    the use of **RcppArmadillo**
+  - Enhanced memory efficiency with in-place modifications using
+    **data.table**
+  - Bootstrapping option removed from
+    [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md).
+    Users can still use bootstrap in the archived function `mixgb0()`.
+  - `PMM` is now set to `NULL` by default.
+
+## mixgb 1.3.2
+
+#### Miscellaneous
+
+- Improves package documentation regarding the import of `xgb.save()`
+  and `xgb.load()` from XGBoost.
+
+## mixgb 1.3.1
+
+#### Compatibility
+
+- Makes the package compatible with XGBoost 2.0.0 with GPU support:
+  - Introduces a new parameter `device`.
+  - Deprecates parameters `gpu_id` and `predictor`.
+  - Sets `tree_method = "hist"` by default, aligning with XGBoost 2.0.0.
+
+#### New Features
+
+- Introduces support for saving imputation models to a local directory
+  through the parameter `save.models.folder` in
+  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md).
+  - Models save in JSON format using `xgb.save()`, a method recommended
+    by XGBoost for future compatibility.
+  - When `save.models.folder` is specified, the return object of
+    [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md)
+    includes the current imputed datasets, directories for imputation
+    models, and relevant parameters. This object can save using
+    [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) as it doesn’t
+    directly contain the models. Users can later load this object into R
+    and employ `impute_new(object, newdata, ...)` for new data
+    imputation.
+
+## mixgb 1.2.1
+
+#### Updates
+
+- Includes the URL of the published article.
+
+## mixgb 1.2.0
+
+#### New Features
+
+- Enhances `mixgb(data,...)` to support datasets with diverse data
+  types:
+
+  - numeric
+  - integer
+  - factor
+  - logical
+
+  > Note: Users must manually convert character variables to factors.
+
+## mixgb 1.1.0
+
+#### New Features
+
+- Introduces
+  [`default_params()`](https://agnesdeng.github.io/mixgb/reference/default_params.md),
+  an auxiliary function for
+  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md), to
+  validate the list of XGBoost hyperparameters supplied by the user. It
+  simplifies hyperparameter modifications without requiring explicit
+  specification of all default values.
+
+#### Bug Fixes
+
+- Addresses issues related to PMM for multiclass variables.
+- Updates `plot_hist()` and `plot_bar()` to align with changes in
+  ggplot2 3.4.0:
+  - Replaces `..density..` with `after_stat(density)` in `plot_hist()`.
+  - Replaces `..prop..` with `after_stat(prop)` in `plot_bar()`.
+
+## mixgb 1.0.2
+
+CRAN release: 2023-02-16
+
+#### Minor Changes
+
+- Adjusts examples to use `nthread = 2` to comply with CRAN policies.
+
+## mixgb 1.0.1
+
+#### Changes in Default Settings
+
+- Transitions from bootstrapping to subsampling. Subsampling, set at
+  `subsample = 0.7`, becomes the default method due to identified biases
+  with bootstrapping in certain scenarios.
+  - Default for
+    [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md):
+    - Subsampling: `subsample = 0.7`.
+    - No bootstrapping: `bootstrap = FALSE`.
+
+## mixgb 0.1.1
+
+#### Minor Bug Fixes and Updates
+
+- Resolves a minor issue in the
+  [`createNA()`](https://agnesdeng.github.io/mixgb/reference/createNA.md)
+  function.
+- Modifies default settings in
+  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md):
+  - `ordinalAsInteger`: Changes from `TRUE` to `FALSE`.
+  - `max_depth`: Changes from 6 to 3.
+  - `nrounds`: Changes from 50 to 100.
+  - `bootstrap`: Sets to `TRUE` by default.
+
+## mixgb 0.1.0
+
+CRAN release: 2022-06-07
+
+#### Initial Release
+
+- First version releases on CRAN.
+- Supports both single and multiple imputation.
+- Offers customisable settings for bootstrapping and predictive
+  matching.
+- Provides visual diagnostics for multiply imputed data.
+
+#### Notes
+
+- Mac OSX users might face challenges with multithreading in `mixgb` as
+  `xgboost` requires OpenMP for multi-core operations. For details,
+  please refer to [OpenMP for Mac](https://mac.r-project.org/openmp/).
