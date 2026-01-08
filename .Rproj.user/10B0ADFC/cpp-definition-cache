@@ -1,0 +1,53 @@
+[
+    {
+        "file": "/Users/agnes/Desktop/mixgb/src/cbind_combo.cpp",
+        "file_last_write": 1700104276.0,
+        "definitions": [
+            {
+                "usr": "c:@F@cbind_combo#&1$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "cbind_combo(const Rcpp::List &)",
+                "file": "/Users/agnes/Desktop/mixgb/src/cbind_combo.cpp",
+                "line": 5,
+                "column": 14,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    },
+    {
+        "file": "/Users/agnes/Desktop/mixgb/src/cbind_combo0.cpp",
+        "file_last_write": 1700104276.0,
+        "definitions": [
+            {
+                "usr": "c:@F@cbind_combo0#&1$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "cbind_combo0(const Rcpp::List &)",
+                "file": "/Users/agnes/Desktop/mixgb/src/cbind_combo0.cpp",
+                "line": 5,
+                "column": 14,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    },
+    {
+        "file": "/Users/agnes/Desktop/mixgb/src/cbind_sparse_matrix.cpp",
+        "file_last_write": 1698094453.0,
+        "definitions": [
+            {
+                "usr": "c:@F@cbind_sparse_matrix#&1$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "cbind_sparse_matrix(const Rcpp::List &)",
+                "file": "/Users/agnes/Desktop/mixgb/src/cbind_sparse_matrix.cpp",
+                "line": 5,
+                "column": 14,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    }
+]
