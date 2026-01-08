@@ -116,14 +116,12 @@ Imputation performance can be affected by the hyperparameter settings.
 Although tuning a large set of hyperparameters may appear intimidating,
 it is often possible to narrowing down the search space because many
 hyperparameters are correlated. In our package, the function
-[`mixgb_cv()`](https://agnesdeng.github.io/mixgb/reference/mixgb_cv.md)
-can be used to tune the number of boosting rounds - `nrounds`. There is
-no default `nrounds` value in `XGBoost,` so users are required to
-specify this value themselves. The default `nrounds` in
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) is
-100. However, we recommend using
-[`mixgb_cv()`](https://agnesdeng.github.io/mixgb/reference/mixgb_cv.md)
-to find the optimal `nrounds` first.
+[`mixgb_cv()`](../reference/mixgb_cv.md) can be used to tune the number
+of boosting rounds - `nrounds`. There is no default `nrounds` value in
+`XGBoost,` so users are required to specify this value themselves. The
+default `nrounds` in [`mixgb()`](../reference/mixgb.md) is 100. However,
+we recommend using [`mixgb_cv()`](../reference/mixgb_cv.md) to find the
+optimal `nrounds` first.
 
 ``` r
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
@@ -164,15 +162,13 @@ cv.results$best.nrounds
 #> [1] 16
 ```
 
-By default,
-[`mixgb_cv()`](https://agnesdeng.github.io/mixgb/reference/mixgb_cv.md)
-will randomly choose an incomplete variable as the response and build an
-XGBoost model with other variables as explanatory variables using the
-complete cases of the dataset. Therefore, each run of
-[`mixgb_cv()`](https://agnesdeng.github.io/mixgb/reference/mixgb_cv.md)
-will likely return different results. Users can also specify the
-response and covariates in the argument `response` and `select_features`
-respectively.
+By default, [`mixgb_cv()`](../reference/mixgb_cv.md) will randomly
+choose an incomplete variable as the response and build an XGBoost model
+with other variables as explanatory variables using the complete cases
+of the dataset. Therefore, each run of
+[`mixgb_cv()`](../reference/mixgb_cv.md) will likely return different
+results. Users can also specify the response and covariates in the
+argument `response` and `select_features` respectively.
 
 ``` r
 cv.results <- mixgb_cv(
@@ -185,8 +181,7 @@ cv.results$best.nrounds
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) to
-obtain 5 imputed datasets.
+[`mixgb()`](../reference/mixgb.md) to obtain 5 imputed datasets.
 
 ``` r
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)

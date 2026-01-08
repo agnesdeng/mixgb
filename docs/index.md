@@ -51,11 +51,9 @@ Here are some common issues:
 - Variables of “character” type should be converted to “factor” instead
 - Variables of “factor” type should have at least two levels
 
-The function
-[`data_clean()`](https://agnesdeng.github.io/mixgb/reference/data_clean.md)
-serves the purpose of performing a preliminary check and fix some
-evident issues. However, the function cannot resolve all data
-quality-related problems.
+The function [`data_clean()`](reference/data_clean.md) serves the
+purpose of performing a preliminary check and fix some evident issues.
+However, the function cannot resolve all data quality-related problems.
 
 ``` r
 cleanWithNA.df <- data_clean(rawdata)
@@ -158,14 +156,12 @@ Imputation performance can be affected by the hyperparameter settings.
 Although tuning a large set of hyperparameters may appear intimidating,
 it is often possible to narrowing down the search space because many
 hyperparameters are correlated. In our package, the function
-[`mixgb_cv()`](https://agnesdeng.github.io/mixgb/reference/mixgb_cv.md)
-can be used to tune the number of boosting rounds - `nrounds`. There is
-no default `nrounds` value in `XGBoost,` so users are required to
-specify this value themselves. The default `nrounds` in
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) is
-100. However, we recommend using
-[`mixgb_cv()`](https://agnesdeng.github.io/mixgb/reference/mixgb_cv.md)
-to find the optimal `nrounds` first.
+[`mixgb_cv()`](reference/mixgb_cv.md) can be used to tune the number of
+boosting rounds - `nrounds`. There is no default `nrounds` value in
+`XGBoost,` so users are required to specify this value themselves. The
+default `nrounds` in [`mixgb()`](reference/mixgb.md) is 100. However, we
+recommend using [`mixgb_cv()`](reference/mixgb_cv.md) to find the
+optimal `nrounds` first.
 
 ``` r
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
@@ -177,12 +173,10 @@ cv.results$best.nrounds
 #> [1] 11
 ```
 
-By default,
-[`mixgb_cv()`](https://agnesdeng.github.io/mixgb/reference/mixgb_cv.md)
-will randomly choose an incomplete variable as the response and build an
-XGBoost model with other variables as explanatory variables using the
-complete cases of the dataset. Therefore, each run of
-[`mixgb_cv()`](https://agnesdeng.github.io/mixgb/reference/mixgb_cv.md)
+By default, [`mixgb_cv()`](reference/mixgb_cv.md) will randomly choose
+an incomplete variable as the response and build an XGBoost model with
+other variables as explanatory variables using the complete cases of the
+dataset. Therefore, each run of [`mixgb_cv()`](reference/mixgb_cv.md)
 will likely return different results. Users can also specify the
 response and covariates in the argument `response` and `select_features`
 respectively.
@@ -198,8 +192,7 @@ cv.results$best.nrounds
 ```
 
 Let us just try setting `nrounds = cv.results$best.nrounds` in
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) to
-obtain 5 imputed datasets.
+[`mixgb()`](reference/mixgb.md) to obtain 5 imputed datasets.
 
 ``` r
 imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
@@ -231,9 +224,8 @@ train.data <- nhanes3[idx, ]
 test.data <- nhanes3[-idx, ]
 ```
 
-Next we impute the training data using
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md). We
-can use the training data to generate `m` imputed datasets and save
+Next we impute the training data using [`mixgb()`](reference/mixgb.md).
+We can use the training data to generate `m` imputed datasets and save
 their imputation models. To achieve this, users need to set
 `save.models = TRUE`. By default, imputation models for all variables
 with missing values in the training data will be saved
@@ -248,11 +240,11 @@ is advisable to specify the names or indices of these variables in
 
 To save the imputer object, users need to specify a local directory in
 the parameter `save.models.folder` in the main function
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md).
-Models will be save as JSON format by calling `xgb.save()` internally.
-Saving XGBoost models in this way instead of using `saveRDS` in R is
-recommended by XGBoost. This can ensure that the imputation models can
-still be used in later release of XGBoost.
+[`mixgb()`](reference/mixgb.md). Models will be save as JSON format by
+calling `xgb.save()` internally. Saving XGBoost models in this way
+instead of using `saveRDS` in R is recommended by XGBoost. This can
+ensure that the imputation models can still be used in later release of
+XGBoost.
 
 ``` r
 # obtain m imputed datasets for train.data and save
@@ -271,9 +263,7 @@ include the following:
   variables specified in `save.vars`.
 
 - `params`: a list of parameters that are required for imputing new data
-  using
-  [`impute_new()`](https://agnesdeng.github.io/mixgb/reference/impute_new.md)
-  later on.
+  using [`impute_new()`](reference/impute_new.md) later on.
 
 - `XGB.save` : a parameter indicates whether `XGB.models` are the saved
   models or the directories for the saved models.
@@ -284,8 +274,7 @@ not worry about saving this object via
 can load the object into R and impute new data.
 
 To impute new data with this saved imputer object, we can use the
-[`impute_new()`](https://agnesdeng.github.io/mixgb/reference/impute_new.md)
-function.
+[`impute_new()`](reference/impute_new.md) function.
 
 ``` r
 mixgb.obj <- readRDS(file = "C:/Users/.../mixgbimputer.rds")
@@ -303,21 +292,17 @@ faster because it does not involve rebuilding the imputation models.
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
 ```
 
-If PMM is used in
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md),
-predicted values of missing entries in the new dataset will be matched
-with donors from the training data. Additionally, users can set the
-number of donors to be used in PMM when imputing new data. The default
-setting `pmm.k = NULL` indicates that the same setting as the training
-object will be used.
+If PMM is used in [`mixgb()`](reference/mixgb.md), predicted values of
+missing entries in the new dataset will be matched with donors from the
+training data. Additionally, users can set the number of donors to be
+used in PMM when imputing new data. The default setting `pmm.k = NULL`
+indicates that the same setting as the training object will be used.
 
 Similarly, users can set the number of imputed datasets `m` in
-[`impute_new()`](https://agnesdeng.github.io/mixgb/reference/impute_new.md).
-Note that this value has to be less than or equal to the `m` value
-specified in
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md). If
-this value is not specified, the function will use the same `m` value as
-the saved object.
+[`impute_new()`](reference/impute_new.md). Note that this value has to
+be less than or equal to the `m` value specified in
+[`mixgb()`](reference/mixgb.md). If this value is not specified, the
+function will use the same `m` value as the saved object.
 
 ``` r
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data,
@@ -350,9 +335,8 @@ library(mixgb)
 
 To utilize the GPU version of mixgb(), users can simply specify
 `device = "cuda"` in the params list which will then be passed to the
-`xgb.params` argument in the function
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md). Note
-that by default, `tree_method = "hist"` from XGBoost 2.0.0.
+`xgb.params` argument in the function [`mixgb()`](reference/mixgb.md).
+Note that by default, `tree_method = "hist"` from XGBoost 2.0.0.
 
 ``` r
 params <- list(device = "cuda", subsample = 0.7, nthread = 1,
@@ -387,9 +371,9 @@ library(mixgb)
 To utilize the GPU version of mixgb(), users can simply specify
 `tree_method = "gpu_hist"` in the params list which will then be passed
 to the `xgb.params` argument in the function
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md). Other
-adjustable GPU-related arguments include `gpu_id` and `predictor`. By
-default, `gpu_id = 0` and `predictor = "auto"`.
+[`mixgb()`](reference/mixgb.md). Other adjustable GPU-related arguments
+include `gpu_id` and `predictor`. By default, `gpu_id = 0` and
+`predictor = "auto"`.
 
 ``` r
 params <- list(max_depth = 3, subsample = 0.7, nthread = 1, tree_method = "gpu_hist",

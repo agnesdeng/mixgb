@@ -29,9 +29,8 @@ impute_new(
 
   Whether to use the information from the new data to initially impute
   the missing values of the new data. By default, this is set to
-  `FALSE`, the original data passed to
-  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) will
-  be used for initial imputation.
+  `FALSE`, the original data passed to [`mixgb()`](mixgb.md) will be
+  used for initial imputation.
 
 - pmm.k:
 

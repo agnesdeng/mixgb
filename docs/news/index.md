@@ -4,8 +4,7 @@
 
 #### New Features
 
-- When `save.models = TRUE` in
-  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md), the
+- When `save.models = TRUE` in [`mixgb()`](../reference/mixgb.md), the
   return object now includes the mean and variance of imputed values for
   each variable for each iteration. This would allow users to plot
   convergence diagnostics using package `vismi`.
@@ -22,8 +21,7 @@ CRAN release: 2025-12-07
 
 #### Deprecation
 
-- Removed support for bootstrap in
-  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md)
+- Removed support for bootstrap in [`mixgb()`](../reference/mixgb.md)
 
 #### related to XGBoost Parameter Changes
 
@@ -113,16 +111,14 @@ CRAN release: 2024-12-02
 
 ## mixgb 1.4.0
 
-- Optimised
-  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) for
-  large datasets:
+- Optimised [`mixgb()`](../reference/mixgb.md) for large datasets:
   - Significantly faster imputation by optimising data preprocessing and
     the use of **RcppArmadillo**
   - Enhanced memory efficiency with in-place modifications using
     **data.table**
   - Bootstrapping option removed from
-    [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md).
-    Users can still use bootstrap in the archived function `mixgb0()`.
+    [`mixgb()`](../reference/mixgb.md). Users can still use bootstrap in
+    the archived function `mixgb0()`.
   - `PMM` is now set to `NULL` by default.
 
 ## mixgb 1.3.2
@@ -145,13 +141,13 @@ CRAN release: 2024-12-02
 
 - Introduces support for saving imputation models to a local directory
   through the parameter `save.models.folder` in
-  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md).
+  [`mixgb()`](../reference/mixgb.md).
   - Models save in JSON format using `xgb.save()`, a method recommended
     by XGBoost for future compatibility.
   - When `save.models.folder` is specified, the return object of
-    [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md)
-    includes the current imputed datasets, directories for imputation
-    models, and relevant parameters. This object can save using
+    [`mixgb()`](../reference/mixgb.md) includes the current imputed
+    datasets, directories for imputation models, and relevant
+    parameters. This object can save using
     [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) as it doesn’t
     directly contain the models. Users can later load this object into R
     and employ `impute_new(object, newdata, ...)` for new data
@@ -181,11 +177,9 @@ CRAN release: 2024-12-02
 
 #### New Features
 
-- Introduces
-  [`default_params()`](https://agnesdeng.github.io/mixgb/reference/default_params.md),
-  an auxiliary function for
-  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md), to
-  validate the list of XGBoost hyperparameters supplied by the user. It
+- Introduces [`default_params()`](../reference/default_params.md), an
+  auxiliary function for [`mixgb()`](../reference/mixgb.md), to validate
+  the list of XGBoost hyperparameters supplied by the user. It
   simplifies hyperparameter modifications without requiring explicit
   specification of all default values.
 
@@ -212,8 +206,7 @@ CRAN release: 2023-02-16
 - Transitions from bootstrapping to subsampling. Subsampling, set at
   `subsample = 0.7`, becomes the default method due to identified biases
   with bootstrapping in certain scenarios.
-  - Default for
-    [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md):
+  - Default for [`mixgb()`](../reference/mixgb.md):
     - Subsampling: `subsample = 0.7`.
     - No bootstrapping: `bootstrap = FALSE`.
 
@@ -221,11 +214,9 @@ CRAN release: 2023-02-16
 
 #### Minor Bug Fixes and Updates
 
-- Resolves a minor issue in the
-  [`createNA()`](https://agnesdeng.github.io/mixgb/reference/createNA.md)
+- Resolves a minor issue in the [`createNA()`](../reference/createNA.md)
   function.
-- Modifies default settings in
-  [`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md):
+- Modifies default settings in [`mixgb()`](../reference/mixgb.md):
   - `ordinalAsInteger`: Changes from `TRUE` to `FALSE`.
   - `max_depth`: Changes from 6 to 3.
   - `nrounds`: Changes from 50 to 100.

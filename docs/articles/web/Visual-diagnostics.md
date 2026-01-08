@@ -38,19 +38,17 @@ colSums(is.na(withNA.df))
 #>      161      169      124      167      117      192        7      211
 ```
 
-We then impute this dataset using
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) with
-default settings. After completion, a list of five imputed datasets is
-assigned to `imputed.data`. Each imputed dataset will have the same
+We then impute this dataset using [`mixgb()`](../../reference/mixgb.md)
+with default settings. After completion, a list of five imputed datasets
+is assigned to `imputed.data`. Each imputed dataset will have the same
 dimension as the original data.
 
 ``` r
 imputed.data <- mixgb(data = withNA.df, m = 5, pmm.type = "auto")
 ```
 
-By using the function
-[`show_var()`](https://agnesdeng.github.io/mixgb/reference/show_var.md),
-we can see the multiply imputed values of the missing data for a given
+By using the function [`show_var()`](../../reference/show_var.md), we
+can see the multiply imputed values of the missing data for a given
 variable. The function returns a data.table of `m` columns, each of
 which represents a set of imputed values for the variable of interest.
 Note that the output of this function only includes the imputed values
@@ -87,31 +85,27 @@ show_var(imputation.list = imputed.data, var.name = "HFF1", original.data = with
 
 The `mixgb` package provides the following visual diagnostics functions:
 
-1.  Single variable:
-    [`plot_hist()`](https://agnesdeng.github.io/mixgb/reference/plot_hist.md),
-    [`plot_box()`](https://agnesdeng.github.io/mixgb/reference/plot_box.md),
-    [`plot_bar()`](https://agnesdeng.github.io/mixgb/reference/plot_bar.md)
-    ;
+1.  Single variable: [`plot_hist()`](../../reference/plot_hist.md),
+    [`plot_box()`](../../reference/plot_box.md),
+    [`plot_bar()`](../../reference/plot_bar.md) ;
 
-2.  Two variables:
-    [`plot_2num()`](https://agnesdeng.github.io/mixgb/reference/plot_2num.md),
-    [`plot_2fac()`](https://agnesdeng.github.io/mixgb/reference/plot_2fac.md),
-    [`plot_1num1fac()`](https://agnesdeng.github.io/mixgb/reference/plot_1num1fac.md)
-    ;
+2.  Two variables: [`plot_2num()`](../../reference/plot_2num.md),
+    [`plot_2fac()`](../../reference/plot_2fac.md),
+    [`plot_1num1fac()`](../../reference/plot_1num1fac.md) ;
 
 3.  Three variables:
-    [`plot_2num1fac()`](https://agnesdeng.github.io/mixgb/reference/plot_2num1fac.md),
-    [`plot_1num2fac()`](https://agnesdeng.github.io/mixgb/reference/plot_1num2fac.md).
+    [`plot_2num1fac()`](../../reference/plot_2num1fac.md),
+    [`plot_1num2fac()`](../../reference/plot_1num2fac.md).
 
 Each function returns `m+1` panels that enable a comparison between the
 observed data and `m` sets of imputed values for the missing data.
 
 Users can also simply use high-level functions
-[`plot1D()`](https://agnesdeng.github.io/mixgb/reference/plot1D.md),
-[`plot2D()`](https://agnesdeng.github.io/mixgb/reference/plot2D.md) and
-[`plot3D()`](https://agnesdeng.github.io/mixgb/reference/plot3D.md).
-These functions will automatically call the corresponding low-level
-functions based on the types of variables.
+[`plot1D()`](../../reference/plot1D.md),
+[`plot2D()`](../../reference/plot2D.md) and
+[`plot3D()`](../../reference/plot3D.md). These functions will
+automatically call the corresponding low-level functions based on the
+types of variables.
 
 ### 2.1 Single variable
 
@@ -124,8 +118,8 @@ impute.
 
 We can plot an imputed numeric variable by histogram or boxplot.
 
-- [`plot_hist()`](https://agnesdeng.github.io/mixgb/reference/plot_hist.md):
-  plot histograms with density curves.
+- [`plot_hist()`](../../reference/plot_hist.md): plot histograms with
+  density curves.
 
   Histograms are a useful tool for displaying the distribution of
   numeric data. Users can examine the shapes of the histograms to
@@ -146,15 +140,14 @@ We can plot an imputed numeric variable by histogram or boxplot.
 
   ![](Visual-diagnostics_files/figure-html/unnamed-chunk-6-1.png)
 
-- [`plot_box()`](https://agnesdeng.github.io/mixgb/reference/plot_box.md):
-  plot box plots with overlaying data points.
+- [`plot_box()`](../../reference/plot_box.md): plot box plots with
+  overlaying data points.
 
-  Users can use
-  [`plot_box()`](https://agnesdeng.github.io/mixgb/reference/plot_box.md)
-  to compare the median, lower and upper quantiles of imputed values
-  with those of the observed values. The plot also visually displays the
-  disparity in counts between observed and missing values in the
-  variable of interest.
+  Users can use [`plot_box()`](../../reference/plot_box.md) to compare
+  the median, lower and upper quantiles of imputed values with those of
+  the observed values. The plot also visually displays the disparity in
+  counts between observed and missing values in the variable of
+  interest.
 
   ``` r
   plot_box(
@@ -167,11 +160,10 @@ We can plot an imputed numeric variable by histogram or boxplot.
 
 #### 2.1.2 Factor
 
-- [`plot_bar()`](https://agnesdeng.github.io/mixgb/reference/plot_bar.md):
-  plot bar plots
+- [`plot_bar()`](../../reference/plot_bar.md): plot bar plots
 
   The proportion of each level in a factor will be shown by
-  [`plot_bar()`](https://agnesdeng.github.io/mixgb/reference/plot_bar.md).
+  [`plot_bar()`](../../reference/plot_bar.md).
 
   ``` r
   plot_bar(
@@ -198,14 +190,14 @@ generating a plot, as they can be viewed either as numeric or factor
 variables. To plot an imputed integer variable, users can use one of the
 following functions based on their preferred representation:
 
-- [`plot_hist()`](https://agnesdeng.github.io/mixgb/reference/plot_hist.md):
-  plot histograms with density curves
+- [`plot_hist()`](../../reference/plot_hist.md): plot histograms with
+  density curves
 
-- [`plot_box()`](https://agnesdeng.github.io/mixgb/reference/plot_box.md):
-  plot box plot with overlaying data points
+- [`plot_box()`](../../reference/plot_box.md): plot box plot with
+  overlaying data points
 
-- [`plot_bar()`](https://agnesdeng.github.io/mixgb/reference/plot_bar.md):
-  plot bar plot (treat an integer variable as a factor)
+- [`plot_bar()`](../../reference/plot_bar.md): plot bar plot (treat an
+  integer variable as a factor)
 
   ``` r
   plot_hist(
@@ -236,17 +228,16 @@ following functions based on their preferred representation:
 
 #### 2.1.4 Ordinal factor
 
-By default, the function
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) does
-not convert ordinal factors to integers. Therefore, we may simply plot
+By default, the function [`mixgb()`](../../reference/mixgb.md) does not
+convert ordinal factors to integers. Therefore, we may simply plot
 ordinal factors as factors (see Section 2.1.2).
 
 However, setting `ordinalAsInteger = TRUE` in
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md) may
-speed up the imputation process, but users must decide whether to
-transform them back. If we choose to convert ordinal factors to integers
-prior to imputation, the imputed values must be plotted as if they were
-integers (see Section 2.1.3).
+[`mixgb()`](../../reference/mixgb.md) may speed up the imputation
+process, but users must decide whether to transform them back. If we
+choose to convert ordinal factors to integers prior to imputation, the
+imputed values must be plotted as if they were integers (see Section
+2.1.3).
 
 ``` r
 imputed.data2 <- mixgb(data = withNA.df, m = 5, ordinalAsInteger = TRUE)
@@ -288,9 +279,8 @@ both of the variables.
 #### 2.2.1 Two numeric variables
 
 We can generate scatter plots of two imputed numeric variables by using
-[`plot_2num()`](https://agnesdeng.github.io/mixgb/reference/plot_2num.md).
-We can specify the x-axis variable in `var.x` and the y-axis variable in
-`var.y`.
+[`plot_2num()`](../../reference/plot_2num.md). We can specify the x-axis
+variable in `var.x` and the y-axis variable in `var.y`.
 
 Users can choose to plot the shapes of different types of missing values
 by setting `shape = TRUE`. We only recommend plotting the shapes for
@@ -323,10 +313,9 @@ plot_2num(
 #### 2.2.2 One numeric vs one factor
 
 We can plot a numeric variable versus a factor using
-[`plot_1num1fac()`](https://agnesdeng.github.io/mixgb/reference/plot_1num1fac.md).
-The output of this function is a box plot with overlaying points. Users
-are required to specify a numeric variable in `var.num` and a factor in
-`var.fac`.
+[`plot_1num1fac()`](../../reference/plot_1num1fac.md). The output of
+this function is a box plot with overlaying points. Users are required
+to specify a numeric variable in `var.num` and a factor in `var.fac`.
 
 **NA.condition** is similar to the definition in Section 2.2.1.
 
@@ -342,8 +331,7 @@ plot_1num1fac(
 #### 2.2.3 Two factors
 
 We can generate bar plots to show the relationship between two factors
-by using
-[`plot_2fac()`](https://agnesdeng.github.io/mixgb/reference/plot_2fac.md).
+by using [`plot_2fac()`](../../reference/plot_2fac.md).
 
 ``` r
 plot_2fac(
@@ -356,11 +344,10 @@ plot_2fac(
 
 #### 2.2.4 One numeric vs one integer
 
-We can use
-[`plot_2num()`](https://agnesdeng.github.io/mixgb/reference/plot_2num.md)
-to visualize the relationship between a numeric variable and an integer
-variable. Note that the graphs would appear differently if the variables
-`var.x` and `var.y` were swapped.
+We can use [`plot_2num()`](../../reference/plot_2num.md) to visualize
+the relationship between a numeric variable and an integer variable.
+Note that the graphs would appear differently if the variables `var.x`
+and `var.y` were swapped.
 
 ``` r
 plot_2num(
@@ -395,19 +382,18 @@ plot_1num1fac(
 #### 2.2.5 Two integers
 
 We can plot two integer variables using either
-[`plot_2num()`](https://agnesdeng.github.io/mixgb/reference/plot_2num.md)
-,[`plot_1num1fac()`](https://agnesdeng.github.io/mixgb/reference/plot_1num1fac.md),
-or
-[`plot_2fac()`](https://agnesdeng.github.io/mixgb/reference/plot_2fac.md).
-Users should choose the plotting functions based on the nature of the
-variable. For example, if an integer variable `age` has values between 0
-and 110, it may be more convenient to treat `age` as numeric rather than
-a factor. If, on the other hand, an integer variable has just a few
-unique values (such as 1, 2, 3), it may be preferable to be plotted as a
-factor. In this dataset, there are only two variables of integer type -
-`HSHSIZER`(household size) and `HSAGEIR`(baby’s age ranging from 2 to 11
-months). Although there is no expected relationship between these two,
-we still create a plot for demonstration purposes.
+[`plot_2num()`](../../reference/plot_2num.md)
+,[`plot_1num1fac()`](../../reference/plot_1num1fac.md), or
+[`plot_2fac()`](../../reference/plot_2fac.md). Users should choose the
+plotting functions based on the nature of the variable. For example, if
+an integer variable `age` has values between 0 and 110, it may be more
+convenient to treat `age` as numeric rather than a factor. If, on the
+other hand, an integer variable has just a few unique values (such as 1,
+2, 3), it may be preferable to be plotted as a factor. In this dataset,
+there are only two variables of integer type - `HSHSIZER`(household
+size) and `HSAGEIR`(baby’s age ranging from 2 to 11 months). Although
+there is no expected relationship between these two, we still create a
+plot for demonstration purposes.
 
 ``` r
 plot_2num(
@@ -445,10 +431,10 @@ them has to be incomplete in the original dataset.
 
 We can generate a scatter plot of two numeric variables when conditioned
 on a factor by using
-[`plot_2num1fac()`](https://agnesdeng.github.io/mixgb/reference/plot_2num1fac.md).
-The variable for the x-axis should be specified in `var.x`, whereas the
-variable for the y-axis should be specified in `var.y`. The factor on
-which we want to condition is `con.fac`.
+[`plot_2num1fac()`](../../reference/plot_2num1fac.md). The variable for
+the x-axis should be specified in `var.x`, whereas the variable for the
+y-axis should be specified in `var.y`. The factor on which we want to
+condition is `con.fac`.
 
 ``` r
 plot_2num1fac(
@@ -506,8 +492,7 @@ plot_2num1fac(
 
 #### 2.3.2 One numeric variable and one factor conditional on another factor
 
-The function
-[`plot_1num2fac()`](https://agnesdeng.github.io/mixgb/reference/plot_1num2fac.md)
+The function [`plot_1num2fac()`](../../reference/plot_1num2fac.md)
 generates boxplots with overlaying data points for a numeric variable
 with a factor, conditional on another factor.
 
@@ -658,8 +643,7 @@ by simulation), we may compare them to the imputed values.
 
 Let us generate a simple dataset `full.df` and create 30% missing values
 in variable `norm1` and `norm2` under the MCAR mechanism. We then impute
-the `MCAR.df` dataset with
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md).
+the `MCAR.df` dataset with [`mixgb()`](../../reference/mixgb.md).
 
 ``` r
 N <- 1000

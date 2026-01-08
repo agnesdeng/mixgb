@@ -2,9 +2,8 @@
 
 Auxiliary function for setting up the default XGBoost-related
 hyperparameters for mixgb and checking the `xgb.params` argument in
-[`mixgb()`](https://agnesdeng.github.io/mixgb/reference/mixgb.md). For
-more details on XGBoost hyperparameters, please refer to [XGBoost
-documentation on
+[`mixgb()`](mixgb.md). For more details on XGBoost hyperparameters,
+please refer to [XGBoost documentation on
 parameters](https://xgboost.readthedocs.io/en/stable/parameter.html).
 
 ## Usage
