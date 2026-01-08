@@ -27,114 +27,21 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/agnesdeng/mixgb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The R package **mixgb** provides a scalable approach for multiple imputation by leveraging XGBoost, subsampling and predictive mean matching. We have shown that our method can yield less biased estimates and reflect appropriate imputation variability, while achieving high computational efficiency. For further information, please refer to our paper  [Multiple Imputation Through XGBoost][mixgb-url].
+The R package **mixgb** provides a scalable approach for multiple imputation by leveraging XGBoost, subsampling and predictive mean matching. We have shown that our method can yield less biased estimates and reflect appropriate imputation variability, while achieving high computational efficiency. For further details, see our paper  [Multiple Imputation Through XGBoost][mixgb-url].
 
-## References
-- Yongshi Deng & Thomas Lumley. (2023), [Multiple Imputation Through XGBoost][mixgb-url], Journal of Computational and Graphical Statistics, 33(2), 352-363. DOI: 10.1080/10618600.2023.2252501.
-
-- Tianqi Chen & Carlos Guestrin. (2016), [XGBoost: A Scalable Tree Boosting System][xgboost-url], In 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.
 
 ## New updates
 
-**New Release on CRAN! Dec 2025**
+**New Development Version on GitHub - Jan 2026**
+
+* Support saving intermediate imputation summary statistics so that they can be passed to the [vismi][vismi-url] package for convergence diagnostics.
+
+
+**New Release on CRAN - Dec 2025**
 
 * New CRAN version 2.0.3. Now compatible with XGBoost (3.1.2.1) on CRAN.
 
-* This update addresses breaking changes introduced in the latest XGBoost release on CRAN in December 2025. If you experience any problems, please post an issue on GitHub.
-
-**New Release: Nov 2025**
-
- * Breaking Changes! Now compatible with XGBoost (>=3.1.1.1). 
- 
- I will submit a new CRAN version once XGBoost release their new version on CRAN. Please try the development version of **mixgb** from GitHub for now. If you have any questions, please feel free to post an issue. 
- 
-
-**Nov 2024**
-
- * New CRAN version 1.5.2. A lot faster than 1.0.2!
- 
- * Some visual diagnostic functions have been moved to the `vismi` package, which provides a wide range of visualisation tools for multiple imputation. For more details, please check the `vismi` package on GitHub [Visualisation Tools for Multiple Imputation](https://github.com/agnesdeng/vismi).
-
-
-**Nov 2023**
-
- * New version of the `mixgb()` function has been optimized to greatly reduce imputation time for large datasets. 
-
- * **mixgb**(>=1.4.2) is compatible with both XGBoost(>=2.0.0) and XGBoost(CRAN version).
-
-
-**Oct 2023**
-
-  * Dependency Change: Starting from mixgb version 1.3.1, the package requires XGBoost version 2.0.0 or higher. As of now, this version is not available on CRAN. To get the required version with GPU support, please download it from [XGBoost GitHub Releases][xgboost-release]. Then in R, one can install XGBoost 2.0.0 and the newest version of **mixgb** as follows:
-
-```{r, eval = FALSE}
-# Change the file path where you saved the downloaded XGBoost package
-install.packages("path_to_downloaded_file/xgboost_r_gpu_win64_2.0.0.tar.gz", repos = NULL)
-```
-
-
-```{r, eval = FALSE}
-devtools::install_github("agnesdeng/mixgb")
-library(mixgb)
-```
-
-  * If you prefer to use the CRAN version of XGBoost, consider using an earlier version of **mixgb** (versions <1.3.1).
- 
-  * Now compatible with XGBoost 2.0.0!  To align with XGBoost 2.0.0, **mixgb** introduces new parameter `device` and removed parameters`gpu_id` and `predictor`. Also, `tree_method="hist"` by default.
-  
-    - `mixgb(device="cpu", tree_method="hist",.....)`
-  
-    - `mixgb(device="cuda", tree_method="hist",.....)`
-    
-  * Now support saving imputation models in a local directory in JSON format. 
-  
-
-**May 2023**
-
-  * Support logical data automatically without the need to convert it to factor type.
-  
-  Now `mixgb(data,...)` support a dataset with the following data types: 
-  
-    - numeric
-  
-    - integer
-
-    - factor
-  
-    - logical
-  
-  Please note that variables of `character` type need to be manually converted to factor by users before imputation. 
-
-**January 2023**
-
-  * Major change of default settings for mixgb(). 
-  
-   Our package has changed from using bootstrapping to subsampling with a default setting of `subsample = 0.7`. This decision is based on the discovery that although bootstrapping is generally effectively, it can introduce bias in certain scenarios. As a result, subsampling has been adopted as the default approach.
-
-
-**May 2022**
-  
-  * Introduce visual diagnostic functions for multiply imputed data.
-  * Use S3 instead of R6.
-  * Plot functions can now show masked missing data (if provided).
-
-**April 2022**
-  
-  * User can adjust the number of iterations with the `maxit` parameter.
-  * Both single and multiple imputation with XGBoost can use predictive mean matching.
-  * Bootstrapping data to obtain `m` imputations is optional. Users can set `bootstrap = FALSE` to disable bootstrap. Users can also set sampling-related hyperparameters of XGBoost (`subsample`, `colsample_bytree`, `colsample_bylevel`, `colsample_bynode`) to be less than 1 to achieve a similar effect.
-  * Add predicted mean matching type 0. Now the options for `pmm.type` are `NULL`,`0`,`1`,`2` or `"auto"` (type 2 for numeric/integer variables, no PMM for categorical variables).
-  * Add more validation checks.
-  * Compatible with `data.table`.
-  * Add function `mixgb_cv()` to pre-tune `nrounds` by cross-validation. 
-
-## Under development
-  * In progress: To Be Announced
-  * Planned: To Be Announced
-  * Under consideration: To implement PMM type 3
-
-## Notice
-  * For multithreading, users can set the XGBoost nthread parameter with OpenMP support. Be advised, OpenMP support is currently disabled on MacOS.
+* This update addresses breaking changes introduced in the latest XGBoost release on CRAN in December 2025. If you experience any problem, please post an issue on GitHub.
 
 
 ## 1. Installation
@@ -417,7 +324,11 @@ params <- list(
 mixgb.data <- mixgb(data = withNA.df, m = 5, xgb.params = params)
 ```
 
+### Notice
+  * For multithreading, users can set the XGBoost nthread parameter with OpenMP support. Be advised, OpenMP support is currently disabled on MacOS.
 
+
+[vismi-url]: https://github.com/agnesdeng/vismi
 
 [mixgb-url]: https://www.yongshideng.com/papers
 

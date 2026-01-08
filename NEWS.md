@@ -1,3 +1,8 @@
+# mixgb 2.1.3
+### New Features
+- When `save.models = TRUE` in `mixgb()`, the return object now includes the mean and variance of imputed values for each variable for each iteration. This would allow users to plot convergence diagnostics using package `vismi`.
+
+
 # mixgb 2.0.3
 ### Bug fix
 - global variable warning resolved

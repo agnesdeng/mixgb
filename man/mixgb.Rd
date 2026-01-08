@@ -106,6 +106,8 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 mixgb.data <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10)
 
 # obtain m multiply imputed datasets and save models for imputing new data later on
-mixgb.obj <- mixgb(data = nhanes3, m = 2, xgb.params = params, nrounds = 10,
-                   save.models = TRUE, save.models.folder = tempdir())
+mixgb.obj <- mixgb(
+  data = nhanes3, m = 2, xgb.params = params, nrounds = 10,
+  save.models = TRUE, save.models.folder = tempdir()
+)
 }

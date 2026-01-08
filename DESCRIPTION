@@ -1,6 +1,6 @@
 Package: mixgb
 Title: Multiple Imputation Through 'XGBoost'
-Version: 2.0.3
+Version: 2.1.3
 Authors@R: c(
     person(given = "Yongshi", family ="Deng", email = "agnes.yongshideng@gmail.com",
            role = c("aut","cre"),comment =c(ORCID = "0000-0001-5845-859X")),
