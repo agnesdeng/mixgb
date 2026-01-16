@@ -9,7 +9,7 @@ Imputation Through XGBoost](https://www.yongshideng.com/papers).
 
 ## New updates
 
-**New Development Version v2.1.3 on GitHub - Jan 2026**
+**New Development Version v2.2.3 on GitHub - Jan 2026**
 
 - Support saving intermediate imputation summary statistics so that they
   can be passed to the [vismi](https://agnesdeng.github.io/vismi/)
