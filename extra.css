@@ -1,0 +1,74 @@
+
+/* Custom navbar background color */
+  .navbar {
+    background-color: #cee396 !important; /* Yellow - adjust hex code as needed */
+  }
+
+/* Optional: Adjust text color for better contrast */
+  .navbar-brand {
+    color: #000000 !important; /* Black text */
+  }
+
+.navbar-brand,
+.navbar-brand:link,
+.navbar-brand:visited,
+.navbar-brand:focus,
+.navbar-brand:active {
+  color: #000000 !important;
+}
+
+.navbar-brand:hover {
+  color: #ffffff !important; /* on hover */
+}
+
+
+/* ========== Navbar Links ========== */
+  .navbar-nav .nav-link {
+    color: #000000 !important;
+  }
+.navbar-nav .nav-link:hover {
+  color: #ffffff !important;
+    background-color:  #cee396 !important; /* Orange background on hover */
+    border-radius: 4px; /* Optional: rounded corners */
+    transition: all 0.3s ease; /* Optional: smooth transition */
+}
+
+/* Current nav item */
+  .nav-item.active .nav-link {
+    background-color: #cee396; /* Replace with your desired color */
+      color: #ffffff!important; /* Change text color for better contrast if needed */
+  }
+
+
+/* Current location indicator side bar */
+  .navbar-nav .nav-link.active {
+    color: #ffffff !important;
+      background-color: #cee396 !important;
+  }
+
+
+
+/* ========== The clipboard icon button========== */
+  .btn-copy-ex {
+    color: #ffffff !important; /* Icon color */
+      background-color: #cee396 !important;
+      border: 1px solid #cee396 !important;
+  }
+
+
+
+/* ========== Links ========== */
+  /* All links on the site */
+  a {
+    color: #6b8e23 !important; /* Blue links - change as needed */
+  }
+
+/* Links on hover */
+  a:hover {
+    color: #556b2f !important; /* Darker blue on hover */
+  }
+
+/* Links that have been visited */
+  a:visited {
+    color: #556b2f  !important; /* lighter blue for visited links */
+  }

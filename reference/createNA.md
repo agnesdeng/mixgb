@@ -1,0 +1,47 @@
+# Create missing values for a dataset
+
+This function creates missing values under the missing complete at
+random (MCAR) mechanism. It is for demonstration purposes only.
+
+## Usage
+
+``` r
+createNA(data, cols = NULL, p = 0.3)
+```
+
+## Arguments
+
+- data:
+
+  A complete data frame.
+
+- cols:
+
+  A vector specifying the names of the columns in which missing values
+  should be generated.
+
+- p:
+
+  The proportion of missing values in the data frame or the proportions
+  of missing values corresponding to the variables specified in `cols`.
+
+## Value
+
+A data frame with artificial missing values
+
+## Examples
+
+``` r
+# Create 30% MCAR data across all variables in a dataset
+withNA.df <- createNA(data = iris, p = 0.3)
+
+# Create 30% MCAR data in a specified variable in a dataset
+withNA.df <- createNA(data = iris, cols = c("Sepal.Length"), p = 0.3)
+
+# Create MCAR data in several specified variables in a dataset
+withNA.df <- createNA(
+  data = iris,
+  cols = c("Sepal.Length", "Petal.Width", "Species"),
+  p = c(0.3, 0.2, 0.1)
+)
+```
