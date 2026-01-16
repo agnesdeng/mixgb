@@ -54,9 +54,7 @@ devtools::install_github("agnesdeng/mixgb")
 ```
 
 ```{r}
-# load mixgb
-#library(mixgb)
-devtools::load_all()
+library(mixgb)
 ```
 
 ### 1.1 Data cleaning before imputation
