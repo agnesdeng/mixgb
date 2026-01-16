@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# mixgb
+# mixgb <a href="https://agnesdeng.github.io/mixgb/"><img src="man/figures/logo.png" align="right" height="138" alt="mixgb website" /></a>
 
 <!-- badges: start -->
 
