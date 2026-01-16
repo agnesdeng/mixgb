@@ -8,6 +8,7 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/news/index.html</loc></url>
+<url><loc>/reference/check_data.html</loc></url>
 <url><loc>/reference/createNA.html</loc></url>
 <url><loc>/reference/data_clean.html</loc></url>
 <url><loc>/reference/default_params.html</loc></url>
@@ -17,6 +18,7 @@
 <url><loc>/reference/mixgb-package.html</loc></url>
 <url><loc>/reference/mixgb.html</loc></url>
 <url><loc>/reference/mixgb_cv.html</loc></url>
+<url><loc>/reference/newborn.html</loc></url>
 <url><loc>/reference/nhanes3.html</loc></url>
 <url><loc>/reference/nhanes3_newborn.html</loc></url>
 <url><loc>/reference/pipe.html</loc></url>

@@ -49,9 +49,7 @@ impute_numeric <- function(save,obs.data, mis.data, obs.y, xgb.params,
 
 }
 
-# ----------------------------
-# Helper: impute binary
-# ----------------------------
+
 impute_binary <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
                           nrounds,nthread, early_stopping_rounds, print_every_n, verbose,
                           pmm.type, pmm.link, pmm.k, yhatobs = NULL,original_levels) {
@@ -117,9 +115,8 @@ impute_binary <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
   }
 }
 
-  # ----------------------------
-# Helper: impute logical
-# ----------------------------
+
+
 impute_logical <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
                           nrounds,nthread, early_stopping_rounds, print_every_n, verbose,
                           pmm.type, pmm.link, pmm.k, yhatobs = NULL,original_levels){
@@ -184,9 +181,8 @@ impute_logical <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
 }
 
 
-# ----------------------------
-# Helper: impute multiclass
-# ----------------------------
+
+
 impute_multiclass <- function(save, obs.data, mis.data, obs.y, xgb.params,
                               nrounds,nthread, early_stopping_rounds, print_every_n, verbose,
                               pmm.type, pmm.k, yhatobs = NULL,original_levels) {

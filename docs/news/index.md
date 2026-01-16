@@ -1,5 +1,21 @@
 # Changelog
 
+## mixgb 2.2.3
+
+#### Changes
+
+- `data_clean()` now becomes
+  [`check_data()`](../reference/check_data.md). This function performs
+  preliminary sanity check before imputation. A few checks have been
+  added.
+- Some arguments’ names have changed in
+  [`show_var()`](../reference/show_var.md) function for compatibility
+  with **vismi** package.
+- The dataset `nhanes3_newborn` has been replaced with `newborn`, with
+  variables renamed for clarity and to align with the **vismi** package.
+- Variable names in `nhanes3` have been updated to maintain consistency
+  with `newborn`.
+
 ## mixgb 2.1.3
 
 #### New Features
@@ -23,7 +39,7 @@ CRAN release: 2025-12-07
 
 - Removed support for bootstrap in [`mixgb()`](../reference/mixgb.md)
 
-#### related to XGBoost Parameter Changes
+#### Related to XGBoost Parameter Changes
 
 - related to `xgb.train()`:
   - `num_class` now passed through `params` list, need to set
@@ -52,7 +68,7 @@ CRAN release: 2025-12-07
 ### Breaking Changes
 
 - The package is now compatible with XGBoost version 3.1.1.1 or higher.
-  \### related to XGBoost Parameter Changes
+  \### Related to XGBoost Parameter Changes
 - related to `xgb.train()`:
   - `watchlist` is changed to `evals`
   - `objective` and `eval_metric` are now passed through `params` list.

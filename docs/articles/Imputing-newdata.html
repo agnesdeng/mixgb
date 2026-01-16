@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@
                         <h4 data-toc-skip class="author">Yongshi
 Deng</h4>
             
-            <h4 data-toc-skip class="date">2026-01-08</h4>
+            <h4 data-toc-skip class="date">2026-01-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/agnesdeng/mixgb/blob/HEAD/vignettes/Imputing-newdata.Rmd" class="external-link"><code>vignettes/Imputing-newdata.Rmd</code></a></small>
       <div class="d-none name"><code>Imputing-newdata.Rmd</code></div>
@@ -79,43 +79,48 @@ Deng</h4>
 <h2 id="impute-new-unseen-data-using-a-saved-imputer-object">Impute new unseen data using a saved imputer object<a class="anchor" aria-label="anchor" href="#impute-new-unseen-data-using-a-saved-imputer-object"></a>
 </h2>
 <p>To demonstrate how to impute new data using a saved imputer, we first
-split the <code>nhanes3_newborn</code> dataset into training data and
-test data.</p>
+split the <code>newborn</code> dataset into training data and test
+data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
-<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nhanes3</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">newborn</span><span class="op">)</span></span>
 <span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0.7</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">train.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
-<span><span class="va">test.data</span> <span class="op">&lt;-</span> <span class="va">nhanes3</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span></code></pre></div>
-<p>Next we impute the training data using <code><a href="../reference/mixgb.html">mixgb()</a></code>. We can
-use the training data to generate <code>m</code> imputed datasets and
-save their imputation models. To achieve this, users need to set
-<code>save.models = TRUE</code>. By default, imputation models for all
-variables with missing values in the training data will be saved
-(<code>save.vars = NULL</code>). However, it is possible that unseen
-data may have missing values in other variables. To be thorough, users
-can save models for all variables by setting
-<code>save.vars = colnames(train.data)</code>. Note that this may take
-significantly longer as it requires training and saving a model for each
-variable. In cases where users are confident that only certain variables
-will have missing values in the new data, it is advisable to specify the
-names or indices of these variables in <code>save.vars</code> rather
-than saving models for all variables.</p>
-<p>To save the imputer object, users need to specify a local directory
-in the parameter <code>save.models.folder</code> in the main function
-<code><a href="../reference/mixgb.html">mixgb()</a></code>. Models will be save as JSON format by calling
-<code>xgb.save()</code> internally. Saving XGBoost models in this way
-instead of using <code>saveRDS</code> in R is recommended by XGBoost.
-This can ensure that the imputation models can still be used in later
-release of XGBoost.</p>
+<span><span class="va">train_data</span> <span class="op">&lt;-</span> <span class="va">newborn</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
+<span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="va">newborn</span><span class="op">[</span><span class="op">-</span><span class="va">idx</span>, <span class="op">]</span></span></code></pre></div>
+<p>Next, we impute the training data using <code><a href="../reference/mixgb.html">mixgb()</a></code>. This
+allows us to generate <code>m</code> imputed datasets and save the
+corresponding imputation models by setting
+<code>save.models = TRUE</code>. By default, models for all variables
+with missing values in the training data are saved
+(<code>save.vars = NULL</code>).</p>
+<p>If the new or unseen data may contain missing values in additional
+variables, users can save models for all variables by setting
+<code>save.vars = colnames(train_data)</code>. This can be
+time-consuming, as a model needs to be trained and saved for each
+variable. When users are confident that only certain variables will have
+missing values in future data, it is more efficient to specify only
+those variables in <code>save.vars</code>.</p>
+<p>To save the imputer object, specify a local directory using the
+<code>save.models.folder</code> argument in <code><a href="../reference/mixgb.html">mixgb()</a></code>. In the
+backend, models are saved in JSON format via <code>xgb.save()</code>.
+This approach, recommended by XGBoost, is preferred over directly saving
+the XGBoost models with <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> because it ensures
+compatibility with future XGBoost releases.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># obtain m imputed datasets for train.data and save imputation models</span></span>
-<span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train.data</span>, m <span class="op">=</span> <span class="fl">5</span>, save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.models.folder <span class="op">=</span> <span class="st">"C:/Users/....."</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, file <span class="op">=</span> <span class="st">"C:/Users/.../mixgbimputer.rds"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># create a temporary folder</span></span>
+<span><span class="va">tmp_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"mixgb_models"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">tmp_folder</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># obtain m imputed datasets for train_data and save imputation models</span></span>
+<span><span class="va">mixgb_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train_data</span>, m <span class="op">=</span> <span class="fl">5</span>, </span>
+<span>                   save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.models.folder <span class="op">=</span> <span class="va">tmp_folder</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb_obj</span>, </span>
+<span>        file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_folder</span>, <span class="st">"mixgb_imputer.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>If users specify the <code>save.models.folder</code>, the return
 object will include the following:</p>
 <ul>
-<li><p><code>imputed.data</code>: a list of <code>m</code> imputed
+<li><p><code>imputed_data</code>: a list of <code>m</code> imputed
 datasets for training data</p></li>
 <li><p><code>XGB.models</code>: a list of directories of <code>m</code>
 sets of XGBoost models for variables specified in
@@ -126,36 +131,37 @@ imputing new data using <code><a href="../reference/impute_new.html">impute_new(
 <code>XGB.models</code> are the saved models or the directories for the
 saved models.</p></li>
 </ul>
-<p>As the <code>mixgb.obj</code> does not contain the models themselves,
+<p>As the <code>mixgb_obj</code> does not contain the models themselves,
 users need not worry about saving this object via
 <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>. For later use, one can load the object into R
 and impute new data.</p>
 <p>To impute new data with this saved imputer object, we can use the
 <code><a href="../reference/impute_new.html">impute_new()</a></code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mixgb.obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"C:/Users/.../mixgbimputer.rds"</span><span class="op">)</span></span>
-<span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span></code></pre></div>
-<p>Users can choose whether to use new data for initial imputation. By
-default, the information of training data is used to initially impute
-the missing data in the new dataset
-(<code>initial.newdata = FALSE</code>). After this, the missing values
-in the new dataset will be imputed using the saved models from the
-imputer object. This process will be considerably faster because it does
-not involve rebuilding the imputation models.</p>
+<code class="sourceCode R"><span><span class="va">mixgb_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_folder</span>, <span class="st">"mixgb_imputer.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">test_imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb_obj</span>, newdata <span class="op">=</span> <span class="va">test_data</span><span class="op">)</span></span></code></pre></div>
+<p>Users can decide whether to perform initial imputation on new data.
+By default, the training data is used to impute missing values in the
+new dataset initially (<code>initial.newdata = FALSE</code>). After this
+step, the missing values in the new data are imputed using the saved
+models from the imputer object. This approach is considerably faster, as
+it avoids retraining the imputation models.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span></code></pre></div>
-<p>If PMM is used in <code><a href="../reference/mixgb.html">mixgb()</a></code>, predicted values of missing
-entries in the new dataset will be matched with donors from the training
-data. Additionally, users can set the number of donors to be used in PMM
-when imputing new data. The default setting <code>pmm.k = NULL</code>
-indicates that the same setting as the training object will be used.</p>
-<p>Similarly, users can set the number of imputed datasets
-<code>m</code> in <code><a href="../reference/impute_new.html">impute_new()</a></code>. Note that this value has to
-be less than or equal to the <code>m</code> value specified in
-<code><a href="../reference/mixgb.html">mixgb()</a></code>. If this value is not specified, the function will
-use the same <code>m</code> value as the saved object.</p>
+<code class="sourceCode R"><span><span class="va">test_imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb_obj</span>, newdata <span class="op">=</span> <span class="va">test_data</span><span class="op">)</span></span></code></pre></div>
+<p>When predictive mean matching (PMM) is used in <code><a href="../reference/mixgb.html">mixgb()</a></code>,
+predicted values of missing entries in the new dataset will be matched
+with donors from the training data. Users can also specify the number of
+donors for PMM. The default setting <code>pmm.k = NULL</code> indicates
+that the <code>pmm.k</code> value from the training object will be
+inherited.</p>
+<p>Similarly, the number of imputed datasets for the new data can be set
+via <code>m</code> in <code><a href="../reference/impute_new.html">impute_new()</a></code>. This value must be less
+than or equal to the <code>m</code> used in <code><a href="../reference/mixgb.html">mixgb()</a></code>. If not
+specified, <code><a href="../reference/impute_new.html">impute_new()</a></code> will use the <code>m</code> value
+stored in the saved imputer object.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span>, initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">test_imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb_obj</span>, newdata <span class="op">=</span> <span class="va">test_data</span>, </span>
+<span>                       initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

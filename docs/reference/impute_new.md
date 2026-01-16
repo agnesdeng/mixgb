@@ -68,67 +68,119 @@ mixgb.obj <- mixgb(data = train.data, m = 2, xgb.params = params, nrounds = 10,
 train.imputed <- mixgb.obj$imputed.data
 train.imputed
 #> [[1]]
-#>      HSAGEIR  HSSEX DMARETHN BMPHEAD BMPRECUM BMPWT
-#>        <int> <fctr>   <fctr>   <num>    <num> <num>
-#>   1:      10      2        3    45.7     70.2  8.15
-#>   2:       3      1        4    42.0     63.5  7.50
-#>   3:       3      2        1    43.2     63.1  6.75
-#>   4:       9      2        2    44.4     73.5  8.30
-#>   5:       9      1        1    45.3     73.8  9.10
-#>  ---                                               
-#> 346:       4      1        2    44.8     66.7  8.60
-#> 347:       2      1        1    41.4     60.0  6.75
-#> 348:       5      2        2    40.4     63.2  7.35
-#> 349:       5      1        2    44.0     69.1  8.75
-#> 350:      11      1        3    47.1     77.8 10.35
+#>      age_months    sex        ethnicity head_circumference_cm
+#>           <int> <fctr>           <fctr>                 <num>
+#>   1:          2   Male     Not Hispanic              40.70000
+#>   2:          6   Male     Not Hispanic              45.10000
+#>   3:          4 Female     Not Hispanic              43.00000
+#>   4:          3   Male Mexican-American              43.00000
+#>   5:          8   Male Mexican-American              42.70341
+#>  ---                                                         
+#> 346:          4 Female     Not Hispanic              42.30000
+#> 347:          3 Female     Not Hispanic              38.40000
+#> 348:         10   Male     Not Hispanic              45.20000
+#> 349:          8   Male     Not Hispanic              47.00000
+#> 350:          7   Male     Not Hispanic              48.20000
+#>      recumbent_length_cm weight_kg
+#>                    <num>     <num>
+#>   1:            59.20000  6.400000
+#>   2:            68.60000  8.050000
+#>   3:            63.00000  7.800000
+#>   4:            62.00000  6.200000
+#>   5:            67.01804  7.270353
+#>  ---                              
+#> 346:            65.80000  7.450000
+#> 347:            58.00000  5.300000
+#> 348:            75.90000  8.650000
+#> 349:            74.70000 10.500000
+#> 350:            72.50000  9.800000
 #> 
 #> [[2]]
-#>      HSAGEIR  HSSEX DMARETHN BMPHEAD BMPRECUM BMPWT
-#>        <int> <fctr>   <fctr>   <num>    <num> <num>
-#>   1:      10      2        3    45.7     70.2  8.15
-#>   2:       3      1        4    42.0     63.5  7.50
-#>   3:       3      2        1    43.2     63.1  6.75
-#>   4:       9      2        2    44.4     73.5  8.30
-#>   5:       9      1        1    45.3     73.8  9.10
-#>  ---                                               
-#> 346:       4      1        2    44.8     66.7  8.60
-#> 347:       2      1        1    41.4     60.0  6.75
-#> 348:       5      2        2    40.4     63.2  7.35
-#> 349:       5      1        2    44.0     69.1  8.75
-#> 350:      11      1        3    47.1     77.8 10.35
+#>      age_months    sex        ethnicity head_circumference_cm
+#>           <int> <fctr>           <fctr>                 <num>
+#>   1:          2   Male     Not Hispanic              40.70000
+#>   2:          6   Male     Not Hispanic              45.10000
+#>   3:          4 Female     Not Hispanic              43.00000
+#>   4:          3   Male Mexican-American              43.00000
+#>   5:          8   Male Mexican-American              43.15326
+#>  ---                                                         
+#> 346:          4 Female     Not Hispanic              42.30000
+#> 347:          3 Female     Not Hispanic              38.40000
+#> 348:         10   Male     Not Hispanic              45.20000
+#> 349:          8   Male     Not Hispanic              47.00000
+#> 350:          7   Male     Not Hispanic              48.20000
+#>      recumbent_length_cm weight_kg
+#>                    <num>     <num>
+#>   1:            59.20000  6.400000
+#>   2:            68.60000  8.050000
+#>   3:            63.00000  7.800000
+#>   4:            62.00000  6.200000
+#>   5:            66.67313  7.614265
+#>  ---                              
+#> 346:            65.80000  7.450000
+#> 347:            58.00000  5.300000
+#> 348:            75.90000  8.650000
+#> 349:            74.70000 10.500000
+#> 350:            72.50000  9.800000
 #> 
 
 # use the saved imputer to impute new data
 test.imputed <- impute_new(object = mixgb.obj, newdata = test.data)
 test.imputed
 #> [[1]]
-#>      HSAGEIR  HSSEX DMARETHN BMPHEAD BMPRECUM BMPWT
-#>        <int> <fctr>   <fctr>   <num>    <num> <num>
-#>   1:       3      2        2    42.6     67.1  8.70
-#>   2:       8      1        2    47.4     78.2 10.75
-#>   3:       9      1        2    45.1     73.0  8.40
-#>   4:       9      1        1    44.3     73.3  8.70
-#>   5:       3      1        1    43.4     65.1  7.35
-#>  ---                                               
-#> 146:       2      1        3    35.7     49.5  3.80
-#> 147:       7      1        1    45.5     70.7 10.40
-#> 148:       6      2        4    46.7     66.9  8.10
-#> 149:      11      2        4    46.4     73.5  9.15
-#> 150:       9      2        2    45.9     71.0  8.55
+#>      age_months    sex    ethnicity head_circumference_cm recumbent_length_cm
+#>           <int> <fctr>       <fctr>                 <num>               <num>
+#>   1:         11   Male Not Hispanic                  46.3                74.0
+#>   2:          8   Male Not Hispanic                  47.7                73.1
+#>   3:          5   Male Not Hispanic                  44.6                71.3
+#>   4:          9 Female Not Hispanic                  44.8                69.3
+#>   5:          2 Female Not Hispanic                  41.1                58.5
+#>  ---                                                                         
+#> 146:          8   Male Not Hispanic                  47.1                71.8
+#> 147:          7   Male Not Hispanic                  46.3                70.0
+#> 148:          4   Male Not Hispanic                  44.4                66.7
+#> 149:          6   Male Not Hispanic                  43.1                67.8
+#> 150:          7   Male Not Hispanic                  46.8                73.6
+#>      weight_kg
+#>          <num>
+#>   1:      9.50
+#>   2:      9.75
+#>   3:      7.90
+#>   4:      7.65
+#>   5:      5.85
+#>  ---          
+#> 146:      9.80
+#> 147:      8.55
+#> 148:      7.50
+#> 149:      7.65
+#> 150:     10.05
 #> 
 #> [[2]]
-#>      HSAGEIR  HSSEX DMARETHN BMPHEAD BMPRECUM BMPWT
-#>        <int> <fctr>   <fctr>   <num>    <num> <num>
-#>   1:       3      2        2    42.6     67.1  8.70
-#>   2:       8      1        2    47.4     78.2 10.75
-#>   3:       9      1        2    45.1     73.0  8.40
-#>   4:       9      1        1    44.3     73.3  8.70
-#>   5:       3      1        1    43.4     65.1  7.35
-#>  ---                                               
-#> 146:       2      1        3    35.7     49.5  3.80
-#> 147:       7      1        1    45.5     70.7 10.40
-#> 148:       6      2        4    46.7     66.9  8.10
-#> 149:      11      2        4    46.4     73.5  9.15
-#> 150:       9      2        2    45.9     71.0  8.55
+#>      age_months    sex    ethnicity head_circumference_cm recumbent_length_cm
+#>           <int> <fctr>       <fctr>                 <num>               <num>
+#>   1:         11   Male Not Hispanic                  46.3                74.0
+#>   2:          8   Male Not Hispanic                  47.7                73.1
+#>   3:          5   Male Not Hispanic                  44.6                71.3
+#>   4:          9 Female Not Hispanic                  44.8                69.3
+#>   5:          2 Female Not Hispanic                  41.1                58.5
+#>  ---                                                                         
+#> 146:          8   Male Not Hispanic                  47.1                71.8
+#> 147:          7   Male Not Hispanic                  46.3                70.0
+#> 148:          4   Male Not Hispanic                  44.4                66.7
+#> 149:          6   Male Not Hispanic                  43.1                67.8
+#> 150:          7   Male Not Hispanic                  46.8                73.6
+#>      weight_kg
+#>          <num>
+#>   1:      9.50
+#>   2:      9.75
+#>   3:      7.90
+#>   4:      7.65
+#>   5:      5.85
+#>  ---          
+#> 146:      9.80
+#> 147:      8.55
+#> 148:      7.50
+#> 149:      7.65
+#> 150:     10.05
 #> 
 ```

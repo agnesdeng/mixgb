@@ -2,9 +2,9 @@
 
 ## All functions
 
-- [`createNA()`](createNA.md) : Create missing values for a dataset
+- [`check_data()`](check_data.md) : Data cleaning
 
-- [`data_clean()`](data_clean.md) : Data cleaning
+- [`createNA()`](createNA.md) : Create missing values for a dataset
 
 - [`default_params()`](default_params.md) : Auxiliary function for
   validating xgb.params
@@ -22,10 +22,9 @@
 
   Use cross-validation to find the optimal `nrounds`
 
-- [`nhanes3`](nhanes3.md) : A small subset of the NHANES III (1988-1994)
-  newborn data
+- [`newborn`](newborn.md) : NHANES III (1988-1994) newborn data
 
-- [`nhanes3_newborn`](nhanes3_newborn.md) : NHANES III (1988-1994)
+- [`nhanes3`](nhanes3.md) : A small subset of the NHANES III (1988-1994)
   newborn data
 
 - [`show_var()`](show_var.md) : Show multiply imputed values for a

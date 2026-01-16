@@ -1,7 +1,7 @@
 # mixgb: Multiple Imputation Through 'XGBoost'
 
 Multiple imputation using 'XGBoost', subsampling, and predictive mean
-matching as described in Deng and Lumley (2023)
+matching as described in Deng and Lumley (2024)
 [doi:10.1080/10618600.2023.2252501](https://doi.org/10.1080/10618600.2023.2252501)
 . The package supports various types of variables, offers flexible
 settings, and enables saving an imputation model to impute new data.

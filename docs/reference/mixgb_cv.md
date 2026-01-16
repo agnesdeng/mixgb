@@ -84,29 +84,42 @@ cv.results <- mixgb_cv(data = nhanes3, xgb.params = params)
 #> Multiple eval metrics are present. Will use test_rmse for early stopping.
 #> Will train until test_rmse hasn't improved in 10 rounds.
 #> 
-#> [1]  train-rmse:1.325541±0.054794    test-rmse:1.328004±0.200554 
-#> [2]  train-rmse:1.120618±0.057377    test-rmse:1.120987±0.228403 
-#> [3]  train-rmse:0.977183±0.060819    test-rmse:1.008580±0.243726 
-#> [4]  train-rmse:0.890541±0.060028    test-rmse:0.943404±0.259013 
-#> [5]  train-rmse:0.838193±0.062854    test-rmse:0.900796±0.266055 
-#> [6]  train-rmse:0.790665±0.062452    test-rmse:0.871239±0.274423 
-#> [7]  train-rmse:0.759332±0.064733    test-rmse:0.857790±0.279167 
-#> [8]  train-rmse:0.741639±0.063543    test-rmse:0.849731±0.279353 
-#> [9]  train-rmse:0.730104±0.063602    test-rmse:0.850516±0.277500 
-#> [10] train-rmse:0.702745±0.048944    test-rmse:0.858593±0.274182 
-#> [11] train-rmse:0.691603±0.050012    test-rmse:0.860244±0.273899 
-#> [12] train-rmse:0.687875±0.048874    test-rmse:0.859973±0.274179 
-#> [13] train-rmse:0.681551±0.050469    test-rmse:0.863008±0.274802 
-#> [14] train-rmse:0.664586±0.041199    test-rmse:0.863226±0.276052 
-#> [15] train-rmse:0.660445±0.041594    test-rmse:0.862346±0.276682 
-#> [16] train-rmse:0.656897±0.043685    test-rmse:0.862776±0.276146 
-#> [17] train-rmse:0.649109±0.040902    test-rmse:0.861455±0.272649 
+#> [1]  train-rmse:1.963320±0.031171    test-rmse:2.021989±0.166801 
+#> [2]  train-rmse:1.635703±0.036784    test-rmse:1.722371±0.175585 
+#> [3]  train-rmse:1.425266±0.040358    test-rmse:1.541440±0.170586 
+#> [4]  train-rmse:1.296524±0.040932    test-rmse:1.441356±0.174966 
+#> [5]  train-rmse:1.211539±0.039615    test-rmse:1.371976±0.163681 
+#> [6]  train-rmse:1.158323±0.039793    test-rmse:1.335619±0.149652 
+#> [7]  train-rmse:1.119461±0.041829    test-rmse:1.318944±0.151686 
+#> [8]  train-rmse:1.094165±0.038712    test-rmse:1.301223±0.155397 
+#> [9]  train-rmse:1.074211±0.041667    test-rmse:1.289382±0.160836 
+#> [10] train-rmse:1.057512±0.040667    test-rmse:1.287639±0.176059 
+#> [11] train-rmse:1.044720±0.039432    test-rmse:1.286882±0.175661 
+#> [12] train-rmse:1.033794±0.039727    test-rmse:1.282698±0.181149 
+#> [13] train-rmse:1.022246±0.039490    test-rmse:1.276626±0.185726 
+#> [14] train-rmse:1.007901±0.035897    test-rmse:1.272276±0.179694 
+#> [15] train-rmse:1.000166±0.035963    test-rmse:1.271480±0.179027 
+#> [16] train-rmse:0.992511±0.037126    test-rmse:1.269869±0.180173 
+#> [17] train-rmse:0.985283±0.041051    test-rmse:1.272495±0.187991 
+#> [18] train-rmse:0.976042±0.036297    test-rmse:1.269337±0.182042 
+#> [19] train-rmse:0.968928±0.033149    test-rmse:1.270250±0.181051 
+#> [20] train-rmse:0.960499±0.031753    test-rmse:1.273157±0.179921 
+#> [21] train-rmse:0.954404±0.033598    test-rmse:1.268842±0.178302 
+#> [22] train-rmse:0.948135±0.034911    test-rmse:1.271862±0.177748 
+#> [23] train-rmse:0.939070±0.030973    test-rmse:1.271855±0.179913 
+#> [24] train-rmse:0.932000±0.033710    test-rmse:1.276054±0.172815 
+#> [25] train-rmse:0.925331±0.032511    test-rmse:1.280610±0.178959 
+#> [26] train-rmse:0.916091±0.031723    test-rmse:1.280791±0.177164 
+#> [27] train-rmse:0.910110±0.032802    test-rmse:1.287943±0.174522 
+#> [28] train-rmse:0.903795±0.032132    test-rmse:1.292798±0.175057 
+#> [29] train-rmse:0.898237±0.033322    test-rmse:1.298807±0.175802 
+#> [30] train-rmse:0.892281±0.034050    test-rmse:1.296191±0.181797 
 #> Stopping. Best iteration:
-#> [18] train-rmse:0.638577±0.033485    test-rmse:0.873910±0.267153
+#> [31] train-rmse:0.883372±0.036310    test-rmse:1.303166±0.178872
 #> 
-#> [18] train-rmse:0.638577±0.033485    test-rmse:0.873910±0.267153 
+#> [31] train-rmse:0.883372±0.036310    test-rmse:1.303166±0.178872 
 cv.results$best.nrounds
-#> [1] 8
+#> [1] 21
 
 imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params,
                       nrounds = cv.results$best.nrounds)

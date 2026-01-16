@@ -6,7 +6,7 @@ random (MCAR) mechanism. It is for demonstration purposes only.
 ## Usage
 
 ``` r
-createNA(data, var.names = NULL, p = 0.3)
+createNA(data, cols = NULL, p = 0.3)
 ```
 
 ## Arguments
@@ -15,15 +15,15 @@ createNA(data, var.names = NULL, p = 0.3)
 
   A complete data frame.
 
-- var.names:
+- cols:
 
-  The names of variables where missing values will be generated.
+  A vector specifying the names of the columns in which missing values
+  should be generated.
 
 - p:
 
   The proportion of missing values in the data frame or the proportions
-  of missing values corresponding to the variables specified in
-  `var.names`.
+  of missing values corresponding to the variables specified in `cols`.
 
 ## Value
 
@@ -36,12 +36,12 @@ A data frame with artificial missing values
 withNA.df <- createNA(data = iris, p = 0.3)
 
 # Create 30% MCAR data in a specified variable in a dataset
-withNA.df <- createNA(data = iris, var.names = c("Sepal.Length"), p = 0.3)
+withNA.df <- createNA(data = iris, cols = c("Sepal.Length"), p = 0.3)
 
 # Create MCAR data in several specified variables in a dataset
 withNA.df <- createNA(
   data = iris,
-  var.names = c("Sepal.Length", "Petal.Width", "Species"),
+  cols = c("Sepal.Length", "Petal.Width", "Species"),
   p = c(0.3, 0.2, 0.1)
 )
 ```

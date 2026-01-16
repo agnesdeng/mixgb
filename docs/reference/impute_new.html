@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,68 +102,120 @@
 <span class="r-in"><span><span class="va">train.imputed</span> <span class="op">&lt;-</span> <span class="va">mixgb.obj</span><span class="op">$</span><span class="va">imputed.data</span></span></span>
 <span class="r-in"><span><span class="va">train.imputed</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      HSAGEIR  HSSEX DMARETHN BMPHEAD BMPRECUM BMPWT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        &lt;int&gt; &lt;fctr&gt;   &lt;fctr&gt;   &lt;num&gt;    &lt;num&gt; &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      10      2        3    45.7     70.2  8.15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:       3      1        4    42.0     63.5  7.50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:       3      2        1    43.2     63.1  6.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:       9      2        2    44.4     73.5  8.30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:       9      1        1    45.3     73.8  9.10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 346:       4      1        2    44.8     66.7  8.60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 347:       2      1        1    41.4     60.0  6.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 348:       5      2        2    40.4     63.2  7.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 349:       5      1        2    44.0     69.1  8.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 350:      11      1        3    47.1     77.8 10.35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      age_months    sex        ethnicity head_circumference_cm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;int&gt; &lt;fctr&gt;           &lt;fctr&gt;                 &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:          2   Male     Not Hispanic              40.70000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:          6   Male     Not Hispanic              45.10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:          4 Female     Not Hispanic              43.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:          3   Male Mexican-American              43.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:          8   Male Mexican-American              42.70341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 346:          4 Female     Not Hispanic              42.30000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 347:          3 Female     Not Hispanic              38.40000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 348:         10   Male     Not Hispanic              45.20000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 349:          8   Male     Not Hispanic              47.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 350:          7   Male     Not Hispanic              48.20000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      recumbent_length_cm weight_kg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:            59.20000  6.400000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:            68.60000  8.050000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:            63.00000  7.800000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:            62.00000  6.200000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:            67.01804  7.270353</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 346:            65.80000  7.450000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 347:            58.00000  5.300000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 348:            75.90000  8.650000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 349:            74.70000 10.500000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 350:            72.50000  9.800000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      HSAGEIR  HSSEX DMARETHN BMPHEAD BMPRECUM BMPWT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        &lt;int&gt; &lt;fctr&gt;   &lt;fctr&gt;   &lt;num&gt;    &lt;num&gt; &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      10      2        3    45.7     70.2  8.15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:       3      1        4    42.0     63.5  7.50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:       3      2        1    43.2     63.1  6.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:       9      2        2    44.4     73.5  8.30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:       9      1        1    45.3     73.8  9.10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 346:       4      1        2    44.8     66.7  8.60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 347:       2      1        1    41.4     60.0  6.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 348:       5      2        2    40.4     63.2  7.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 349:       5      1        2    44.0     69.1  8.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 350:      11      1        3    47.1     77.8 10.35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      age_months    sex        ethnicity head_circumference_cm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;int&gt; &lt;fctr&gt;           &lt;fctr&gt;                 &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:          2   Male     Not Hispanic              40.70000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:          6   Male     Not Hispanic              45.10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:          4 Female     Not Hispanic              43.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:          3   Male Mexican-American              43.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:          8   Male Mexican-American              43.15326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 346:          4 Female     Not Hispanic              42.30000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 347:          3 Female     Not Hispanic              38.40000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 348:         10   Male     Not Hispanic              45.20000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 349:          8   Male     Not Hispanic              47.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 350:          7   Male     Not Hispanic              48.20000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      recumbent_length_cm weight_kg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:            59.20000  6.400000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:            68.60000  8.050000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:            63.00000  7.800000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:            62.00000  6.200000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:            66.67313  7.614265</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 346:            65.80000  7.450000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 347:            58.00000  5.300000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 348:            75.90000  8.650000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 349:            74.70000 10.500000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 350:            72.50000  9.800000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># use the saved imputer to impute new data</span></span></span>
 <span class="r-in"><span><span class="va">test.imputed</span> <span class="op">&lt;-</span> <span class="fu">impute_new</span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb.obj</span>, newdata <span class="op">=</span> <span class="va">test.data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">test.imputed</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      HSAGEIR  HSSEX DMARETHN BMPHEAD BMPRECUM BMPWT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        &lt;int&gt; &lt;fctr&gt;   &lt;fctr&gt;   &lt;num&gt;    &lt;num&gt; &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:       3      2        2    42.6     67.1  8.70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:       8      1        2    47.4     78.2 10.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:       9      1        2    45.1     73.0  8.40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:       9      1        1    44.3     73.3  8.70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:       3      1        1    43.4     65.1  7.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146:       2      1        3    35.7     49.5  3.80</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147:       7      1        1    45.5     70.7 10.40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148:       6      2        4    46.7     66.9  8.10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149:      11      2        4    46.4     73.5  9.15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150:       9      2        2    45.9     71.0  8.55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      age_months    sex    ethnicity head_circumference_cm recumbent_length_cm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;int&gt; &lt;fctr&gt;       &lt;fctr&gt;                 &lt;num&gt;               &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:         11   Male Not Hispanic                  46.3                74.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:          8   Male Not Hispanic                  47.7                73.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:          5   Male Not Hispanic                  44.6                71.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:          9 Female Not Hispanic                  44.8                69.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:          2 Female Not Hispanic                  41.1                58.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 146:          8   Male Not Hispanic                  47.1                71.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 147:          7   Male Not Hispanic                  46.3                70.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148:          4   Male Not Hispanic                  44.4                66.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149:          6   Male Not Hispanic                  43.1                67.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150:          7   Male Not Hispanic                  46.8                73.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      weight_kg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      9.50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:      9.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:      7.90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:      7.65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:      5.85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 146:      9.80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 147:      8.55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148:      7.50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149:      7.65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150:     10.05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      HSAGEIR  HSSEX DMARETHN BMPHEAD BMPRECUM BMPWT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        &lt;int&gt; &lt;fctr&gt;   &lt;fctr&gt;   &lt;num&gt;    &lt;num&gt; &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:       3      2        2    42.6     67.1  8.70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:       8      1        2    47.4     78.2 10.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:       9      1        2    45.1     73.0  8.40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:       9      1        1    44.3     73.3  8.70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:       3      1        1    43.4     65.1  7.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146:       2      1        3    35.7     49.5  3.80</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147:       7      1        1    45.5     70.7 10.40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148:       6      2        4    46.7     66.9  8.10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149:      11      2        4    46.4     73.5  9.15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150:       9      2        2    45.9     71.0  8.55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      age_months    sex    ethnicity head_circumference_cm recumbent_length_cm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;int&gt; &lt;fctr&gt;       &lt;fctr&gt;                 &lt;num&gt;               &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:         11   Male Not Hispanic                  46.3                74.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:          8   Male Not Hispanic                  47.7                73.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:          5   Male Not Hispanic                  44.6                71.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:          9 Female Not Hispanic                  44.8                69.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:          2 Female Not Hispanic                  41.1                58.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 146:          8   Male Not Hispanic                  47.1                71.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 147:          7   Male Not Hispanic                  46.3                70.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148:          4   Male Not Hispanic                  44.4                66.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149:          6   Male Not Hispanic                  43.1                67.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150:          7   Male Not Hispanic                  46.8                73.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      weight_kg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      9.50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:      9.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:      7.90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:      7.65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:      5.85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 146:      9.80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 147:      8.55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148:      7.50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149:      7.65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150:     10.05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

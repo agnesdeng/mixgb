@@ -10,16 +10,11 @@ vignette: >
 ---
 ## Introduction
 
-Mixgb offers a scalable solution for imputing large datasets using
-XGBoost, subsampling and predictive mean matching. Our method utilizes
-the capabilities of XGBoost, a highly efficient implementation of gradient
-boosted trees, to capture interactions and non-linear relations automatically.
-Moreover, we have integrated subsampling and predictive mean matching to
-minimize bias and reflect appropriate imputation variability. Our package
-supports various types of variables and offers flexible settings for subsampling
-and predictive mean matching. We also include diagnostic tools for evaluating
-the quality of the imputed values.
+The **mixgb** package provides a scalable approach to imputation for large data using XGBoost, subsampling, and predictive mean matching. It leverages XGBoost—an efficient implementation of gradient-boosted trees—to automatically capture complex interactions and non-linear relationships. Subsampling and predictive mean matching are incorporated to reduce bias and to preserve realistic imputation variability. The package accommodates a wide range of variable types and offers flexible control over subsampling and predictive matching settings.
 
+We also recommend our package **vismi** ([Visualisation Tools for Multiple Imputation][vismi-url]), which offers a comprehensive set of diagnostics for assessing the quality of multiply imputed data.
+
+[vismi-url]: https://agnesdeng.github.io/vismi/
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -30,29 +25,25 @@ knitr::opts_chunk$set(
 
 ## Impute missing values with `mixgb`
 
-We first load the `mixgb` package and the `nhanes3_newborn` dataset, which contains 16 variables of various types
+We first load the `mixgb` package and the `newborn` dataset, which contains 16 variables of various types
 (integer/numeric/factor/ordinal factor). There are 9 variables with missing values.
 
 ```{r}
 library(mixgb)
-str(nhanes3_newborn)
-colSums(is.na(nhanes3_newborn))
+str(newborn)
+colSums(is.na(newborn))
 ```
 
-To impute this dataset, we can use the default settings. The default
-number of imputed datasets is `m = 5`. Note that we do not need to convert
-our data into dgCMatrix or one-hot coding format. Our package will automatically
-convert it for you. Variables should be of the following types:
-numeric, integer, factor or ordinal factor.
+To impute this dataset, we use the default settings. By default, the number of imputed datasets is set to `m = 5`. The data do not need to be converted to a `dgCMatrix` or one-hot encoded format, as these transformations are handled automatically by the package. Supported variable types include numeric, integer, factor, and ordinal factor.
 
 ```{r, eval = FALSE}
 # use mixgb with default settings
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+imp_list <- mixgb(data = newborn, m = 5)
 ```
 
-### Customize imputation settings
+### Customise imputation settings
 
-We can also customize imputation settings:
+We can also customise imputation settings:
 
 -   The number of imputed datasets
     `m`
@@ -79,6 +70,7 @@ We can also customize imputation settings:
     
 
 ```{r, eval = FALSE}
+set.seed(2026)
 # Use mixgb with chosen settings
 params <- list(
   max_depth = 5,
@@ -87,8 +79,8 @@ params <- list(
   tree_method = "hist"
 )
 
-imputed.data <- mixgb(
-  data = nhanes3_newborn, m = 10, maxit = 2,
+imp_list <- mixgb(
+  data = newborn, m = 10, maxit = 2,
   ordinalAsInteger = FALSE, 
   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
@@ -99,47 +91,45 @@ imputed.data <- mixgb(
 
 ### Tune hyperparameters
 
-Imputation performance can be affected by the hyperparameter settings. Although 
-tuning a large set of hyperparameters may appear intimidating, it is often 
-possible to narrowing down the search space because many hyperparameters are
-correlated. In our package, the function `mixgb_cv()` can be used to tune 
-the number of boosting rounds - `nrounds`. There is no default `nrounds` value
-in `XGBoost,` so users are required to specify this value themselves. The
-default `nrounds` in `mixgb()` is 100. However, we recommend using
-`mixgb_cv()` to find the optimal `nrounds` first.
+Imputation performance can be influenced by the choice of hyperparameters. While tuning a large number of hyperparameters may seem daunting, the search space can often be substantially reduced because many of them are correlated. In mixgb, the function `mixgb_cv()` is provided to tune the number of boosting rounds (`nrounds`). As XGBoost does not define a default value for `nrounds`, users must specify this parameter explicitly. The default setting in mixgb() is `nrounds = 100`; however, we recommend using `mixgb_cv()` to get an appropriate value first.
+
 
 ```{r}
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
-cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
+cv.results <- mixgb_cv(data = newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
 cv.results$evaluation.log
 cv.results$response
 cv.results$best.nrounds
 ```
 
-By default, `mixgb_cv()` will randomly choose an incomplete variable as
-the response and build an XGBoost model with other variables as explanatory
-variables using the complete cases of the dataset. Therefore, each run of `mixgb_cv()`
-will likely return different results. Users can also specify the response
-and covariates in the argument `response` and `select_features` respectively.
+
+By default, `mixgb_cv()` randomly selects an incomplete variable as the response and fits an XGBoost model using the remaining variables as predictors, based on the complete cases of the dataset. As a result, repeated runs of `mixgb_cv()` may yield different results. Users may instead explicitly specify the response variable and the set of covariates via the `response` and `select_features` arguments, respectively.
+
 
 ```{r}
 cv.results <- mixgb_cv(
-  data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
-  response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE
+  data = newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
+  response = "head_circumference_cm", select_features = c("age_months", "sex", "race_ethinicity", "recumbent_length_cm", "first_subscapular_skinfold_mm", "second_subscapular_skinfold_mm", "first_triceps_skinfold_mm", "second_triceps_skinfold_mm", "weight_kg"), xgb.params = params, verbose = FALSE
 )
 
 cv.results$best.nrounds
 ```
 
-Let us just try setting `nrounds = cv.results$best.nrounds` in `mixgb()` to obtain 5 imputed datasets.
+We can then set `nrounds = cv.results$best.nrounds` in `mixgb()` to generate five imputed datasets.
 
 ```{r, eval = FALSE}
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
+imp_list <- mixgb(data = newborn, m = 5, nrounds = cv.results$best.nrounds)
 ```
 
 
 ## Inspect multiply imputed values
 
-The `mixgb` package used to provide a few visual diagnostics functions. However, we have moved these functions to the `vismi` package, which provides a wide range of visualisation tools for multiple imputation.
+Older version of **mixgb** package included a few visual diagnostic functions. These have now been removed from **mixgb**. 
 
-For more details, please check the `vismi` package on GitHub [Visualisation Tools for Multiple Imputation](https://github.com/agnesdeng/vismi).
+We recommend our standalone package **vismi** ([Visualisation Tools for Multiple Imputation][vismi-url]), which provides a comprehensive set of visual diagnostics for evaluating multiply imputed data.
+
+For more details, please visit:
+
+[https://agnesdeng.github.io/vismi/](https://agnesdeng.github.io/vismi/) 
+
+[https://github.com/agnesdeng/vismi](https://github.com/agnesdeng/vismi).

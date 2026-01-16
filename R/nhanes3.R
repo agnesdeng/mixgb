@@ -1,16 +1,16 @@
 #' A small subset of the NHANES III (1988-1994) newborn data
 #'
-#' This dataset is a small subset of \code{nhanes3_newborn}. It is for demonstration purposes only. More information on NHANES III data can be found on \url{https://wwwn.cdc.gov/Nchs/Data/Nhanes3/7a/doc/mimodels.pdf}
+#' This dataset is a small subset of \code{newborn}. It is for demonstration purposes only. More information on NHANES III data can be found on \url{https://wwwn.cdc.gov/Nchs/Data/Nhanes3/7a/doc/mimodels.pdf}
 #' @docType  data
 #' @usage data(nhanes3)
 #' @format A data frame of 500 rows and 6 variables. Three variables have missing values.
 #' \describe{
-#'  \item{HSAGEIR}{Age at interview (screener) - qty (months). An integer variable from 2 to 11.}
-#'  \item{HSSEX}{Sex. A factor variable with levels 1 (Male) and 2 (Female).}
-#'  \item{DMARETHN}{Race-ethnicity. A factor variable with levels 1 (Non-Hispanic white), 2 (Non-Hispanic black), 3 (Mexican-American) and 4 (Other).}
-#'  \item{BMPHEAD}{Head circumference (cm). Numeric.}
-#'  \item{BMPRECUM}{Recumbent length (cm). Numeric.}
-#'  \item{BMPWT}{Weight (kg). Numeric.}
+#'  \item{age_months}{Age at interview (screener), in months. An integer variable ranging from 2 to 11. The original variable name in the NHANES III dataset is \code{HSAGEIR}.}
+#'  \item{sex}{Sex of the subject. A factor variable with levels \code{Male} and \code{Female}. The original variable name in the NHANES III dataset is \code{HSSEX}.}
+#'  \item{ethnicity}{Ethnicity of the subject. A factor variable with levels \code{Mexican-American}, \code{Other Hispanic}, and \code{Not Hispanic}. The original variable name in the NHANES III dataset is \code{DMAETHNR}.}
+#'  \item{head_circumference_cm}{Head circumference, in centimetres. Numeric. The original variable name in the NHANES III dataset is \code{BMPHEAD}.}
+#'  \item{recumbent_length_cm}{Recumbent length, in centimetres. Numeric. The original variable name in the NHANES III dataset is \code{BMPRECUM}.}
+#'  \item{weight_kg}{Body weight, in kilograms. Numeric. The original variable name in the NHANES III dataset is \code{BMPWT}.}
 #' }
 
 #' @references U.S. Department of Health and Human Services

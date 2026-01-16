@@ -2,73 +2,79 @@
 
 ## Introduction
 
-Mixgb offers a scalable solution for imputing large datasets using
-XGBoost, subsampling and predictive mean matching. Our method utilizes
-the capabilities of XGBoost, a highly efficient implementation of
-gradient boosted trees, to capture interactions and non-linear relations
-automatically. Moreover, we have integrated subsampling and predictive
-mean matching to minimize bias and reflect appropriate imputation
-variability. Our package supports various types of variables and offers
-flexible settings for subsampling and predictive mean matching. We also
-include diagnostic tools for evaluating the quality of the imputed
-values.
+The **mixgb** package provides a scalable approach to imputation for
+large data using XGBoost, subsampling, and predictive mean matching. It
+leverages XGBoost—an efficient implementation of gradient-boosted
+trees—to automatically capture complex interactions and non-linear
+relationships. Subsampling and predictive mean matching are incorporated
+to reduce bias and to preserve realistic imputation variability. The
+package accommodates a wide range of variable types and offers flexible
+control over subsampling and predictive matching settings.
+
+We also recommend our package **vismi** ([Visualisation Tools for
+Multiple Imputation](https://agnesdeng.github.io/vismi/)), which offers
+a comprehensive set of diagnostics for assessing the quality of multiply
+imputed data.
 
 ## Impute missing values with `mixgb`
 
-We first load the `mixgb` package and the `nhanes3_newborn` dataset,
-which contains 16 variables of various types
-(integer/numeric/factor/ordinal factor). There are 9 variables with
-missing values.
+We first load the `mixgb` package and the `newborn` dataset, which
+contains 16 variables of various types (integer/numeric/factor/ordinal
+factor). There are 9 variables with missing values.
 
 ``` r
 library(mixgb)
-str(nhanes3_newborn)
+str(newborn)
 #> tibble [2,107 × 16] (S3: tbl_df/tbl/data.frame)
-#>  $ HSHSIZER: int [1:2107] 4 3 5 4 4 3 5 3 3 3 ...
-#>  $ HSAGEIR : int [1:2107] 2 5 10 10 8 3 10 7 2 7 ...
-#>  $ HSSEX   : Factor w/ 2 levels "1","2": 2 1 2 2 1 1 2 2 2 1 ...
-#>  $ DMARACER: Factor w/ 3 levels "1","2","3": 1 1 2 1 1 1 2 1 2 2 ...
-#>  $ DMAETHNR: Factor w/ 3 levels "1","2","3": 3 1 3 3 3 3 3 3 3 3 ...
-#>  $ DMARETHN: Factor w/ 4 levels "1","2","3","4": 1 3 2 1 1 1 2 1 2 2 ...
-#>  $ BMPHEAD : num [1:2107] 39.3 45.4 43.9 45.8 44.9 42.2 45.8 NA 40.2 44.5 ...
-#>   ..- attr(*, "label")= chr "Head circumference (cm)"
-#>  $ BMPRECUM: num [1:2107] 59.5 69.2 69.8 73.8 69 61.7 74.8 NA 64.5 70.2 ...
-#>   ..- attr(*, "label")= chr "Recumbent length (cm)"
-#>  $ BMPSB1  : num [1:2107] 8.2 13 6 8 8.2 9.4 5.2 NA 7 5.9 ...
-#>   ..- attr(*, "label")= chr "First subscapular skinfold (mm)"
-#>  $ BMPSB2  : num [1:2107] 8 13 5.6 10 7.8 8.4 5.2 NA 7 5.4 ...
-#>   ..- attr(*, "label")= chr "Second subscapular skinfold (mm)"
-#>  $ BMPTR1  : num [1:2107] 9 15.6 7 16.4 9.8 9.6 5.8 NA 11 6.8 ...
-#>   ..- attr(*, "label")= chr "First triceps skinfold (mm)"
-#>  $ BMPTR2  : num [1:2107] 9.4 14 8.2 12 8.8 8.2 6.6 NA 10.9 7.6 ...
-#>   ..- attr(*, "label")= chr "Second triceps skinfold (mm)"
-#>  $ BMPWT   : num [1:2107] 6.35 9.45 7.15 10.7 9.35 7.15 8.35 NA 7.35 8.65 ...
-#>   ..- attr(*, "label")= chr "Weight (kg)"
-#>  $ DMPPIR  : num [1:2107] 3.186 1.269 0.416 2.063 1.464 ...
-#>   ..- attr(*, "label")= chr "Poverty income ratio"
-#>  $ HFF1    : Factor w/ 2 levels "1","2": 2 2 1 1 1 2 2 1 2 1 ...
-#>  $ HYD1    : Ord.factor w/ 5 levels "1"<"2"<"3"<"4"<..: 1 3 1 1 1 1 1 1 2 1 ...
-colSums(is.na(nhanes3_newborn))
-#> HSHSIZER  HSAGEIR    HSSEX DMARACER DMAETHNR DMARETHN  BMPHEAD BMPRECUM 
-#>        0        0        0        0        0        0      124      114 
-#>   BMPSB1   BMPSB2   BMPTR1   BMPTR2    BMPWT   DMPPIR     HFF1     HYD1 
-#>      161      169      124      167      117      192        7        0
+#>  $ household_size                : int [1:2107] 4 3 5 4 4 3 5 3 3 3 ...
+#>  $ age_months                    : int [1:2107] 2 5 10 10 8 3 10 7 2 7 ...
+#>  $ sex                           : Factor w/ 2 levels "Male","Female": 2 1 2 2 1 1 2 2 2 1 ...
+#>  $ race                          : Factor w/ 3 levels "White","Black",..: 1 1 2 1 1 1 2 1 2 2 ...
+#>  $ ethnicity                     : Factor w/ 3 levels "Mexican-American",..: 3 1 3 3 3 3 3 3 3 3 ...
+#>  $ race_ethinicity               : Factor w/ 4 levels "Non-Hispanic White",..: 1 3 2 1 1 1 2 1 2 2 ...
+#>  $ head_circumference_cm         : num [1:2107] 39.3 45.4 43.9 45.8 44.9 42.2 45.8 NA 40.2 44.5 ...
+#>  $ recumbent_length_cm           : num [1:2107] 59.5 69.2 69.8 73.8 69 61.7 74.8 NA 64.5 70.2 ...
+#>  $ first_subscapular_skinfold_mm : num [1:2107] 8.2 13 6 8 8.2 9.4 5.2 NA 7 5.9 ...
+#>  $ second_subscapular_skinfold_mm: num [1:2107] 8 13 5.6 10 7.8 8.4 5.2 NA 7 5.4 ...
+#>  $ first_triceps_skinfold_mm     : num [1:2107] 9 15.6 7 16.4 9.8 9.6 5.8 NA 11 6.8 ...
+#>  $ second_triceps_skinfold_mm    : num [1:2107] 9.4 14 8.2 12 8.8 8.2 6.6 NA 10.9 7.6 ...
+#>  $ weight_kg                     : num [1:2107] 6.35 9.45 7.15 10.7 9.35 7.15 8.35 NA 7.35 8.65 ...
+#>  $ poverty_income_ratio          : num [1:2107] 3.186 1.269 0.416 2.063 1.464 ...
+#>  $ smoke                         : Factor w/ 2 levels "Yes","No": 2 2 1 1 1 2 2 1 2 1 ...
+#>  $ health                        : Ord.factor w/ 5 levels "Excellent"<"Very Good"<..: 1 3 1 1 1 1 1 1 2 1 ...
+colSums(is.na(newborn))
+#>                 household_size                     age_months 
+#>                              0                              0 
+#>                            sex                           race 
+#>                              0                              0 
+#>                      ethnicity                race_ethinicity 
+#>                              0                              0 
+#>          head_circumference_cm            recumbent_length_cm 
+#>                            124                            114 
+#>  first_subscapular_skinfold_mm second_subscapular_skinfold_mm 
+#>                            161                            169 
+#>      first_triceps_skinfold_mm     second_triceps_skinfold_mm 
+#>                            124                            167 
+#>                      weight_kg           poverty_income_ratio 
+#>                            117                            192 
+#>                          smoke                         health 
+#>                              7                              0
 ```
 
-To impute this dataset, we can use the default settings. The default
-number of imputed datasets is `m = 5`. Note that we do not need to
-convert our data into dgCMatrix or one-hot coding format. Our package
-will automatically convert it for you. Variables should be of the
-following types: numeric, integer, factor or ordinal factor.
+To impute this dataset, we use the default settings. By default, the
+number of imputed datasets is set to `m = 5`. The data do not need to be
+converted to a `dgCMatrix` or one-hot encoded format, as these
+transformations are handled automatically by the package. Supported
+variable types include numeric, integer, factor, and ordinal factor.
 
 ``` r
 # use mixgb with default settings
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5)
+imp_list <- mixgb(data = newborn, m = 5)
 ```
 
-### Customize imputation settings
+### Customise imputation settings
 
-We can also customize imputation settings:
+We can also customise imputation settings:
 
 - The number of imputed datasets `m`
 
@@ -92,6 +98,7 @@ We can also customize imputation settings:
   `save.vars`.
 
 ``` r
+set.seed(2026)
 # Use mixgb with chosen settings
 params <- list(
   max_depth = 5,
@@ -100,8 +107,8 @@ params <- list(
   tree_method = "hist"
 )
 
-imputed.data <- mixgb(
-  data = nhanes3_newborn, m = 10, maxit = 2,
+imp_list <- mixgb(
+  data = newborn, m = 10, maxit = 2,
   ordinalAsInteger = FALSE, 
   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
@@ -112,20 +119,20 @@ imputed.data <- mixgb(
 
 ### Tune hyperparameters
 
-Imputation performance can be affected by the hyperparameter settings.
-Although tuning a large set of hyperparameters may appear intimidating,
-it is often possible to narrowing down the search space because many
-hyperparameters are correlated. In our package, the function
-[`mixgb_cv()`](../reference/mixgb_cv.md) can be used to tune the number
-of boosting rounds - `nrounds`. There is no default `nrounds` value in
-`XGBoost,` so users are required to specify this value themselves. The
-default `nrounds` in [`mixgb()`](../reference/mixgb.md) is 100. However,
-we recommend using [`mixgb_cv()`](../reference/mixgb_cv.md) to find the
-optimal `nrounds` first.
+Imputation performance can be influenced by the choice of
+hyperparameters. While tuning a large number of hyperparameters may seem
+daunting, the search space can often be substantially reduced because
+many of them are correlated. In mixgb, the function
+[`mixgb_cv()`](../reference/mixgb_cv.md) is provided to tune the number
+of boosting rounds (`nrounds`). As XGBoost does not define a default
+value for `nrounds`, users must specify this parameter explicitly. The
+default setting in mixgb() is `nrounds = 100`; however, we recommend
+using [`mixgb_cv()`](../reference/mixgb_cv.md) to get an appropriate
+value first.
 
 ``` r
 params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
-cv.results <- mixgb_cv(data = nhanes3_newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
+cv.results <- mixgb_cv(data = newborn, nrounds = 100, xgb.params = params, verbose = FALSE)
 cv.results$evaluation.log
 #>      iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std
 #>     <int>           <num>          <num>          <num>         <num>
@@ -156,43 +163,51 @@ cv.results$evaluation.log
 #> 25:    25       0.5132553     0.01970753      0.6389741    0.10791424
 #> 26:    26       0.5109004     0.01959456      0.6390225    0.10727696
 #>      iter train_rmse_mean train_rmse_std test_rmse_mean test_rmse_std
+#>     <int>           <num>          <num>          <num>         <num>
 cv.results$response
-#> [1] "BMPWT"
+#> [1] "weight_kg"
 cv.results$best.nrounds
 #> [1] 16
 ```
 
-By default, [`mixgb_cv()`](../reference/mixgb_cv.md) will randomly
-choose an incomplete variable as the response and build an XGBoost model
-with other variables as explanatory variables using the complete cases
-of the dataset. Therefore, each run of
-[`mixgb_cv()`](../reference/mixgb_cv.md) will likely return different
-results. Users can also specify the response and covariates in the
-argument `response` and `select_features` respectively.
+By default, [`mixgb_cv()`](../reference/mixgb_cv.md) randomly selects an
+incomplete variable as the response and fits an XGBoost model using the
+remaining variables as predictors, based on the complete cases of the
+dataset. As a result, repeated runs of
+[`mixgb_cv()`](../reference/mixgb_cv.md) may yield different results.
+Users may instead explicitly specify the response variable and the set
+of covariates via the `response` and `select_features` arguments,
+respectively.
 
 ``` r
 cv.results <- mixgb_cv(
-  data = nhanes3_newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
-  response = "BMPHEAD", select_features = c("HSAGEIR", "HSSEX", "DMARETHN", "BMPRECUM", "BMPSB1", "BMPSB2", "BMPTR1", "BMPTR2", "BMPWT"), xgb.params = params, verbose = FALSE
+  data = newborn, nfold = 10, nrounds = 100, early_stopping_rounds = 1,
+  response = "head_circumference_cm", select_features = c("age_months", "sex", "race_ethinicity", "recumbent_length_cm", "first_subscapular_skinfold_mm", "second_subscapular_skinfold_mm", "first_triceps_skinfold_mm", "second_triceps_skinfold_mm", "weight_kg"), xgb.params = params, verbose = FALSE
 )
 
 cv.results$best.nrounds
 #> [1] 12
 ```
 
-Let us just try setting `nrounds = cv.results$best.nrounds` in
-[`mixgb()`](../reference/mixgb.md) to obtain 5 imputed datasets.
+We can then set `nrounds = cv.results$best.nrounds` in
+[`mixgb()`](../reference/mixgb.md) to generate five imputed datasets.
 
 ``` r
-imputed.data <- mixgb(data = nhanes3_newborn, m = 5, nrounds = cv.results$best.nrounds)
+imp_list <- mixgb(data = newborn, m = 5, nrounds = cv.results$best.nrounds)
 ```
 
 ## Inspect multiply imputed values
 
-The `mixgb` package used to provide a few visual diagnostics functions.
-However, we have moved these functions to the `vismi` package, which
-provides a wide range of visualisation tools for multiple imputation.
+Older version of **mixgb** package included a few visual diagnostic
+functions. These have now been removed from **mixgb**.
 
-For more details, please check the `vismi` package on GitHub
-[Visualisation Tools for Multiple
-Imputation](https://github.com/agnesdeng/vismi).
+We recommend our standalone package **vismi** ([Visualisation Tools for
+Multiple Imputation](https://agnesdeng.github.io/vismi/)), which
+provides a comprehensive set of visual diagnostics for evaluating
+multiply imputed data.
+
+For more details, please visit:
+
+<https://agnesdeng.github.io/vismi/>
+
+<https://github.com/agnesdeng/vismi>.

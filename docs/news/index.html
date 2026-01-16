@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mixgb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,17 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.2.3" id="mixgb-223">mixgb 2.2.3<a class="anchor" aria-label="anchor" href="#mixgb-223"></a></h2>
+<div class="section level4">
+<h4 id="changes-2-2-3">Changes<a class="anchor" aria-label="anchor" href="#changes-2-2-3"></a></h4>
+<ul><li>
+<code>data_clean()</code> now becomes <code><a href="../reference/check_data.html">check_data()</a></code>. This function performs preliminary sanity check before imputation. A few checks have been added.</li>
+<li>Some arguments’ names have changed in <code><a href="../reference/show_var.html">show_var()</a></code> function for compatibility with <strong>vismi</strong> package.</li>
+<li>The dataset <code>nhanes3_newborn</code> has been replaced with <code>newborn</code>, with variables renamed for clarity and to align with the <strong>vismi</strong> package.</li>
+<li>Variable names in <code>nhanes3</code> have been updated to maintain consistency with <code>newborn</code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.1.3" id="mixgb-213">mixgb 2.1.3<a class="anchor" aria-label="anchor" href="#mixgb-213"></a></h2>
 <div class="section level4">
 <h4 id="new-features-2-1-3">New Features<a class="anchor" aria-label="anchor" href="#new-features-2-1-3"></a></h4>
@@ -58,7 +69,7 @@
 </li>
 </ul></div>
 <div class="section level4">
-<h4 id="related-to-xgboost-parameter-changes-2-0-2">related to XGBoost Parameter Changes<a class="anchor" aria-label="anchor" href="#related-to-xgboost-parameter-changes-2-0-2"></a></h4>
+<h4 id="related-to-xgboost-parameter-changes-2-0-2">Related to XGBoost Parameter Changes<a class="anchor" aria-label="anchor" href="#related-to-xgboost-parameter-changes-2-0-2"></a></h4>
 <ul><li>related to <code>xgb.train()</code>:
 <ul><li>
 <code>num_class</code> now passed through <code>params</code> list, need to set <code>num_class=NULL</code> for non-multiclass imputation.</li>
@@ -85,7 +96,7 @@
 <h2 class="pkg-version" data-toc-text="2.0.0" id="mixgb-200">mixgb 2.0.0<a class="anchor" aria-label="anchor" href="#mixgb-200"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-2-0-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-2-0-0"></a></h3>
-<ul><li>The package is now compatible with XGBoost version 3.1.1.1 or higher. ### related to XGBoost Parameter Changes</li>
+<ul><li>The package is now compatible with XGBoost version 3.1.1.1 or higher. ### Related to XGBoost Parameter Changes</li>
 <li>related to <code>xgb.train()</code>:
 <ul><li>
 <code>watchlist</code> is changed to <code>evals</code>
