@@ -28,8 +28,7 @@ Imports:
     Rfast,
     stats,
     utils,
-    xgboost (>= 3.1.2.1),
-    magrittr
+    xgboost (>= 3.1.2.1)
 Suggests: 
     knitr,
     rmarkdown,

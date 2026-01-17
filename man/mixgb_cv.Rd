@@ -49,6 +49,8 @@ params <- list(max_depth = 3, subsample = 0.7, nthread = 2)
 cv.results <- mixgb_cv(data = nhanes3, xgb.params = params)
 cv.results$best.nrounds
 
-imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params,
-                      nrounds = cv.results$best.nrounds)
+imputed.data <- mixgb(
+  data = nhanes3, m = 3, xgb.params = params,
+  nrounds = cv.results$best.nrounds
+)
 }

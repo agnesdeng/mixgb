@@ -43,7 +43,6 @@ initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorte
   }
 
 
-
   if (any(sorted.naSums >= 0.9 * Nrow)) {
     warning("Some variables have more than 90% miss entries.")
   }
@@ -106,8 +105,6 @@ initial_impnew <- function(initial.newdata = FALSE, new.sorted, traindata, sorte
 }
 
 
-
-
 # method ------------------------------------------------------------------
 # Impute the missing values of a vector with sampled observed values
 imp.sample2 <- function(vec, na.idx = NULL, traindata.vec) {
@@ -137,11 +134,10 @@ imp.sample2 <- function(vec, na.idx = NULL, traindata.vec) {
 }
 
 # Impute the missing values of a vector with randomly selected values from a normal distribution with mean and sd extracted from observed values
-# @param vec A vector of numeric values
-# @param na.idx Indices of missing values
-# @param traindata.vec The corresponding vector in the train set
-
 imp.normal2 <- function(vec, na.idx = NULL, traindata.vec) {
+  # @param vec A vector of numeric values
+  # @param na.idx Indices of missing values
+  # @param traindata.vec The corresponding vector in the train set
   if (!is.numeric(vec)) {
     stop("imp.normal(vec,...) only applies to a numeric vector")
   }
@@ -198,10 +194,10 @@ imp.mean2 <- function(vec, na.idx = NULL, traindata.vec) {
 
 
 # Impute the missing values of a vector with the median of observed values
-# @param vec A vector of numeric values
-# @param na.idx Indices of missing values
-# @param traindata.vec The corresponding vector in the train set
 imp.median2 <- function(vec, na.idx = NULL, traindata.vec) {
+  # @param vec A vector of numeric values
+  # @param na.idx Indices of missing values
+  # @param traindata.vec The corresponding vector in the train set
   if (!is.numeric(vec)) {
     stop("imp.median(vec,...) only applies to a numeric vector")
   }

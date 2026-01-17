@@ -22,10 +22,12 @@ A data.table with \code{m} columns, each column represents the imputed values of
 Show m sets of imputed values for a specified variable.
 }
 \examples{
-#obtain m multiply datasets
+# obtain m multiply datasets
 library(mixgb)
-imp_list<- mixgb(data = nhanes3, m = 3)
+imp_list <- mixgb(data = nhanes3, m = 3)
 
-imp_head <- show_var(imp_list = imp_list, x = "head_circumference_cm",
-  data = nhanes3)
+imp_head <- show_var(
+  imp_list = imp_list, x = "head_circumference_cm",
+  data = nhanes3
+)
 }

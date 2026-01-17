@@ -112,11 +112,15 @@ compatibility with future XGBoost releases.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">tmp_folder</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># obtain m imputed datasets for train_data and save imputation models</span></span>
-<span><span class="va">mixgb_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb.html">mixgb</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train_data</span>, m <span class="op">=</span> <span class="fl">5</span>, </span>
-<span>                   save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.models.folder <span class="op">=</span> <span class="va">tmp_folder</span><span class="op">)</span></span>
+<span><span class="va">mixgb_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgb.html">mixgb</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">train_data</span>, m <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  save.models <span class="op">=</span> <span class="cn">TRUE</span>, save.models.folder <span class="op">=</span> <span class="va">tmp_folder</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb_obj</span>, </span>
-<span>        file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_folder</span>, <span class="st">"mixgb_imputer.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">mixgb_obj</span>,</span>
+<span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_folder</span>, <span class="st">"mixgb_imputer.rds"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>If users specify the <code>save.models.folder</code>, the return
 object will include the following:</p>
 <ul>
@@ -160,8 +164,10 @@ than or equal to the <code>m</code> used in <code><a href="../reference/mixgb.ht
 specified, <code><a href="../reference/impute_new.html">impute_new()</a></code> will use the <code>m</code> value
 stored in the saved imputer object.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mixgb_obj</span>, newdata <span class="op">=</span> <span class="va">test_data</span>, </span>
-<span>                       initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">test_imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/impute_new.html">impute_new</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">mixgb_obj</span>, newdata <span class="op">=</span> <span class="va">test_data</span>,</span>
+<span>  initial.newdata <span class="op">=</span> <span class="cn">FALSE</span>, pmm.k <span class="op">=</span> <span class="fl">3</span>, m <span class="op">=</span> <span class="fl">4</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

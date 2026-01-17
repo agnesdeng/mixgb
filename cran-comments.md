@@ -1,8 +1,8 @@
-# mixgb 2.0.3
+# mixgb 2.2.3
 
 
 ## R CMD check results 
-mixgb 2.0.3 ────
-Duration: 37.2s
+mixgb 2.2.3 ────
+Duration: 40.3s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔

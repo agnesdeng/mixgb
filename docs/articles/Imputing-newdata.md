@@ -40,11 +40,15 @@ tmp_folder <- file.path(tempdir(), "mixgb_models")
 dir.create(tmp_folder, showWarnings = FALSE)
 
 # obtain m imputed datasets for train_data and save imputation models
-mixgb_obj <- mixgb(data = train_data, m = 5, 
-                   save.models = TRUE, save.models.folder = tmp_folder)
+mixgb_obj <- mixgb(
+  data = train_data, m = 5,
+  save.models = TRUE, save.models.folder = tmp_folder
+)
 
-saveRDS(object = mixgb_obj, 
-        file = file.path(tmp_folder, "mixgb_imputer.rds"))
+saveRDS(
+  object = mixgb_obj,
+  file = file.path(tmp_folder, "mixgb_imputer.rds")
+)
 ```
 
 If users specify the `save.models.folder`, the return object will
@@ -100,6 +104,8 @@ be less than or equal to the `m` used in
 stored in the saved imputer object.
 
 ``` r
-test_imp <- impute_new(object = mixgb_obj, newdata = test_data, 
-                       initial.newdata = FALSE, pmm.k = 3, m = 4)
+test_imp <- impute_new(
+  object = mixgb_obj, newdata = test_data,
+  initial.newdata = FALSE, pmm.k = 3, m = 4
+)
 ```

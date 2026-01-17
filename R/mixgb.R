@@ -230,10 +230,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
     }
 
     # To do: include initial imputation using models
-    # To do: if bootstrap, need a copy of the sorted data before initial imputation, will need more memory usage. Do it later
-    # if (bootstrap) {
-    # originally :  result$sortedNA.dt <- sort.result$sorted.dt
-    # }
+
   }
 
 
@@ -318,12 +315,12 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
     # Default: don't save any models
 
 
-    if (verbose) {
+    if (isTRUE(verbose)) {
       cat("mixgb with subsampling:", "imputing set")
     }
 
     for (i in seq_len(m)) {
-      if (verbose) {
+      if (isTRUE(verbose)) {
         cat(" --", i)
       }
       # feed in the initial imputed dataset
@@ -347,7 +344,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
     }
 
 
-    if (verbose) {
+    if (isTRUE(verbose)) {
       cat("\n")
     }
 
@@ -385,24 +382,28 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
     if (isTRUE(save.models)) {
       # save the model dir
       XGB.models <- vector("list", m)
-      IMP.MEAN <- array(NA, dim = c(maxit,length(missing.vars), m))
-      IMP.VAR <- array(NA, dim = c(maxit,length(missing.vars), m))
+      IMP.MEAN <- array(NA, dim = c(maxit, length(missing.vars), m))
+      IMP.VAR <- array(NA, dim = c(maxit, length(missing.vars), m))
 
-      dimnames(IMP.MEAN) <- list(paste0("Iteration", seq_len(maxit)),
-                                 missing.vars,
-                                 paste0("Set", seq_len(m)))
-      dimnames(IMP.VAR) <- list(paste0("Iteration", seq_len(maxit)),
-                                 missing.vars,
-                                 paste0("Set", seq_len(m)))
+      dimnames(IMP.MEAN) <- list(
+        paste0("Iteration", seq_len(maxit)),
+        missing.vars,
+        paste0("Set", seq_len(m))
+      )
+      dimnames(IMP.VAR) <- list(
+        paste0("Iteration", seq_len(maxit)),
+        missing.vars,
+        paste0("Set", seq_len(m))
+      )
     }
 
 
-    if (verbose) {
+    if (isTRUE(verbose)) {
       cat("mixgb with subsampling:", "saving models and imputing set")
     }
 
     for (i in seq_len(m)) {
-      if (verbose) {
+      if (isTRUE(verbose)) {
         cat(" --", i)
       }
       # feed in the initial imputed dataset
@@ -412,7 +413,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
       IMP.mean <- matrix(data = NA, nrow = maxit, ncol = length(missing.vars))
 
       IMP.var <- matrix(data = NA, nrow = maxit, ncol = length(missing.vars))
-      #colnames(IMP.var) <- missing.vars
+      # colnames(IMP.var) <- missing.vars
 
       if (maxit > 1) {
         for (j in seq_len(maxit - 1)) {
@@ -488,8 +489,8 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
       }
       # if pmm.type=1  (only use one set of yhatobs.list across all m, it's saved ahead)
 
-      IMP.MEAN[ , ,i] <- IMP.mean
-      IMP.VAR[ , , i] <- IMP.var
+      IMP.MEAN[, , i] <- IMP.mean
+      IMP.VAR[, , i] <- IMP.var
     }
 
 
@@ -502,7 +503,7 @@ mixgb <- function(data, m = 5, maxit = 1, ordinalAsInteger = FALSE,
     params$yhatobs.list <- yhatobs.list
     params$yobs.list <- yobs.list
 
-    if (verbose) {
+    if (isTRUE(verbose)) {
       cat("\n")
     }
     obj <- list("imputed.data" = imputed.data, "XGB.models" = XGB.models, "params" = params, "XGB.save" = XGB.save, "IMP.MEAN" = IMP.MEAN, "IMP.VAR" = IMP.VAR)

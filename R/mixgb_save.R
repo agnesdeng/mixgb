@@ -20,7 +20,6 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
   nthread <- xgb.params$nthread
 
 
-
   for (var in missing.vars) {
     na.idx <- Na.idx[[var]]
     obs.y <- yobs.list[[var]]
@@ -80,7 +79,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
       xgb.params$num_class <- NULL
 
       xgb.fit <- xgb.train(
-        data = dobs,evals = evals,
+        data = dobs, evals = evals,
         params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
         print_every_n = print_every_n, verbose = verbose, ...
       )
@@ -181,10 +180,10 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           obj.type <- "binary:logistic"
         }
         xgb.params$objective <- obj.type
-        xgb.params$eval_metric<- "logloss"
+        xgb.params$eval_metric <- "logloss"
         xgb.params$num_class <- NULL
         xgb.fit <- xgb.train(
-          data = dobs,  evals = evals,
+          data = dobs, evals = evals,
           params = xgb.params, nrounds = nrounds, early_stopping_rounds = early_stopping_rounds,
           print_every_n = print_every_n, verbose = verbose, ...
         )
@@ -192,7 +191,6 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
 
         # save models
         xgb.models[[var]] <- xgb.fit
-
 
 
         if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
@@ -248,7 +246,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           obj.type <- "binary:logistic"
         }
         xgb.params$objective <- obj.type
-        xgb.params$eval_metric<- "logloss"
+        xgb.params$eval_metric <- "logloss"
         xgb.params$num_class <- NULL
         xgb.fit <- xgb.train(
           data = dobs, evals = evals,
@@ -298,10 +296,10 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
         obj.type <- "multi:softprob"
       }
       xgb.params$objective <- obj.type
-      xgb.params$eval_metric<- "mlogloss"
+      xgb.params$eval_metric <- "mlogloss"
 
       N.class <- length(levels(sorted.dt[[var]]))
-      xgb.params$num_class = N.class
+      xgb.params$num_class <- N.class
 
       xgb.fit <- xgb.train(
         data = dobs,
@@ -341,8 +339,6 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
   # for extra variables---------------------------------------------------------------------------------------------
 
 
-
-
   if (!is.null(extra.vars)) {
     if (matrix.method == "as.matrix") {
       All.m <- as.matrix(sorted.dt)
@@ -370,9 +366,6 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
     }
 
 
-
-
-
     for (var in extra.vars) {
       # features <- setdiff(sorted.names, var)
       # form <- reformulate(termlabels = features, response = var)
@@ -388,7 +381,6 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
       }
 
       obs.data <- All.m[, -var.idx, drop = FALSE]
-
 
 
       if (extra.types[var] == "numeric" | extra.types[var] == "integer") {
@@ -447,7 +439,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
             obj.type <- "binary:logistic"
           }
           xgb.params$objective <- obj.type
-          xgb.params$eval_metric<- "logloss"
+          xgb.params$eval_metric <- "logloss"
           xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs, evals = evals,
@@ -493,7 +485,7 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
             obj.type <- "binary:logistic"
           }
           xgb.params$objective <- obj.type
-          xgb.params$eval_metric<- "logloss"
+          xgb.params$eval_metric <- "logloss"
           xgb.params$num_class <- NULL
           xgb.fit <- xgb.train(
             data = dobs, evals = evals,
@@ -528,9 +520,9 @@ mixgb_save <- function(Obs.m, matrix.method, cbind.types, all.idx,
           obj.type <- "multi:softprob"
         }
         xgb.params$objective <- obj.type
-        xgb.params$eval_metric<- "mlogloss"
+        xgb.params$eval_metric <- "mlogloss"
         N.class <- length(levels(sorted.dt[[var]]))
-        xgb.params$num_class = N.class
+        xgb.params$num_class <- N.class
 
         xgb.fit <- xgb.train(
           data = dobs,

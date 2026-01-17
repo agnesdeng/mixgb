@@ -17,8 +17,10 @@
 #' cv.results <- mixgb_cv(data = nhanes3, xgb.params = params)
 #' cv.results$best.nrounds
 #'
-#' imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params,
-#'                       nrounds = cv.results$best.nrounds)
+#' imputed.data <- mixgb(
+#'   data = nhanes3, m = 3, xgb.params = params,
+#'   nrounds = cv.results$best.nrounds
+#' )
 mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10, response = NULL, select_features = NULL,
                      xgb.params = list(),
                      stringsAsFactors = FALSE, verbose = TRUE, ...) {
@@ -90,24 +92,24 @@ mixgb_cv <- function(data, nfold = 5, nrounds = 100, early_stopping_rounds = 10,
   } else if (Types[response] == "binary") {
     obj.type <- "binary:logistic"
     xgb.params$objective <- obj.type
-    xgb.params$eval_metric<- "logloss"
+    xgb.params$eval_metric <- "logloss"
     xgb.params$num_class <- NULL
     obs.y <- as.integer(cc.data[[response]]) - 1
     obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
-    cv.train <- xgb.cv(data = obs.data, params = xgb.params,  nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else if (Types[response] == "logical") {
     obj.type <- "binary:logistic"
     xgb.params$objective <- obj.type
-    xgb.params$eval_metric<- "logloss"
+    xgb.params$eval_metric <- "logloss"
     xgb.params$num_class <- NULL
     obs.y <- cc.data[[response]]
     obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)
-    cv.train <- xgb.cv(data = obs.data, params = xgb.params,  nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
+    cv.train <- xgb.cv(data = obs.data, params = xgb.params, nrounds = nrounds, nfold = nfold, early_stopping_rounds = early_stopping_rounds, verbose = verbose, ...)
   } else {
     obj.type <- "multi:softmax"
     xgb.params$objective <- obj.type
-    xgb.params$eval_metric<- "mlogloss"
-    xgb.params$num_class = N.class
+    xgb.params$eval_metric <- "mlogloss"
+    xgb.params$num_class <- N.class
     obs.y <- as.integer(cc.data[[response]]) - 1
     N.class <- length(levels(cc.data[[response]]))
     obs.data <- xgb.DMatrix(data = obs.data, label = obs.y)

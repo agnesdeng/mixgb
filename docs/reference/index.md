@@ -2,7 +2,8 @@
 
 ## All functions
 
-- [`check_data()`](check_data.md) : Data cleaning
+- [`check_data()`](check_data.md) : Sanity check for input data before
+  imputation
 
 - [`createNA()`](createNA.md) : Create missing values for a dataset
 

@@ -1,9 +1,6 @@
-#impute numeric response
-#origin_labels = yobs.list[[var]]
-#origin_levels = levels(sorted.dt[[var]])
-impute_numeric <- function(save,obs.data, mis.data, obs.y, xgb.params,
+impute_numeric <- function(save, obs.data, mis.data, obs.y, xgb.params,
                            nrounds, nthread, early_stopping_rounds, print_every_n, verbose,
-                           pmm.type, pmm.k, yhatobs=NULL,round_nopmm = FALSE) {
+                           pmm.type, pmm.k, yhatobs = NULL, round_nopmm = FALSE) {
   dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
   dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
   evals <- list(train = dobs)
@@ -27,34 +24,31 @@ impute_numeric <- function(save,obs.data, mis.data, obs.y, xgb.params,
       yhatobs <- predict(fit, dobs)
     } else if (!is.null(yhatobs)) {
       # for pmm.type=1
-      #use predicted yhatobs passed from outside
-      #yhatobs <- yhatobs.list[[var]]
+      # use predicted yhatobs passed from outside
+      # yhatobs <- yhatobs.list[[var]]
       # yhatobs passed from outside
     }
     yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = obs.y, k = pmm.k)
-  }else{
-    if(round_nopmm){
+  } else {
+    if (round_nopmm) {
       yhatmis <- round(yhatmis)
     }
   }
 
 
-  if(save){
+  if (save) {
     list(yhatmis = yhatmis, fit = fit)
-  }else{
+  } else {
     yhatmis
   }
-
-
-
 }
 
 
-impute_binary <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
-                          nrounds,nthread, early_stopping_rounds, print_every_n, verbose,
-                          pmm.type, pmm.link, pmm.k, yhatobs = NULL,original_levels) {
-  original_labels<-obs.y
-  obs.y <- as.integer(obs.y) - 1  # binary labels must be 0/1
+impute_binary <- function(var, save, obs.data, mis.data, obs.y, xgb.params,
+                          nrounds, nthread, early_stopping_rounds, print_every_n, verbose,
+                          pmm.type, pmm.link, pmm.k, yhatobs = NULL, original_levels) {
+  original_labels <- obs.y
+  obs.y <- as.integer(obs.y) - 1 # binary labels must be 0/1
   bin.t <- sort(table(obs.y))
 
   # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
@@ -74,53 +68,51 @@ impute_binary <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
       obj.type <- "binary:logistic"
     }
 
-  dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
-  dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
-  evals <- list(train = dobs)
+    dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+    dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
+    evals <- list(train = dobs)
 
-  xgb.params$objective <- "binary:logistic"
-  xgb.params$eval_metric <- "logloss"
-  xgb.params$num_class <- NULL
+    xgb.params$objective <- "binary:logistic"
+    xgb.params$eval_metric <- "logloss"
+    xgb.params$num_class <- NULL
 
-  fit <- xgb.train(
-    data = dobs, evals = evals,
-    params = xgb.params, nrounds = nrounds,
-    early_stopping_rounds = early_stopping_rounds,
-    print_every_n = print_every_n, verbose = verbose
-  )
+    fit <- xgb.train(
+      data = dobs, evals = evals,
+      params = xgb.params, nrounds = nrounds,
+      early_stopping_rounds = early_stopping_rounds,
+      print_every_n = print_every_n, verbose = verbose
+    )
 
-  yhatmis <- predict(fit, dmis)
+    yhatmis <- predict(fit, dmis)
 
-  # Convert probability to class if PMM not used
-  if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
-    yhatmis <- ifelse(yhatmis >= 0.5, 1, 0)
-    #if (!is.null(original_levels))
-    yhatmis <- original_levels[yhatmis + 1]
-  } else {
-    if (pmm.type == 1 && !is.null(yhatobs)) {
-      # yhatobs passed - use outside yhatobs.list
+    # Convert probability to class if PMM not used
+    if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
+      yhatmis <- ifelse(yhatmis >= 0.5, 1, 0)
+      # if (!is.null(original_levels))
+      yhatmis <- original_levels[yhatmis + 1]
     } else {
-      # for pmm.type=0 or 2
-      yhatobs <- predict(fit, dobs)
+      if (pmm.type == 1 && !is.null(yhatobs)) {
+        # yhatobs passed - use outside yhatobs.list
+      } else {
+        # for pmm.type=0 or 2
+        yhatobs <- predict(fit, dobs)
+      }
+      yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = original_labels, k = pmm.k)
     }
-    yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = original_labels, k = pmm.k)
   }
 
-  }
-
-  if(save){
+  if (save) {
     list(yhatmis = yhatmis, fit = fit)
-  }else{
+  } else {
     yhatmis
   }
 }
 
 
-
-impute_logical <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
-                          nrounds,nthread, early_stopping_rounds, print_every_n, verbose,
-                          pmm.type, pmm.link, pmm.k, yhatobs = NULL,original_levels){
-  original_labels<-obs.y
+impute_logical <- function(var, save, obs.data, mis.data, obs.y, xgb.params,
+                           nrounds, nthread, early_stopping_rounds, print_every_n, verbose,
+                           pmm.type, pmm.link, pmm.k, yhatobs = NULL, original_levels) {
+  original_labels <- obs.y
   bin.t <- sort(table(obs.y))
 
   # when bin.t has two values: bin.t[1] minority class & bin.t[2] majority class
@@ -133,7 +125,7 @@ impute_logical <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
     stop(msg)
   } else {
     if (!is.null(pmm.type) & pmm.link == "logit") {
-      #!is.null(pmm.type) & isFALSE(pmm.type == "auto") & pmm.link == "logit"
+      # !is.null(pmm.type) & isFALSE(pmm.type == "auto") & pmm.link == "logit"
       # pmm by "logit" value, only when pmm.type is not null and not "auto"
       obj.type <- "binary:logitraw"
     } else {
@@ -141,52 +133,49 @@ impute_logical <- function(var,save, obs.data, mis.data, obs.y, xgb.params,
       obj.type <- "binary:logistic"
     }
 
-  dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
-  dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
-  evals <- list(train = dobs)
+    dobs <- xgb.DMatrix(data = obs.data, label = obs.y, nthread = nthread)
+    dmis <- xgb.DMatrix(data = mis.data, nthread = nthread)
+    evals <- list(train = dobs)
 
-  xgb.params$objective <- "binary:logistic"
-  xgb.params$eval_metric <- "logloss"
-  xgb.params$num_class <- NULL
+    xgb.params$objective <- "binary:logistic"
+    xgb.params$eval_metric <- "logloss"
+    xgb.params$num_class <- NULL
 
-  fit <- xgb.train(
-    data = dobs, evals = evals,
-    params = xgb.params, nrounds = nrounds,
-    early_stopping_rounds = early_stopping_rounds,
-    print_every_n = print_every_n, verbose = verbose
-  )
+    fit <- xgb.train(
+      data = dobs, evals = evals,
+      params = xgb.params, nrounds = nrounds,
+      early_stopping_rounds = early_stopping_rounds,
+      print_every_n = print_every_n, verbose = verbose
+    )
 
-  yhatmis <- predict(fit, dmis)
+    yhatmis <- predict(fit, dmis)
 
-  # Convert probability to class if PMM not used
-  if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
-    yhatmis <- ifelse(yhatmis >= 0.5, T, F)
-  } else {
-    if (pmm.type == 1 && !is.null(yhatobs)) {
-      # yhatobs passed - use outside yhatobs.list
+    # Convert probability to class if PMM not used
+    if (is.null(pmm.type) | isTRUE(pmm.type == "auto")) {
+      yhatmis <- ifelse(yhatmis >= 0.5, T, F)
     } else {
-      # for pmm.type=0 or 2
-      yhatobs <- predict(fit, dobs)
+      if (pmm.type == 1 && !is.null(yhatobs)) {
+        # yhatobs passed - use outside yhatobs.list
+      } else {
+        # for pmm.type=0 or 2
+        yhatobs <- predict(fit, dobs)
+      }
+      yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = original_labels, k = pmm.k)
     }
-    yhatmis <- pmm(yhatobs = yhatobs, yhatmis = yhatmis, yobs = original_labels, k = pmm.k)
-  }
   }
 
-  if(save){
+  if (save) {
     list(yhatmis = yhatmis, fit = fit)
-  }else{
+  } else {
     yhatmis
   }
-
 }
 
 
-
-
 impute_multiclass <- function(save, obs.data, mis.data, obs.y, xgb.params,
-                              nrounds,nthread, early_stopping_rounds, print_every_n, verbose,
-                              pmm.type, pmm.k, yhatobs = NULL,original_levels) {
-  original_labels<-obs.y
+                              nrounds, nthread, early_stopping_rounds, print_every_n, verbose,
+                              pmm.type, pmm.k, yhatobs = NULL, original_levels) {
+  original_labels <- obs.y
   obs.y <- as.integer(obs.y) - 1
 
 
@@ -200,7 +189,7 @@ impute_multiclass <- function(save, obs.data, mis.data, obs.y, xgb.params,
     obj.type <- "multi:softprob"
   }
 
-  #N.class <- length(levels(obs.y))
+  # N.class <- length(levels(obs.y))
   N.class <- length(levels(original_labels))
   xgb.params$objective <- obj.type
   xgb.params$eval_metric <- "mlogloss"
@@ -228,9 +217,9 @@ impute_multiclass <- function(save, obs.data, mis.data, obs.y, xgb.params,
     yhatmis <- original_levels[yhatmis]
   }
 
-  if(save){
+  if (save) {
     list(yhatmis = yhatmis, fit = fit)
-  }else{
+  } else {
     yhatmis
   }
 }

@@ -18,7 +18,6 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
   ## Data preprocessing
   # 1) sort the dataset with increasing NAs
   origin.names <- colnames(data)
-  #+600MB
   sort.result <- sortNA(data)
 
   sorted.dt <- sort.result$sorted.dt
@@ -48,7 +47,6 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
   }
 
 
-
   if (any(sorted.naSums >= 0.9 * Nrow)) {
     warning("Some variables have more than 90% miss entries.")
   }
@@ -60,11 +58,9 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
   names(Na.idx) <- missing.vars
 
 
-
   for (var in missing.vars) {
     na.idx <- which(is.na(sorted.dt[[var]]))
     Na.idx[[var]] <- na.idx
-
 
 
     if (missing.method[[var]] == "normal") {
@@ -106,8 +102,6 @@ initial_imp <- function(data, initial.num = "normal", initial.int = "mode", init
     ))
   }
 }
-
-
 
 
 # method ------------------------------------------------------------------
