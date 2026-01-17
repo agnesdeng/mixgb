@@ -121,6 +121,8 @@ cv.results <- mixgb_cv(data = nhanes3, xgb.params = params)
 cv.results$best.nrounds
 #> [1] 21
 
-imputed.data <- mixgb(data = nhanes3, m = 3, xgb.params = params,
-                      nrounds = cv.results$best.nrounds)
+imputed.data <- mixgb(
+  data = nhanes3, m = 3, xgb.params = params,
+  nrounds = cv.results$best.nrounds
+)
 ```

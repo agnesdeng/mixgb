@@ -109,7 +109,7 @@ params <- list(
 
 imp_list <- mixgb(
   data = newborn, m = 10, maxit = 2,
-  ordinalAsInteger = FALSE, 
+  ordinalAsInteger = FALSE,
   pmm.type = "auto", pmm.k = 5, pmm.link = "prob",
   initial.num = "normal", initial.int = "mode", initial.fac = "mode",
   save.models = FALSE, save.vars = NULL,
