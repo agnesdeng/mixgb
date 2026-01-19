@@ -2,6 +2,8 @@
 
 ## mixgb 2.2.3
 
+CRAN release: 2026-01-17
+
 #### Changes
 
 - `data_clean()` now becomes
