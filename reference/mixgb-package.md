@@ -12,7 +12,7 @@ imputation process.
 
 Useful links:
 
-- <https://github.com/agnesdeng/mixgb>
+- <https://agnesdeng.github.io/mixgb/>
 
 - Report bugs at <https://github.com/agnesdeng/mixgb/issues>
 
